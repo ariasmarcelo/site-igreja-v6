@@ -4,6 +4,7 @@
   "packageManager": "pnpm@8.10.0",
   "scripts": {
     "dev": "vite",
+    "dev:safe": "node server/vite-server.js",
     "predev": "node scripts/fix-ids.js --check",
     "build": "vite build",
     "vercel-build": "vite build",
