@@ -8,6 +8,7 @@ import { Download, Upload, FileJson, Eye } from 'lucide-react';
 import VisualPageEditor from '@/components/VisualPageEditor';
 import BlogEditor from '@/components/BlogEditor';
 import Index from './Index';
+import { API_ENDPOINTS } from '@/config/api';
 import QuemSomos from './QuemSomos';
 import Contato from './Contato';
 import Purificacao from './Purificacao';
@@ -88,7 +89,7 @@ export default function AdminConsole() {
       const content = editedContent[pageId];
       JSON.parse(content);
       
-      const response = await fetch('http://localhost:3001/api/save-json', {
+      const response = await fetch(API_ENDPOINTS.saveJson, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

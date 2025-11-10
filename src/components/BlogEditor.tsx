@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import TiptapEditor from '@/components/TiptapEditor';
+import { API_ENDPOINTS } from '@/config/api';
 
 import { 
   Select,
@@ -331,7 +332,7 @@ export default function BlogEditor() {
           published_at: editingPost.published ? new Date().toISOString() : editingPost.published_at
         };
 
-        const response = await fetch(`http://localhost:3001/api/blog-posts/${editingPost.id}`, {
+        const response = await fetch(API_ENDPOINTS.updateBlogPost(editingPost.id), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updateData)

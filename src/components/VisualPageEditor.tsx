@@ -4,6 +4,7 @@ import { Card } from './ui/card';
 import { Eye, Edit3, Save, X } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import { triggerRefresh, setEditLock } from '@/hooks/useLocaleTexts';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface VisualPageEditorProps {
   pageComponent: React.ComponentType;
@@ -1585,7 +1586,7 @@ export default function VisualPageEditor({
         try {
           const payload = { pageId, edits: textEdits };
           
-          const response = await fetch('http://localhost:3001/api/save-visual-edits', {
+          const response = await fetch(API_ENDPOINTS.saveVisualEdits, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -1614,7 +1615,7 @@ export default function VisualPageEditor({
           const payload = { pageId, styles: styleEdits };
           // console.log('📤 Sending styles to API:', JSON.stringify(payload, null, 2));
           
-          const response = await fetch('http://localhost:3001/api/save-styles', {
+          const response = await fetch(API_ENDPOINTS.saveStyles, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -1649,7 +1650,7 @@ export default function VisualPageEditor({
       // VALIDAÇÃO EM MALHA FECHADA: Recarregar dados do banco para confirmar salvamento
       try {
         // 1. Buscar dados atualizados do banco via API (rota existente)
-        const validateResponse = await fetch(`http://localhost:3001/api/content/${pageId}`);
+        const validateResponse = await fetch(API_ENDPOINTS.getContent(pageId));
         
         if (!validateResponse.ok) {
           throw new Error('Erro ao validar dados do servidor');

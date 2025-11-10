@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { API_ENDPOINTS } from '@/config/api';
 
 /**
  * Hook para executar auto-atribuição de IDs únicos na primeira carga
@@ -38,7 +39,7 @@ export function useAutoAssignIds() {
     // Executar script
     console.log('🔧 Executando auto-atribuição de IDs únicos...');
     
-    fetch('http://localhost:3001/api/auto-assign-ids', {
+    fetch(API_ENDPOINTS.autoAssignIds, {
       method: 'POST'
     })
       .then(res => res.json())

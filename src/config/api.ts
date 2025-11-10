@@ -7,7 +7,7 @@ const isProduction = import.meta.env.PROD;
 // URL da API baseada no ambiente
 export const API_BASE_URL = isDevelopment
   ? 'http://localhost:3001'
-  : import.meta.env.VITE_API_URL || 'https://SEU_PROJETO.vercel.app';
+  : import.meta.env.VITE_API_URL || '';
 
 // Endpoints da API
 export const API_ENDPOINTS = {
@@ -25,6 +25,9 @@ export const API_ENDPOINTS = {
   getBlogPost: (id: string) => `${API_BASE_URL}/api/blog-posts/${id}`,
   createBlogPost: `${API_BASE_URL}/api/blog-posts`,
   updateBlogPost: (id: string) => `${API_BASE_URL}/api/blog-posts/${id}`,
+  
+  // Utilities
+  autoAssignIds: `${API_BASE_URL}/api/auto-assign-ids`,
   
   // Health check
   health: `${API_BASE_URL}/health`,
