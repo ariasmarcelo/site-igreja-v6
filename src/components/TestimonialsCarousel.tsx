@@ -22,7 +22,7 @@ export default function TestimonialsCarousel() {
   const testimonials = testimonialsData.testimonials.slice(0, 5);
 
   return (
-    <section className="py-16 bg-gradient-to-br from-[#FAF9F7] to-[#F5F3F0]">
+    <section className="py-16 bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">

@@ -99,8 +99,8 @@ const Navigation = () => {
                 to={item.href}
                 className={`px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
                   isActive(item.href)
-                    ? 'text-gray-50 bg-gradient-to-br from-[#B38938] to-[#8B6914] font-semibold shadow-lg shadow-[#CFAF5A]/40 translate-y-[-2px]'
-                    : 'text-gray-700 hover:text-[#CFAF5A] hover:bg-gray-50 hover:shadow-md hover:translate-y-[-1px]'
+                    ? 'text-gray-50 bg-linear-to-br from-[#B38938] to-[#8B6914] font-semibold shadow-lg shadow-[#CFAF5A]/40 -translate-y-0.5'
+                    : 'text-gray-700 hover:text-[#CFAF5A] hover:bg-gray-50 hover:shadow-md hover:-translate-y-px'
                 }`}
               >
                 {item.name}
@@ -130,7 +130,7 @@ const Navigation = () => {
                 to={item.href}
                 className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
                   isActive(item.href)
-                    ? 'text-gray-50 bg-gradient-to-br from-[#B38938] to-[#8B6914] font-semibold shadow-md shadow-[#CFAF5A]/30'
+                    ? 'text-gray-50 bg-linear-to-br from-[#B38938] to-[#8B6914] font-semibold shadow-md shadow-[#CFAF5A]/30'
                     : 'text-gray-700 hover:text-[#CFAF5A] hover:bg-gray-50 hover:shadow-sm'
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -146,10 +146,13 @@ const Navigation = () => {
 };
 
 const App = () => {
+  // Use basename apenas em produção
+  const basename = import.meta.env.MODE === 'production' ? '/site-igreja-v5' : '/';
+  
   return (
     <TooltipProvider>
       <Toaster />
-      <BrowserRouter basename="/site-igreja-v5">
+      <BrowserRouter basename={basename}>
         <ScrollToTop />
         <Navigation />
 

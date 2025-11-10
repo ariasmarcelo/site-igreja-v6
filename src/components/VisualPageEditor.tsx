@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Eye, Edit3, Save, X } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
+import { triggerRefresh, setEditLock } from '@/hooks/useLocaleTexts';
 
 interface VisualPageEditorProps {
   pageComponent: React.ComponentType;
@@ -28,6 +29,9 @@ export default function VisualPageEditor({
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const isSaving = useRef(false);
+  
+  // Mapa de valores locais editados (sobrescreve valores do React até salvar)
+  const localEdits = useRef<Map<string, string>>(new Map());
   
   // Computed: verificar se há mudanças
   const hasChanges = fields.some(f => f.isModified);
@@ -58,12 +62,22 @@ export default function VisualPageEditor({
   useEffect(() => {
     // NÃO carregar edições do localStorage - sempre partir do zero
     // Isso garante que você vê as mudanças salvas nos arquivos JSON
-    console.log('🔄 Clearing any cached edits for fresh start');
+    // console.log('🔄 Clearing any cached edits for fresh start');
     setFields([]);
+    localEdits.current.clear(); // Limpar edições locais ao mudar de página
+    setEditLock(pageId, false); // Garantir que lock está desativado ao trocar de página
+  }, [pageId]);
+
+  // Cleanup: desativar lock ao desmontar componente
+  useEffect(() => {
+    return () => {
+      setEditLock(pageId, false);
+      console.log('🧹 Cleanup: lock desativado');
+    };
   }, [pageId]);
 
   useEffect(() => {
-    console.log('📌 useEffect triggered - isEditMode:', isEditMode);
+    // console.log('📌 useEffect triggered - isEditMode:', isEditMode);
     
     // Injetar CSS para outline não quebrar layout + animação de toast
     const styleId = 'visual-editor-styles';
@@ -96,22 +110,22 @@ export default function VisualPageEditor({
     }
     
     if (!isEditMode) {
-      console.log('⏸️ Edit mode is OFF, skipping...');
+      // console.log('⏸️ Edit mode is OFF, skipping...');
       return;
     }
 
-    console.log('🚀 Edit mode is ON, starting setup...');
+    // console.log('🚀 Edit mode is ON, starting setup...');
 
     // Adicionar data-editable automaticamente em elementos de texto
     const addEditableAttributes = () => {
-      console.log('🔍 Scanning for editable elements...');
+      // console.log('🔍 Scanning for editable elements...');
       
       // Primeiro, tentar encontrar o container da página
       let pageContainer = document.querySelector('.border-4.border-dashed.border-amber-400');
       
       // Se não encontrar, buscar o container principal da página (após as toolbars)
       if (!pageContainer) {
-        console.log('Border container not found, trying main content...');
+        // console.log('Border container not found, trying main content...');
         // Pegar todos os elementos depois dos Cards de controle
         const allCards = Array.from(document.querySelectorAll('.space-y-4 > *'));
         // O último elemento é a página renderizada
@@ -123,7 +137,7 @@ export default function VisualPageEditor({
         return;
       }
 
-      console.log('✓ Found page container:', pageContainer.tagName, pageContainer.className);
+      // console.log('✓ Found page container:', pageContainer.tagName, pageContainer.className);
 
       const processedIds = new Set<string>();
       let editableCount = 0;
@@ -189,7 +203,7 @@ export default function VisualPageEditor({
           }
           
           if (isInEditorUI) {
-            console.log('⊘ Skipping (in editor UI):', htmlEl.textContent?.substring(0, 30));
+            // console.log('⊘ Skipping (in editor UI):', htmlEl.textContent?.substring(0, 30));
             return;
           }
 
@@ -222,12 +236,12 @@ export default function VisualPageEditor({
           
           // DEBUG: Log elementos com "subtitle" no data-json-key
           if (elementId && elementId.includes('subtitle')) {
-            console.log('🔍 Found subtitle element:', {
-              tag: elTagName,
-              key: elementId,
-              text: textContent.substring(0, 50),
-              visible: rect.width > 0 && rect.height > 0
-            });
+            // console.log('🔍 Found subtitle element:', {
+            //   tag: elTagName,
+            //   key: elementId,
+            //   text: textContent.substring(0, 50),
+            //   visible: rect.width > 0 && rect.height > 0
+            // });
           }
           
           // Se tem data-json-key MAS já foi usado, adicionar sufixo
@@ -327,7 +341,7 @@ export default function VisualPageEditor({
       // CAPTURAR CAMPOS EDITÁVEIS (logo após marcar os elementos)
       // APENAS se o array de fields ainda estiver vazio
       if (fields.length === 0) {
-        console.log('💾 Capturando campos editáveis do DOM...');
+        // console.log('💾 Capturando campos editáveis do DOM...');
         const capturedFields: EditableField[] = [];
         document.querySelectorAll('[data-editable]').forEach((el) => {
           const key = el.getAttribute('data-editable');
@@ -370,25 +384,25 @@ export default function VisualPageEditor({
             }
           }
         });
-        console.log('✅ Campos capturados:', capturedFields.length, 'campos (texto + estilos)');
+        // console.log('✅ Campos capturados:', capturedFields.length, 'campos (texto + estilos)');
         setFields(capturedFields);
       } else {
-        console.log('⏭️ Campos já capturados anteriormente, pulando...');
+        // console.log('⏭️ Campos já capturados anteriormente, pulando...');
       }
     };
 
-    console.log('⏱️ Calling addEditableAttributes with delay to ensure render...');
+    // console.log('⏱️ Calling addEditableAttributes with delay to ensure render...');
     // Dar tempo para React renderizar completamente antes de adicionar atributos
     setTimeout(() => {
       addEditableAttributes();
     }, 500); // Aumentar delay para garantir render completo
     
-    console.log('⏱️ Setting up click handler...');
-    console.log('📦 Fields disponíveis no handleClick:', fields.length);
+    // console.log('⏱️ Setting up click handler...');
+    // console.log('📦 Fields disponíveis no handleClick:', fields.length);
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
-      console.log('🖱️ Click detectado, fields disponíveis:', fields.length);
+      // console.log('🖱️ Click detectado, fields disponíveis:', fields.length);
       
       // Se já existe um textarea aberto, ignorar
       if (document.querySelector('.visual-editor-textarea')) {
@@ -427,7 +441,7 @@ export default function VisualPageEditor({
         const withJsonKey = editableCandidates.find(el => el.hasAttribute('data-json-key'));
         if (withJsonKey) {
           editableElement = withJsonKey;
-          console.log('✨ Prioritizing element with data-json-key:', editableElement.getAttribute('data-json-key'));
+          // console.log('✨ Prioritizing element with data-json-key:', editableElement.getAttribute('data-json-key'));
         }
       }
       
@@ -438,17 +452,17 @@ export default function VisualPageEditor({
         const elementId = editableElement.getAttribute('data-editable');
         if (!elementId) return;
 
-        console.log('✏️ Editando elemento:', elementId, '| Tag:', editableElement.tagName);
-        console.log('📦 Fields disponíveis para edição:', fields.length);
+        // console.log('✏️ Editando elemento:', elementId, '| Tag:', editableElement.tagName);
+        // console.log('📦 Fields disponíveis para edição:', fields.length);
         const field = fields.find(f => f.key === elementId);
-        console.log('🔍 Campo encontrado:', field ? `✓ (${field.currentValue.substring(0, 30)}...)` : '✗ NÃO ENCONTRADO');
+        // console.log('🔍 Campo encontrado:', field ? `✓ (${field.currentValue.substring(0, 30)}...)` : '✗ NÃO ENCONTRADO');
         
         setSelectedElement(elementId);
         
         // SEMPRE pegar texto atual do DOM (já reflete o JSON original)
         // Não usar editedTexts pois pode ter valor antigo em cache
         const currentText = editableElement.textContent || '';
-        console.log('Current text from DOM:', currentText);
+        // console.log('Current text from DOM:', currentText);
         
         // Criar overlay escuro
         const overlay = document.createElement('div');
@@ -636,12 +650,12 @@ export default function VisualPageEditor({
           // Só é container se NÃO tiver data-json-key E tiver filhos editáveis
           const isContainer = !ownJsonKey && childrenWithDifferentKeys.length > 0;
           
-          console.log('🔍 Container check:', {
-            tag: editableElement.tagName,
-            ownKey: ownJsonKey,
-            childrenWithDifferentKeys: childrenWithDifferentKeys.length,
-            isContainer
-          });
+          // console.log('🔍 Container check:', {
+          //   tag: editableElement.tagName,
+          //   ownKey: ownJsonKey,
+          //   childrenWithDifferentKeys: childrenWithDifferentKeys.length,
+          //   isContainer
+          // });
           
           if (isContainer) {
             // Container: mostrar aviso e desabilitar edição de texto
@@ -1191,8 +1205,8 @@ export default function VisualPageEditor({
           // Pegar texto puro do textarea
           const newText = textarea.value;
           
-          console.log('Saving edit for element:', elementId);
-          console.log('New text:', newText);
+          // console.log('Saving edit for element:', elementId);
+          // console.log('New text:', newText);
           
           // Coletar APENAS as propriedades CSS que foram MODIFICADAS
           const cssChanges: Record<string, string> = {};
@@ -1219,8 +1233,8 @@ export default function VisualPageEditor({
           
           console.log(`📝 Total de propriedades modificadas: ${modifiedCount} de ${allInputs.length}`);
           
-          console.log('CSS changes collected:', cssChanges);
-          console.log('Number of CSS properties:', Object.keys(cssChanges).length);
+          // console.log('CSS changes collected:', cssChanges);
+          // console.log('Number of CSS properties:', Object.keys(cssChanges).length);
           
           // Aplicar mudanças de CSS imediatamente no elemento
           Object.entries(cssChanges).forEach(([prop, value]) => {
@@ -1228,19 +1242,49 @@ export default function VisualPageEditor({
             editableElement.style.setProperty(prop, value);
           });
           
+          // Calcular saveKey ANTES de setFields para usar depois
+          let saveKey = elementId;
+          if (elementId.includes('_dup_')) {
+            saveKey = elementId.replace(/_dup_\d+$/, '');
+            console.log(`🔄 Removing duplicate suffix: "${elementId}" → "${saveKey}"`);
+          }
+          
+          const isSVG = editableElement.tagName.toLowerCase() === 'svg';
+          
           try {
+            // PASSO 1: Aplicar mudança no DOM PRIMEIRO (antes de atualizar state)
+            const oldText = editableElement.textContent;
+            console.log(`📝 Aplicando mudança visual: "${oldText}" → "${newText}"`);
+            
+            // Aplicar mudança no DOM
+            if (editableElement.children.length === 0) {
+              // Sem filhos: usar textContent (mais rápido)
+              editableElement.textContent = newText;
+            } else {
+              // Com filhos: substituir apenas os TextNodes diretos
+              const textNodes = Array.from(editableElement.childNodes).filter(
+                node => node.nodeType === Node.TEXT_NODE
+              );
+              if (textNodes.length > 0) {
+                textNodes[0].textContent = newText;
+              } else {
+                editableElement.textContent = newText;
+              }
+            }
+            
+            // PASSO 2: Adicionar ao Map de edições locais (persiste entre renders)
+            localEdits.current.set(saveKey, newText);
+            console.log(`💾 Adicionado ao map local: ${saveKey} = "${newText}"`);
+            
+            // PASSO 2.5: Ativar lock para bloquear atualizações do useLocaleTexts
+            setEditLock(pageId, true);
+            console.log(`🔒 Edit lock ativado para ${pageId}`);
+            
+            // PASSO 3: Atualizar estado (isso pode causar re-render, mas o lock impede useLocaleTexts)
             setFields(prev => {
               const updated = [...prev];
               
-              // Remover sufixo _dup_X se presente
-              let saveKey = elementId;
-              if (elementId.includes('_dup_')) {
-                saveKey = elementId.replace(/_dup_\d+$/, '');
-                console.log(`🔄 Removing duplicate suffix: "${elementId}" → "${saveKey}"`);
-              }
-              
               // Para SVGs, salvar apenas estilos (não texto)
-              const isSVG = editableElement.tagName.toLowerCase() === 'svg';
               if (isSVG) {
                 // Para SVGs: SEMPRE salvar estilos, usando .styles
                 const stylesKey = saveKey.startsWith('icons.') 
@@ -1300,11 +1344,11 @@ export default function VisualPageEditor({
                 }
               }
               
-              console.log('Updated fields:', updated.filter(f => f.isModified));
+              // console.log('Updated fields:', updated.filter(f => f.isModified));
               return updated;
             });
-            editableElement.textContent = newText; // Aplicar texto puro
-            console.log('Edit saved successfully');
+            
+            console.log('✅ Mudança aplicada no DOM e state. Use "Salvar Mudanças" para persistir no DB.');
           } catch (error) {
             console.error('Error in saveEdit:', error);
           }
@@ -1313,7 +1357,7 @@ export default function VisualPageEditor({
         };
         
         const cancelEdit = () => {
-          console.log('Cancelled editing');
+          // console.log('Cancelled editing');
           cleanup();
         };
         
@@ -1431,26 +1475,26 @@ export default function VisualPageEditor({
       });
     };
 
-    console.log('✅ Registering click event listener...');
+    // console.log('✅ Registering click event listener...');
     document.addEventListener('click', handleClick, true);
     
-    console.log('⏱️ Scheduling highlight updates...');
+    // console.log('⏱️ Scheduling highlight updates...');
     // Executar múltiplas vezes para garantir que pegue elementos carregados dinamicamente
     setTimeout(() => {
-      console.log('⏱️ Running highlights (100ms)...');
+      // console.log('⏱️ Running highlights (100ms)...');
       addEditableHighlights();
     }, 100);
     setTimeout(() => {
-      console.log('⏱️ Running highlights (500ms)...');
+      // console.log('⏱️ Running highlights (500ms)...');
       addEditableHighlights();
     }, 500);
     setTimeout(() => {
-      console.log('⏱️ Running highlights (1000ms)...');
+      // console.log('⏱️ Running highlights (1000ms)...');
       addEditableHighlights();
     }, 1000);
 
     return () => {
-      console.log('🧹 Cleanup: Removing edit mode styles...');
+      // console.log('🧹 Cleanup: Removing edit mode styles...');
       document.removeEventListener('click', handleClick, true);
       
       // Remover CSS injetado
@@ -1499,7 +1543,7 @@ export default function VisualPageEditor({
         // Remover atributo data-editable ao sair do modo de edição
         htmlEl.removeAttribute('data-editable');
       });
-      console.log('✅ Cleanup completed');
+      // console.log('✅ Cleanup completed');
     };
   }, [isEditMode, fields, pageId]);
 
@@ -1511,15 +1555,15 @@ export default function VisualPageEditor({
     }
     
     isSaving.current = true;
-    console.log('🔒 Save lock activated');
+    // console.log('🔒 Save lock activated');
     
     try {
-      console.log('=== SAVING EDITS ===');
-      console.log('Page ID:', pageId);
+      // console.log('=== SAVING EDITS ===');
+      // console.log('Page ID:', pageId);
       
       // Filtrar apenas campos modificados
       const modifiedFields = fields.filter(f => f.isModified);
-      console.log('Modified fields:', modifiedFields.length);
+      // console.log('Modified fields:', modifiedFields.length);
       
       // Separar edições de texto e estilos
       const textEdits: Record<string, string> = {};
@@ -1535,8 +1579,8 @@ export default function VisualPageEditor({
         }
       });
       
-      console.log('📝 Text edits:', Object.keys(textEdits).length);
-      console.log('💅 Style edits:', Object.keys(styleEdits).length);
+      // console.log('📝 Text edits:', Object.keys(textEdits).length);
+      // console.log('💅 Style edits:', Object.keys(styleEdits).length);
       
       let savedCount = 0;
       
@@ -1544,7 +1588,7 @@ export default function VisualPageEditor({
       if (Object.keys(textEdits).length > 0) {
         try {
           const payload = { pageId, edits: textEdits };
-          console.log('📤 Sending texts to API:', JSON.stringify(payload, null, 2));
+          // console.log('📤 Sending texts to API:', JSON.stringify(payload, null, 2));
           
           const response = await fetch('http://localhost:3001/api/save-visual-edits', {
             method: 'POST',
@@ -1554,7 +1598,7 @@ export default function VisualPageEditor({
           
           if (response.ok) {
             const result = await response.json();
-            console.log('✓ Text save successful:', result);
+            // console.log('✓ Text save successful:', result);
             savedCount += Object.keys(textEdits).length;
           } else {
             throw new Error('API error saving texts');
@@ -1574,7 +1618,7 @@ export default function VisualPageEditor({
       if (Object.keys(styleEdits).length > 0) {
         try {
           const payload = { pageId, styles: styleEdits };
-          console.log('📤 Sending styles to API:', JSON.stringify(payload, null, 2));
+          // console.log('📤 Sending styles to API:', JSON.stringify(payload, null, 2));
           
           const response = await fetch('http://localhost:3001/api/save-styles', {
             method: 'POST',
@@ -1584,7 +1628,7 @@ export default function VisualPageEditor({
           
           if (response.ok) {
             const result = await response.json();
-            console.log('✓ Style save successful:', result);
+            // console.log('✓ Style save successful:', result);
             savedCount += Object.keys(styleEdits).length;
           } else {
             throw new Error('API error saving styles');
@@ -1601,7 +1645,7 @@ export default function VisualPageEditor({
       }
       
       // Sucesso total - VALIDAÇÃO EM MALHA FECHADA (sem reload)
-      console.log('✅ Salvamento concluído, validando em malha fechada...');
+      // console.log('✅ Salvamento concluído, validando em malha fechada...');
       
       setMessage({ 
         type: 'success', 
@@ -1618,11 +1662,11 @@ export default function VisualPageEditor({
         }
         
         const validatedData = await validateResponse.json();
-        console.log('📥 Dados validados do servidor:', validatedData);
+        // console.log('📥 Dados validados do servidor:', validatedData);
         
         // Extrair o objeto de conteúdo da resposta
         const contentJson = validatedData.content || {};
-        console.log('📦 Content JSON do DB:', contentJson);
+        // console.log('📦 Content JSON do DB:', contentJson);
         
         // 2. Atualizar campos com valores confirmados do banco
         setFields(prev => {
@@ -1647,42 +1691,86 @@ export default function VisualPageEditor({
             };
           });
           
-          console.log('✅ Campos sincronizados com banco:', updatedFields.length);
+          // console.log('✅ Campos sincronizados com banco:', updatedFields.length);
           return updatedFields;
         });
         
         // 3. Aplicar valores validados no DOM
-        Object.entries(contentJson).forEach(([key, value]) => {
-          const element = document.querySelector(`[data-editable="${key}"]`) as HTMLElement;
-          if (element && !key.includes('__styles') && !key.includes('.styles')) {
-            // Atualizar texto no DOM
-            if (element.textContent !== value) {
-              console.log(`🔄 Sincronizando DOM [${key}]`);
-              element.textContent = value as string;
+        // Função auxiliar para buscar valor em estrutura aninhada
+        const getNestedValue = (obj: any, path: string): any => {
+          const parts = path.split('.');
+          let current = obj;
+          for (const part of parts) {
+            if (current && typeof current === 'object' && part in current) {
+              current = current[part];
+            } else {
+              return undefined;
             }
-          } else if (element && (key.includes('__styles') || key.includes('.styles'))) {
-            // Atualizar estilos no DOM
-            try {
-              const styles = JSON.parse(value as string);
-              Object.entries(styles).forEach(([prop, styleValue]) => {
-                element.style.setProperty(prop, styleValue as string);
-              });
-              console.log(`🎨 Sincronizando estilos [${key}]`);
-            } catch (e) {
-              console.error('Erro ao aplicar estilos validados:', e);
+          }
+          return current;
+        };
+        
+        // Atualizar DOM com valores do DB
+        fields.forEach(field => {
+          const element = document.querySelector(`[data-editable="${field.key}"]`) as HTMLElement;
+          if (!element) return;
+          
+          // Buscar valor na estrutura aninhada do DB
+          const dbValue = getNestedValue(contentJson, field.key);
+          
+          if (dbValue !== undefined && dbValue !== null) {
+            if (!field.key.includes('__styles') && !field.key.includes('.styles')) {
+              // Atualizar texto no DOM
+              const newText = String(dbValue);
+              if (element.textContent !== newText) {
+                console.log(`🔄 Sincronizando DOM [${field.key}]: "${element.textContent}" → "${newText}"`);
+                element.textContent = newText;
+              }
+            } else {
+              // Atualizar estilos no DOM
+              try {
+                const styles = typeof dbValue === 'string' ? JSON.parse(dbValue) : dbValue;
+                Object.entries(styles).forEach(([prop, styleValue]) => {
+                  element.style.setProperty(prop, styleValue as string);
+                });
+                console.log(`🎨 Sincronizando estilos [${field.key}]`);
+              } catch (e) {
+                console.error('Erro ao aplicar estilos validados:', e);
+              }
             }
           }
         });
         
+        // PASSO 1: Limpar Map de edições locais primeiro (já estão no DB)
+        localEdits.current.clear();
+        console.log('🧹 Map de edições locais limpo');
+        
+        // PASSO 2: Desativar lock ANTES de triggerRefresh para permitir atualização
+        setEditLock(pageId, false);
+        console.log('🔓 Edit lock desativado');
+        
         setMessage({ 
           type: 'success', 
-          text: `✓ ${savedCount} alterações salvas e validadas!`
+          text: `✓ ${savedCount} alterações salvas! Sincronizando...`
         });
         
+        // PASSO 3: Trigger refresh no hook useLocaleTexts para re-buscar do Supabase
+        console.log(`🔄 Triggering refresh for page: ${pageId}`);
+        triggerRefresh(pageId);
+        
+        // PASSO 4: Aguardar React re-renderizar com novos dados do Supabase
         setTimeout(() => {
+          setFields(prev => prev.map(f => ({
+            ...f,
+            originalValue: f.currentValue, // Novo valor se torna o original
+            isModified: false // Resetar flag de modificação
+          })));
           setMessage(null);
-          setIsEditMode(false); // Desligar modo de edição após validação
-        }, 2000);
+          
+          // PASSO 5: Desativar modo de edição e voltar ao estado de visualização
+          setIsEditMode(false);
+          console.log('✅ Estado sincronizado com Supabase e modo de edição desativado');
+        }, 1000); // Aguardar 1s para garantir que useLocaleTexts atualizou
         
       } catch (validationError) {
         console.error('❌ Erro na validação em malha fechada:', validationError);
@@ -1702,7 +1790,7 @@ export default function VisualPageEditor({
       // Liberar lock após 3 segundos (garantir que não trave permanentemente)
       setTimeout(() => {
         isSaving.current = false;
-        console.log('🔓 Save lock released');
+        // console.log('🔓 Save lock released');
       }, 3000);
     }
   };
@@ -1716,17 +1804,21 @@ export default function VisualPageEditor({
   };
 
   const performCancel = () => {
-    console.log('🔙 UNDO - Restaurando valores originais...');
+    // console.log('🔙 UNDO - Restaurando valores originais...');
     
     // 1. FECHAR qualquer overlay/textarea aberto
     const overlay = document.querySelector('.fixed.inset-0.bg-black\\/80.z-\\[9999\\]');
     if (overlay) {
       overlay.remove();
-      console.log('✓ Overlay removido');
+      // console.log('✓ Overlay removido');
     }
     
-    // 2. Aplicar valores originais ao DOM IMEDIATAMENTE (antes do cleanup!)
-    console.log('📝 Restaurando valores no DOM...');
+    // 2. Limpar Map de edições locais (cancelando mudanças)
+    localEdits.current.clear();
+    console.log('🧹 Map de edições locais limpo (cancelamento)');
+    
+    // 3. Aplicar valores originais ao DOM IMEDIATAMENTE (antes do cleanup!)
+    // console.log('📝 Restaurando valores no DOM...');
     console.log(`📦 Total de fields disponíveis: ${fields.length}`);
     
     let restoredTextCount = 0;
@@ -1833,7 +1925,7 @@ export default function VisualPageEditor({
         isModified: false // Remove flag de modificação
       }));
       
-      console.log('✅ Campos restaurados no estado:', restored.length);
+      // console.log('✅ Campos restaurados no estado:', restored.length);
       return restored;
     });
     
@@ -1872,7 +1964,7 @@ export default function VisualPageEditor({
         {!isEditMode ? (
           <button
             onClick={() => {
-              console.log('� Ativando modo de edição...');
+              // console.log('� Ativando modo de edição...');
               setIsEditMode(true);
             }}
             className="flex items-center justify-center gap-2 px-6 py-3 bg-[#CFAF5A] hover:bg-[#B38938] text-white font-semibold rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 animate-float"
@@ -1916,7 +2008,7 @@ export default function VisualPageEditor({
         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+              <div className="shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
                 <span className="text-2xl">⚠️</span>
               </div>
               <div className="flex-1">

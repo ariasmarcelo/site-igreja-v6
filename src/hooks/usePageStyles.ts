@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 /**
@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
  * Os estilos são editados através do Editor Visual e salvos no banco de dados
  */
 export function usePageStyles(pageId: string) {
+  const [stylesLoaded, setStylesLoaded] = useState(false);
+
   useEffect(() => {
     const loadStylesFromSupabase = async () => {
       try {
@@ -32,10 +34,14 @@ export function usePageStyles(pageId: string) {
           }
           
           styleElement.textContent = data.css;
-          console.log(`✅ Loaded custom styles from Supabase: ${pageId}`);
+          if (import.meta.env.DEV) {
+            console.log(`✅ Loaded custom styles from Supabase: ${pageId}`);
+          }
         }
       } catch (error) {
         console.warn(`⚠️ Error loading styles from Supabase for ${pageId}:`, error);
+      } finally {
+        setStylesLoaded(true);
       }
     };
 
@@ -49,4 +55,6 @@ export function usePageStyles(pageId: string) {
       }
     };
   }, [pageId]);
+
+  return stylesLoaded;
 }

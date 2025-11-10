@@ -62,11 +62,11 @@ export default function Testemunhos() {
                           )}
                         </div>
                         {testimonial.verified ? (
-                          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold" data-json-key={`testemunhos.testimonials[${index}].badgeVerified`}>
+                          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold" data-json-key="testemunhos.badgeVerified">
                             {texts.badgeVerified}
                           </div>
                         ) : (
-                          <div className="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold" data-json-key={`testemunhos.testimonials[${index}].badgePending`}>
+                          <div className="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold" data-json-key="testemunhos.badgePending">
                             {texts.badgePending}
                           </div>
                         )}

@@ -21,6 +21,19 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 const router = express.Router();
 
+// Wrapper para adicionar tratamento de erros automático em todas as rotas
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch((error) => {
+    console.error('❌ Error in route:', req.method, req.path);
+    console.error('Error details:', error);
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      message: error.message,
+      path: req.path
+    });
+  });
+};
+
 // Função para sanitizar texto: remover TODAS as tags HTML
 function sanitizeText(text) {
   if (typeof text !== 'string') return text;
@@ -230,6 +243,15 @@ router.post('/save-visual-edits', express.json(), async (req, res) => {
       if (elementId.startsWith(pagePrefix)) {
         jsonKey = elementId.substring(pagePrefix.length);
         console.log(`   🔧 Removed prefix: "${elementId}" → "${jsonKey}"`);
+      }
+      
+      // NORMALIZAR BADGES: remover índice de testimonials[X].badgeVerified/badgePending
+      // Exemplo: "testimonials[0].badgeVerified" → "badgeVerified"
+      //          "testimonials[2].badgePending" → "badgePending"
+      if (jsonKey.match(/testimonials\[\d+\]\.(badgeVerified|badgePending)/)) {
+        const originalKey = jsonKey;
+        jsonKey = jsonKey.replace(/testimonials\[\d+\]\./, '');
+        console.log(`   🏷️  Normalized badge key: "${originalKey}" → "${jsonKey}"`);
       }
       
       if (jsonKey && jsonKey.trim() !== '') {

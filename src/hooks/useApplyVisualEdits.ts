@@ -7,7 +7,7 @@ import { useEffect } from 'react';
  */
 export function useApplyVisualEdits(pageId: string) {
   useEffect(() => {
-    console.log(`ℹ️ useApplyVisualEdits is disabled for ${pageId} - edits now go directly to source JSON files`);
+    // console.log(`ℹ️ useApplyVisualEdits is disabled for ${pageId} - edits now go directly to source JSON files`);
     // Hook desativado - edições agora vão direto pros arquivos JSON originais
   }, [pageId]);
 }
