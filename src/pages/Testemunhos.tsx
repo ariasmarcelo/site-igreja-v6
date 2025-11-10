@@ -2,14 +2,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import defaultTexts from '@/locales/pt-BR/Testemunhos.json';
+import fallbackTexts from '@/locales/pt-BR/Testemunhos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
+import PageLoader from '@/components/PageLoader';
+
+type TestemunhosTexts = typeof fallbackTexts;
 
 export default function Testemunhos() {
   usePageStyles('testemunhos');
-  const texts = useLocaleTexts('testemunhos', defaultTexts);
-  const testimonials = texts.testimonials;
+  const { texts, loading, error } = useLocaleTexts<TestemunhosTexts>('testemunhos', fallbackTexts);
+  const testimonials = texts?.testimonials;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">

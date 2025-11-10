@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, Calendar, Clock, Tag, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import defaultTexts from '@/locales/pt-BR/Artigos.json';
+import fallbackTexts from '@/locales/pt-BR/Artigos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
 import { supabase } from '@/lib/supabase';
+import PageLoader from '@/components/PageLoader';
+
+type ArtigosTexts = typeof fallbackTexts;
 
 interface BlogPost {
   id: string;
@@ -27,7 +30,7 @@ interface BlogPost {
 
 export default function Artigos() {
   usePageStyles('artigos');
-  const texts = useLocaleTexts('artigos', defaultTexts);
+  const { texts, loading: textsLoading, error: textsError } = useLocaleTexts<ArtigosTexts>('artigos', fallbackTexts);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 

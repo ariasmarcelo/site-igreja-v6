@@ -29,17 +29,25 @@ export const isEditLocked = (pageId: string): boolean => {
 };
 
 /**
- * Hook personalizado para carregar textos do Supabase
+ * Hook personalizado para carregar textos EXCLUSIVAMENTE do Supabase
  * Busca dados diretamente do banco de dados PostgreSQL
  * Suporta refresh automático quando triggerRefresh() é chamado
  * 
  * @param pageId - ID da página (index, quemsomos, contato, etc)
- * @param defaultTexts - Conteúdo JSON padrão como fallback
- * @returns Textos da página (sempre atualizados do DB)
+ * @param fallbackData - Dados de fallback (opcional, para tipagem TypeScript)
+ * @returns { texts, loading, error } - Dados da página, estado de loading e erro
  */
-export function useLocaleTexts<T = Record<string, unknown>>(pageId: string, defaultTexts: T): T {
-  // Sempre usar defaultTexts como estado inicial
-  const [texts, setTexts] = useState<T>(defaultTexts);
+export function useLocaleTexts<T = Record<string, unknown>>(
+  pageId: string,
+  fallbackData?: T
+): {
+  texts: T | null;
+  loading: boolean;
+  error: string | null;
+} {
+  const [texts, setTexts] = useState<T | null>(fallbackData || null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
@@ -68,33 +76,45 @@ export function useLocaleTexts<T = Record<string, unknown>>(pageId: string, defa
         return;
       }
       
+      setLoading(true);
+      setError(null);
+      
       try {
         console.log(`📡 Fetching from Supabase for ${pageId}...`);
-        const { data, error } = await supabase
+        const { data, error: supabaseError } = await supabase
           .from('page_contents')
           .select('content')
           .eq('page_id', pageId.toLowerCase())
           .single();
         
-        if (error) {
-          console.warn(`⚠️ Supabase error for ${pageId}:`, error);
-          console.log(`📄 Using default texts for ${pageId}`);
+        if (supabaseError) {
+          const errorMsg = `Erro ao carregar conteúdo: ${supabaseError.message}`;
+          console.warn(`⚠️ Supabase error for ${pageId}:`, supabaseError);
+          setError(errorMsg);
+          setLoading(false);
           return;
         }
         
         if (data && data.content) {
-          console.log(`✅ Supabase data received for ${pageId}:`, data.content);
+          console.log(`✅ Supabase data received for ${pageId}`);
           setTexts(data.content as T);
-          console.log(`✅ State updated for ${pageId}`);
+          setError(null);
+        } else {
+          const errorMsg = `Nenhum conteúdo encontrado para a página: ${pageId}`;
+          console.warn(`⚠️ ${errorMsg}`);
+          setError(errorMsg);
         }
       } catch (error) {
-        console.warn(`⚠️ Error loading from Supabase for ${pageId}:`, error);
-        // Manter defaultTexts em caso de erro
+        const errorMsg = `Erro inesperado: ${error instanceof Error ? error.message : 'Desconhecido'}`;
+        console.error(`❌ Error loading from Supabase for ${pageId}:`, error);
+        setError(errorMsg);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadFromSupabase();
   }, [pageId, refreshTrigger]);
 
-  return texts;
+  return { texts, loading, error };
 }

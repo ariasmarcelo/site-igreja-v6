@@ -1,13 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Microscope, Heart, HandHelping, ShieldCheck, BookOpen, FileText, Target, Triangle, Waves } from "lucide-react";
-import defaultTexts from '@/locales/pt-BR/QuemSomos.json';
+import fallbackTexts from '@/locales/pt-BR/QuemSomos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
+import PageLoader from '@/components/PageLoader';
+
+type QuemSomosTexts = typeof fallbackTexts;
 
 export default function QuemSomos() {
   usePageStyles('quemsomos');
-  const texts = useLocaleTexts('quemsomos', defaultTexts);
+  const { texts, loading, error } = useLocaleTexts<QuemSomosTexts>('quemsomos', fallbackTexts);
 
   const principiosIcons = [
     <Sparkles className="h-8 w-8" />,

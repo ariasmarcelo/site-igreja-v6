@@ -4,13 +4,16 @@ import { Brain, Heart, Wind, Route, Flower2, Sparkles, AlertTriangle, Users, Inf
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
-import defaultTexts from '@/locales/pt-BR/Tratamentos.json';
+import fallbackTexts from '@/locales/pt-BR/Tratamentos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
+import PageLoader from '@/components/PageLoader';
+
+type TratamentosTexts = typeof fallbackTexts;
 
 export default function Tratamentos() {
   usePageStyles('tratamentos');
-  const texts = useLocaleTexts('tratamentos', defaultTexts);
+  const { texts, loading, error } = useLocaleTexts<TratamentosTexts>('tratamentos', fallbackTexts);
   const icons = [
     <Users className="w-12 h-12" />,
     <Brain className="w-12 h-12" />,

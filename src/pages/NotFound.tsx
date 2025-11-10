@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button';
-import defaultTexts from '@/locales/pt-BR/NotFound.json';
+import fallbackTexts from '@/locales/pt-BR/NotFound.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
+import PageLoader from '@/components/PageLoader';
+
+type NotFoundTexts = typeof fallbackTexts;
 
 export default function NotFoundPage() {
-  const texts = useLocaleTexts('notfound', defaultTexts);
+  const { texts, loading, error } = useLocaleTexts<NotFoundTexts>('notfound', fallbackTexts);
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-gray-50 to-blue-50 p-6 text-center">
       <div className="space-y-6 max-w-md">

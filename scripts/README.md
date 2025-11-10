@@ -4,8 +4,8 @@ Scripts essenciais para desenvolvimento, deploy e backup do projeto.
 
 >  Documentação detalhada:
 > - **[README-FIX-IDS.md](./README-FIX-IDS.md)** - Sistema de IDs únicos
-> - **[README-DEPLOY.md](./README-DEPLOY.md)** - Deploy GitHub Pages
 > - **[README-BACKUP.md](./README-BACKUP.md)** - Backup/Restore Supabase
+> - **[../TECHNICAL-NOTES.md](../TECHNICAL-NOTES.md)** - Soluções técnicas e histórico
 
 ---
 

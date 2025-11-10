@@ -4,19 +4,25 @@ import { Sparkles, Sun, Star, Crown, Compass, Heart, Infinity as InfinityIcon, L
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
-import defaultTexts from '@/locales/pt-BR/Purificacao.json';
+import fallbackTexts from '@/locales/pt-BR/Purificacao.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
+import PageLoader from '@/components/PageLoader';
+
+type PurificacaoTexts = typeof fallbackTexts;
 
 export default function Purificacao() {
   usePageStyles('purificacao');
-  const texts = useLocaleTexts('purificacao', defaultTexts);
+  const { texts, loading, error } = useLocaleTexts<PurificacaoTexts>('purificacao', fallbackTexts);
   const [expandedPhase, setExpandedPhase] = useState<number | null>(null);
 
   const togglePhase = (phase: number) => {
     setExpandedPhase(expandedPhase === phase ? null : phase);
   };
+  
   return (
+    <PageLoader loading={loading} error={error}>
+      {!texts ? null : (
     <div className="min-h-screen bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">
       {/* Header */}
       <section className="py-16 bg-linear-to-r from-[#B8860B] via-[#7A5608] to-[#B8860B] text-white relative overflow-hidden">
@@ -726,5 +732,7 @@ export default function Purificacao() {
         </div>
       </section>
     </div>
+      )}
+    </PageLoader>
   );
 }
