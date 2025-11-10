@@ -15,7 +15,12 @@
     "preserver": "node scripts/fix-ids.js --check",
     "fix-ids": "node scripts/fix-ids.js",
     "fix-ids:check": "node scripts/fix-ids.js --check",
-    "fix-ids:fix": "node scripts/fix-ids.js --fix"
+    "fix-ids:fix": "node scripts/fix-ids.js --fix",
+    "backup": "node scripts/backup-supabase.js",
+    "backup:verbose": "node scripts/backup-supabase.js --verbose",
+    "restore": "node scripts/restore-supabase.js",
+    "restore:latest": "node scripts/restore-supabase.js --latest",
+    "restore:dry": "node scripts/restore-supabase.js --latest --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

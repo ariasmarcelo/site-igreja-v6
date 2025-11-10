@@ -28,3 +28,7 @@ template_config.json
 todo.md
 package-lock.json
 components.json
+
+# Backups (local only, don't commit)
+backups/supabase/*
+!backups/supabase/.gitkeep
