@@ -2,7 +2,7 @@
 
 Este diretório contém scripts automatizados para gerenciar os atributos `data-json-key` que conectam elementos visuais ao conteúdo editável.
 
-> 📖 Veja também: **[README-IDS.md](./README-IDS.md)** - Documentação detalhada do script ids.js
+> 📖 Veja também: **[README-IDS.md](./README-IDS.md)** - Documentação detalhada do script fix-ids.js
 
 ---
 
@@ -13,10 +13,10 @@ Este diretório contém scripts automatizados para gerenciar os atributos `data-
 pnpm dev
 
 # Verificar IDs únicos
-pnpm assign-ids
+pnpm fix-ids
 
 # Corrigir IDs automaticamente
-pnpm assign-ids:fix
+pnpm fix-ids:fix
 
 # Correção completa de data-json-key
 pnpm fix-keys
@@ -31,10 +31,10 @@ pnpm clean-backups
 
 | Script | Comando | Descrição | Frequência |
 |--------|---------|-----------|------------|
-| **ids.js** ⭐ | `pnpm assign-ids` | Verificação completa de IDs | Sob demanda |
-| **ids.js --fix** | `pnpm assign-ids:fix` | Correção automática de IDs | Sob demanda |
+| **fix-ids.js** ⭐ | `pnpm fix-ids` | Verificação completa de IDs | Sob demanda |
+| **fix-ids.js --fix** | `pnpm fix-ids:fix` | Correção automática de IDs | Sob demanda |
 | **fix-all-keys.cjs** | `pnpm fix-keys` | Correção de data-json-key | Mensal |
-| **init-assign-ids.js** | Automático (`pnpm dev`) | Verificação ao iniciar dev | Automático |
+| **init-assign-fix-ids.js** | Automático (`pnpm dev`) | Verificação ao iniciar dev | Automático |
 | **clean-all-backups.cjs** | `pnpm clean-backups` | Limpa backups antigos | Mensal |
 | **deploy.ps1** | `pnpm deploy` ou `.\scripts\deploy.ps1` | Deploy síncrono (padrão) | Por deploy |
 | **deploy.ps1 -Background** | `pnpm deploy:bg` ou `.\scripts\deploy.ps1 -Background` | Deploy em background | Por deploy |
@@ -73,7 +73,7 @@ pnpm clean-backups
 
 ## 📖 Documentação Detalhada
 
-### 1. **ids.js** ⭐ (Script Definitivo)
+### 1. **fix-ids.js** ⭐ (Script Definitivo)
 
 O script principal que substitui todos os anteriores.
 
@@ -88,21 +88,21 @@ O script principal que substitui todos os anteriores.
 **Uso:**
 ```bash
 # Verificar apenas
-pnpm assign-ids
+pnpm fix-ids
 
 # Corrigir automaticamente
-pnpm assign-ids:fix
+pnpm fix-ids:fix
 
 # Página específica
-node scripts/ids.js --page=Tratamentos --fix
+node scripts/fix-ids.js --page=Tratamentos --fix
 
 # Preview das correções
-node scripts/ids.js --fix --dry-run
+node scripts/fix-ids.js --fix --dry-run
 ```
 
 Veja documentação completa em **[README-IDS.md](./README-IDS.md)**
 
-### 2. **init-assign-ids.js** (Automático)
+### 2. **init-assign-fix-ids.js** (Automático)
 - ✅ Roda automaticamente via `pnpm dev`
 - � Executa verificação inicial
 - ⚡ Não bloqueia dev server
@@ -139,7 +139,7 @@ pnpm dev
   ↓
 predev (package.json)
   ↓
-init-assign-ids.js
+init-assign-fix-ids.js
   ↓ (se passou 24h)
 assign-ids-final.js
   ↓

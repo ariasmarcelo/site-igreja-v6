@@ -1,4 +1,4 @@
-# 🎯 Script de IDs Únicos (ids.js)
+# 🎯 Script de IDs Únicos (fix-ids.js)
 
 ## 📋 O Script Definitivo
 
@@ -14,19 +14,19 @@
 
 ```bash
 # Verificar apenas (padrão)
-node scripts/ids.js
+node scripts/fix-ids.js
 
 # Corrigir automaticamente
-node scripts/ids.js --fix
+node scripts/fix-ids.js --fix
 
 # Preview das correções
-node scripts/ids.js --fix --dry-run
+node scripts/fix-ids.js --fix --dry-run
 
 # Página específica
-node scripts/ids.js --page=Tratamentos --fix
+node scripts/fix-ids.js --page=Tratamentos --fix
 
 # Output detalhado
-node scripts/ids.js --verbose --fix
+node scripts/fix-ids.js --verbose --fix
 ```
 
 ## 📊 Output
@@ -117,26 +117,26 @@ Ignora automaticamente tags de navegação que causariam conflitos:
 ### Verificação Pré-Commit
 ```bash
 # No seu workflow
-node scripts/ids.js || exit 1  # Falha se houver problemas
+node scripts/fix-ids.js || exit 1  # Falha se houver problemas
 pnpm build
 ```
 
 ### Correção Rápida
 ```bash
 # Encontrou problema? Corrige na hora
-node scripts/ids.js --fix
+node scripts/fix-ids.js --fix
 ```
 
 ### Debug de Página Específica
 ```bash
 # Ver detalhes do processamento
-node scripts/ids.js --page=Tratamentos --verbose
+node scripts/fix-ids.js --page=Tratamentos --verbose
 ```
 
 ### Preview Seguro
 ```bash
 # Ver exatamente o que seria mudado
-node scripts/ids.js --fix --dry-run
+node scripts/fix-ids.js --fix --dry-run
 ```
 
 ## 🔧 Como Funciona
@@ -164,19 +164,19 @@ node scripts/ids.js --fix --dry-run
 
 ### "Editei mas não salvou"
 ```bash
-node scripts/ids.js --page=NomeDaPagina --fix
+node scripts/fix-ids.js --page=NomeDaPagina --fix
 ```
 
 ### "Elemento complexo não detectado"
 ```bash
 # Ver processamento detalhado
-node scripts/ids.js --page=NomeDaPagina --verbose
+node scripts/fix-ids.js --page=NomeDaPagina --verbose
 ```
 
 ### "Quero ver antes de modificar"
 ```bash
 # Sempre use dry-run primeiro
-node scripts/ids.js --fix --dry-run
+node scripts/fix-ids.js --fix --dry-run
 ```
 
 ## 📈 Integração CI/CD
@@ -184,7 +184,7 @@ node scripts/ids.js --fix --dry-run
 ### GitHub Actions
 ```yaml
 - name: Verificar IDs
-  run: node scripts/ids.js || exit 1
+  run: node scripts/fix-ids.js || exit 1
   
 - name: Build
   run: pnpm build
@@ -193,12 +193,12 @@ node scripts/ids.js --fix --dry-run
 ### Pre-commit Hook
 ```bash
 #!/bin/bash
-node scripts/ids.js || exit 1
+node scripts/fix-ids.js || exit 1
 ```
 
 ## ✨ Vantagens
 
-| Recurso | ids.js |
+| Recurso | fix-ids.js |
 |---------|--------|
 | **Verifica** | ✅ |
 | **Corrige** | ✅ |
@@ -215,12 +215,12 @@ node scripts/ids.js || exit 1
 ## 🎓 Comparação com Scripts Anteriores
 
 ### Scripts Removidos ❌
-- `verify-ids.js` - Só verificava
-- `check-and-fix-ids.js` - Análise básica
+- `verify-fix-ids.js` - Só verificava
+- `check-and-fix-fix-ids.js` - Análise básica
 - `assign-ids-final.js` - Muito complexo (561 linhas)
 
 ### Script Atual ⭐
-- `ids.js` - **Melhor dos dois mundos**
+- `fix-ids.js` - **Melhor dos dois mundos**
   - Simples como verify-ids
   - Poderoso como assign-ids-final
   - Interface clara
@@ -231,26 +231,26 @@ node scripts/ids.js || exit 1
 
 ```bash
 # Verificação rápida
-node scripts/ids.js
+node scripts/fix-ids.js
 
 # Corrigir tudo
-node scripts/ids.js --fix
+node scripts/fix-ids.js --fix
 
 # Preview
-node scripts/ids.js --fix --dry-run
+node scripts/fix-ids.js --fix --dry-run
 
 # Página específica
-node scripts/ids.js --page=Index --fix
+node scripts/fix-ids.js --page=Index --fix
 
 # Debug completo
-node scripts/ids.js --verbose
+node scripts/fix-ids.js --verbose
 
 # Help (ver código)
-cat scripts/ids.js | grep -A 20 "EXECUÇÃO:"
+cat scripts/fix-ids.js | grep -A 20 "EXECUÇÃO:"
 ```
 
 ---
 
-**Arquivo**: `scripts/ids.js` (400 linhas)  
+**Arquivo**: `scripts/fix-ids.js` (400 linhas)  
 **Última atualização**: 10/11/2025  
 **Status**: ✅ Script Definitivo Único
