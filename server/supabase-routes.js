@@ -592,4 +592,60 @@ router.post('/restore-version', express.json(), async (req, res) => {
   }
 });
 
+// ========== SYNC JSON TO DATABASE ==========
+// Endpoint para popular o banco com dados de um arquivo JSON local
+router.post('/sync-json-to-db', express.json(), async (req, res) => {
+  try {
+    const { pageId, jsonContent } = req.body;
+    
+    if (!pageId || !jsonContent) {
+      return res.status(400).json({ error: 'pageId e jsonContent são obrigatórios' });
+    }
+    
+    console.log(`\n📤 Syncing JSON to DB for page: ${pageId}`);
+    
+    // Verificar se já existe
+    const { data: existing } = await supabase
+      .from('page_contents')
+      .select('page_id')
+      .eq('page_id', pageId.toLowerCase())
+      .single();
+    
+    if (existing) {
+      console.log(`⚠️ Page ${pageId} already exists in database. Use force=true to overwrite.`);
+      return res.status(409).json({ 
+        success: false, 
+        message: 'Página já existe no banco. Use force=true para sobrescrever.' 
+      });
+    }
+    
+    // Inserir dados
+    const { error } = await supabase
+      .from('page_contents')
+      .upsert({
+        page_id: pageId.toLowerCase(),
+        content: jsonContent,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'page_id'
+      });
+    
+    if (error) {
+      throw error;
+    }
+    
+    console.log(`✅ Successfully synced ${pageId} to database`);
+    
+    res.json({ 
+      success: true, 
+      message: `Página ${pageId} sincronizada com sucesso!`,
+      page_id: pageId
+    });
+    
+  } catch (error) {
+    console.error('Erro ao sincronizar JSON:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 export default router;
