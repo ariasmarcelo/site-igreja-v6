@@ -114,10 +114,10 @@ export default function Purificacao() {
               </div>
               
               {/* Linha do Tempo Vertical com Conexões */}
-              <div className="relative">
+              <div className="relative pr-16">
               
               {/* Linha Vertical à Direita (alinhada com as barras) */}
-              <div className="absolute right-10 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg z-10"></div>
+              <div className="absolute -right-8 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
 
               {/* FASE 1 - INICIAL */}
               <div className="mb-8 relative">
