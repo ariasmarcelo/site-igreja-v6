@@ -208,12 +208,14 @@ export default function Purificacao() {
                       }`}
                       onClick={() => togglePhase(2)}
                     >
-                      <CardHeader className="bg-linear-to-r from-[#4A90A9] to-[#5EA98D] text-white p-6 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.2),transparent_50%)]"></div>
+                      <CardHeader className="bg-linear-to-r from-[#0891b2] via-[#06b6d4] to-[#0284c7] text-white p-6 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.35),transparent_50%)]"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.25),transparent_60%)]"></div>
+                        <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.15)_50%,transparent_70%)]"></div>
                         <div className="flex items-center justify-between relative z-10">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
-                              <LineChart className="w-8 h-8 text-[#4A90A9]" />
+                              <LineChart className="w-8 h-8 text-cyan-600" />
                             </div>
                             <div>
                               <CardTitle className="text-2xl mb-1 drop-shadow-md" data-json-key="purificacao.faseIntermediaria.title">{texts.faseIntermediaria.title}</CardTitle>
@@ -223,9 +225,10 @@ export default function Purificacao() {
                           <div className="flex items-center gap-3">
                             {/* Círculo Numerado */}
                             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-xl border-2 md:border-4 border-white relative overflow-hidden">
-                              <div className="absolute inset-0 bg-linear-to-r from-[#4A90A9] to-[#5EA98D]"></div>
-                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.3),transparent_50%)]"></div>
-                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.25),transparent_50%)]"></div>
+                              <div className="absolute inset-0 bg-linear-to-r from-[#0891b2] via-[#06b6d4] to-[#0284c7]"></div>
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.4),transparent_50%)]"></div>
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.3),transparent_50%)]"></div>
+                              <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.2)_50%,transparent_70%)]"></div>
                               <span className="text-2xl md:text-3xl font-bold text-white relative z-10 drop-shadow-lg">2</span>
                             </div>
                             <ChevronDown 
