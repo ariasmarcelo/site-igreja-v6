@@ -428,6 +428,145 @@ Após cada backup, você verá:
 
 ---
 
+## 📜 Histórico Automático de Versões
+
+### Versionamento em Tempo Real
+
+O Supabase mantém **automaticamente** as últimas 5 versões de cada página na tabela `page_history`. Toda vez que você salva uma alteração, o sistema cria um backup automático.
+
+### Comandos Disponíveis
+
+```bash
+# Listar versões de todas as páginas
+pnpm history:all
+
+# Listar versões de uma página específica
+pnpm history:list index json          # Conteúdo JSON da página Index
+pnpm history:list quem-somos css      # Estilos CSS da página Quem Somos
+
+# Visualizar conteúdo de uma versão
+pnpm history:view index json 123      # Ver versão 123 da página Index
+
+# Exportar versão para arquivo
+pnpm history:export index json 123 backup-index.json
+```
+
+### Exemplos Práticos
+
+**1. Ver histórico completo:**
+```bash
+# Ver todas as páginas e quantas versões existem
+node scripts/list-history.js all
+
+# Resultado:
+# 📊 Versões disponíveis por página:
+# 
+# 📄 index           - JSON: 5 versões | CSS: 3 versões
+# 📄 quem-somos      - JSON: 4 versões | CSS: 2 versões
+# 📄 tratamentos     - JSON: 5 versões | CSS: 1 versões
+# ...
+```
+
+**2. Ver versões de uma página específica:**
+```bash
+node scripts/list-history.js list index json
+
+# Resultado:
+# 📋 Histórico de versões: index (json)
+# 
+# ID      | Data/Hora           | Usuário
+# --------|---------------------|----------
+# 156     | 10/11/2025 09:45:32 | admin
+# 145     | 10/11/2025 08:30:15 | admin
+# 134     | 09/11/2025 18:22:40 | admin
+# ...
+```
+
+**3. Visualizar uma versão antiga:**
+```bash
+node scripts/list-history.js view index json 156
+
+# Mostra metadados e primeiros 500 caracteres do conteúdo
+```
+
+**4. Exportar versão para análise:**
+```bash
+node scripts/list-history.js export index json 156 old-version.json
+
+# Cria arquivo JSON com:
+# - Metadados (id, data, usuário)
+# - Conteúdo completo da versão
+```
+
+### Páginas Disponíveis
+
+- `index` - Página inicial
+- `quem-somos` - Sobre nós
+- `tratamentos` - Serviços
+- `testemunhos` - Depoimentos
+- `contato` - Contato
+- `purificacao` - Purificação
+- `artigos` - Blog/Artigos
+
+### Tipos de Conteúdo
+
+- `json` - Conteúdo das páginas (textos, imagens, títulos, etc)
+- `css` - Estilos CSS personalizados
+
+### Como Restaurar uma Versão Antiga
+
+**Via API** (requer servidor rodando):
+
+```bash
+# 1. Inicie o servidor
+pnpm server
+
+# 2. Use curl ou Postman
+curl -X POST http://localhost:3001/api/restore-version \
+  -H "Content-Type: application/json" \
+  -d '{
+    "pageId": "index",
+    "contentType": "json",
+    "versionId": 156
+  }'
+```
+
+**Manualmente**:
+
+```bash
+# 1. Exporte a versão desejada
+node scripts/list-history.js export index json 156 restore-temp.json
+
+# 2. Use o Admin Console ou API para aplicar as alterações
+```
+
+### Diferença: Histórico vs Backup
+
+| Aspecto | Histórico (`page_history`) | Backup (`backups/supabase/`) |
+|---------|---------------------------|------------------------------|
+| **Frequência** | Automático a cada salvamento | Manual via `pnpm backup` |
+| **Retenção** | Últimas 5 versões por página | Últimos 10 backups completos |
+| **Escopo** | Por página individual | Todas as tabelas juntas |
+| **Restauração** | Via API ou script | Via script restore-supabase.js |
+| **Uso** | Desfazer alterações recentes | Recuperação de desastres |
+| **Localização** | Tabela no Supabase | Arquivos JSON locais |
+
+### Quando Usar Cada Um
+
+**Use o Histórico quando:**
+- ✅ Precisa desfazer uma mudança recente em uma página
+- ✅ Quer comparar versões antigas de conteúdo
+- ✅ Precisa recuperar texto que foi apagado
+- ✅ Quer ver quem fez alterações e quando
+
+**Use o Backup quando:**
+- ✅ Precisa restaurar todo o banco de dados
+- ✅ Quer migrar dados entre ambientes
+- ✅ Precisa de snapshot completo para auditoria
+- ✅ Quer garantia de recuperação completa
+
+---
+
 **Última Atualização:** 10/11/2025  
-**Status:** ✅ Testado e funcional (backup 264 linhas, restore 290 linhas)  
-**Cobertura:** 3 tabelas - 32 registros (155.53 KB)
+**Status:** ✅ Testado e funcional (backup 264 linhas, restore 290 linhas, history 270 linhas)  
+**Cobertura:** 3 tabelas - 32 registros (155.53 KB) | Histórico automático: últimas 5 versões/página

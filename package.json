@@ -23,7 +23,11 @@
     "backup:compare": "powershell -File scripts/list-backups.ps1 -Compare",
     "restore": "node scripts/restore-supabase.js",
     "restore:latest": "node scripts/restore-supabase.js --latest",
-    "restore:dry": "node scripts/restore-supabase.js --latest --dry-run"
+    "restore:dry": "node scripts/restore-supabase.js --latest --dry-run",
+    "history:all": "node scripts/list-history.js all",
+    "history:list": "node scripts/list-history.js list",
+    "history:view": "node scripts/list-history.js view",
+    "history:export": "node scripts/list-history.js export"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
