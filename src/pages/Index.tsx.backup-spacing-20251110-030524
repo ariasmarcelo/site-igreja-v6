@@ -92,7 +92,7 @@ export default function Index() {
       </section>
 
             {/* Igreja de Metatron Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -195,7 +195,7 @@ export default function Index() {
       </section>
 
       {/* Instituto Metatron Section */}
-      <section className="py-16 bg-linear-to-br from-[#F5F3F0] to-[#E8E6E3]">
+      <section className="py-20 bg-linear-to-br from-[#F5F3F0] to-[#E8E6E3]">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -310,7 +310,7 @@ export default function Index() {
       </section>
 
       {/* Benefícios Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-[#222222]" data-json-key="index.benefitsSection.title">
@@ -357,7 +357,7 @@ export default function Index() {
       </section>
 
       {/* Nova Seção: O que é Físico e o que é Espiritual */}
-      <section className="py-16 px-4 bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="relative inline-block mb-6 sm:mb-8">
@@ -473,7 +473,7 @@ export default function Index() {
       </section>
 
       {/* Tripla Proteção Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800 px-4" data-json-key="index.triplaProtecao.title">
