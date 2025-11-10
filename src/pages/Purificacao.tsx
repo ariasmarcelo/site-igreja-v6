@@ -101,20 +101,28 @@ export default function Purificacao() {
       </section>
 
       {/* Fluxo das Três Fases - Design Interativo */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
+        {/* Efeitos de fundo místicos */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-80 h-80 bg-red-500 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 right-20 w-80 h-80 bg-cyan-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-1/3 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto">
             
             {/* Container Visual para as Três Fases */}
-            <div className="bg-linear-to-br from-gray-50 via-white to-gray-50 p-8 pr-16 rounded-2xl shadow-xl border border-gray-200 relative">
+            <div className="bg-white/5 backdrop-blur-xl p-8 pr-16 rounded-3xl shadow-2xl border border-white/10 relative">
               
               {/* Título da Seção */}
               <div className="text-center mb-10">
-                <h2 className="text-4xl md:text-5xl font-semibold bg-linear-to-r from-[#B8860B] via-[#DAA520] to-[#B8860B] bg-clip-text text-transparent" 
+                <h2 className="text-4xl md:text-5xl font-semibold bg-linear-to-r from-[#E8D48F] via-[#D4AF37] to-[#E8D48F] bg-clip-text text-transparent" 
                     style={{ 
                       fontFamily: "'Poppins', sans-serif",
                       letterSpacing: '0.02em',
-                      filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.3)) drop-shadow(0 4px 4px rgba(0,0,0,0.2)) drop-shadow(0 8px 8px rgba(0,0,0,0.15))'
+                      textShadow: '0 0 20px rgba(212,175,55,0.3), 0 0 40px rgba(212,175,55,0.2)',
+                      filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))'
                     }}>
                   As Três Fases do Processo
                 </h2>
@@ -124,7 +132,7 @@ export default function Purificacao() {
               <div className="relative pr-8">
               
               {/* Linha Vertical bem à Direita */}
-              <div className="absolute right-2 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
+              <div className="absolute right-2 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-cyan-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
 
               {/* FASE 1 - INICIAL */}
               <div className="mb-8 relative">
