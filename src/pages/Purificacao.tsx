@@ -105,14 +105,14 @@ export default function Purificacao() {
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             
-            {/* Título da Seção */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">As Três Fases do Processo</h2>
-              <p className="text-lg text-gray-600">Clique em cada fase para ver os detalhes</p>
-            </div>
-
             {/* Container Visual para as Três Fases */}
             <div className="bg-linear-to-br from-gray-50 via-white to-gray-50 p-8 pr-16 rounded-2xl shadow-xl border border-gray-200 relative">
+              
+              {/* Título da Seção */}
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold text-gray-800">As Três Fases do Processo</h2>
+              </div>
+
               {/* Linha Vertical à Direita (dentro do container) */}
               <div className="absolute right-6 top-8 bottom-8 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg z-10"></div>
               
