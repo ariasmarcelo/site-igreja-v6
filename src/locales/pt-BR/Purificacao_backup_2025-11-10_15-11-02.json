@@ -65,27 +65,27 @@
   },
   "faseFinal": {
     "title": "Fase Final — O Trabalho de Resgate",
-    "subtitle": "Iniciação e Ativação do Antahkarana",
+    "subtitle": "Iniciação e Ascensão Espiritual",
     "iniciacao": {
-      "title": "A Iniciação Final — Ativação do Antahkarana",
-      "content": "Requer a conclusão da Fase Intermediária. Nesta fase, o associado está habilitado para sua Iniciação Final, momento em que, profunda e completamente limpo, purificado e estabilizado, poderá receber a presença lúcida de seu Eu Superior completamente encarnada em seu corpo físico. É neste momento sagrado que ocorre a ativação plena do Antahkarana — a ponte de luz entre a personalidade humana e o Eu Superior."
+      "title": "A Iniciação Final",
+      "content": "Requer a conclusão da Fase Intermediária. Nesta fase, o associado está habilitado para sua Iniciação Final, momento em que, profunda e completamente limpo, purificado e estabilizado, poderá receber a presença lúcida de seu Eu Superior completamente encarnada em seu corpo físico."
     },
     "evento": {
-      "title": "O Evento Iniciático — Construção do Antahkarana",
+      "title": "O Evento Iniciático",
       "content": [
-        "Este é o Evento Iniciático que finaliza o percurso do associado como praticante nesta instituição, tornando-o Iniciado. Durante este processo, o Antahkarana — o canal sagrado de comunicação entre a mente concreta e a consciência superior — é plenamente construído e ativado.",
-        "A Iniciação representa o momento sagrado em que o véu entre o eu humano e o Eu Superior se dissolve completamente, permitindo a integração plena da consciência divina no veículo físico. Com o Antahkarana ativado, estabelece-se uma ponte permanente de luz que permite ao Iniciado viver em constante comunhão com seu Eu Superior. É um renascimento espiritual, uma transformação profunda que marca o início de uma nova jornada como ser realizado."
+        "Este é o Evento Iniciático que finaliza o percurso do associado como praticante nesta instituição, tornando-o Iniciado.",
+        "A Iniciação representa o momento sagrado em que o véu entre o eu humano e o Eu Superior se dissolve completamente, permitindo a integração plena da consciência divina no veículo físico. É um renascimento espiritual, uma transformação profunda que marca o início de uma nova jornada como ser realizado."
       ]
     },
     "posIniciacao": {
-      "title": "Após a Iniciação — Vivendo com o Antahkarana Ativo",
-      "content": "O Associado Iniciado passa a viver em estado de consciência expandida, mantendo conexão lúcida e permanente com seu Eu Superior através do Antahkarana ativado — o instrumento interno que serve como ponte entre o humano e o divino. Esta condição permite:",
+      "title": "Após a Iniciação",
+      "content": "O Associado Iniciado passa a viver em estado de consciência expandida, mantendo conexão lúcida e permanente com seu Eu Superior. Esta condição permite:",
       "items": [
-        "Clareza absoluta sobre propósito e missão de vida através da comunicação direta com o Eu Superior",
-        "Capacidade de servir como canal para a Hierarquia Celestial, transmitindo luz e sabedoria",
-        "Acesso constante à sabedoria e conhecimento superiores via Antahkarana",
-        "Habilidade de auxiliar outros em sua jornada espiritual como ponte de luz encarnada",
-        "Vida em harmonia, paz e amor irradiantes, ancorados na unidade com o Divino"
+        "Clareza absoluta sobre propósito e missão de vida",
+        "Capacidade de servir como canal para a Hierarquia Celestial",
+        "Acesso a sabedoria e conhecimento superiores",
+        "Habilidade de auxiliar outros em sua jornada espiritual",
+        "Vida em harmonia, paz e amor irradiantes"
       ]
     },
     "adepto": {
