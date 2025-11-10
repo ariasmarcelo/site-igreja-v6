@@ -112,15 +112,15 @@ export default function Purificacao() {
             </div>
 
             {/* Linha do Tempo Vertical com Conexões */}
-            <div className="relative">
-              {/* Linha Vertical Central */}
-              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 transform -translate-x-1/2 hidden md:block"></div>
+            <div className="relative md:pl-24">
+              {/* Linha Vertical à Esquerda */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block"></div>
 
               {/* FASE 1 - INICIAL */}
               <div className="mb-8 relative">
                 <div className="md:flex md:items-center gap-8">
                   {/* Círculo Numerado */}
-                  <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-red-700 to-red-800 text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
+                  <div className="hidden md:flex absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-red-700 to-red-800 text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.3),transparent_50%)] rounded-full"></div>
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.25),transparent_50%)] rounded-full"></div>
                     <span className="relative z-10 drop-shadow-lg">1</span>
@@ -201,7 +201,7 @@ export default function Purificacao() {
               <div className="mb-8 relative">
                 <div className="md:flex md:items-center gap-8">
                   {/* Círculo Numerado */}
-                  <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-[#4A90A9] to-[#5EA98D] text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
+                  <div className="hidden md:flex absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-[#4A90A9] to-[#5EA98D] text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.3),transparent_50%)] rounded-full"></div>
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.25),transparent_50%)] rounded-full"></div>
                     <span className="relative z-10 drop-shadow-lg">2</span>
@@ -278,7 +278,7 @@ export default function Purificacao() {
               <div className="relative">
                 <div className="md:flex md:items-center gap-8">
                   {/* Círculo Numerado */}
-                  <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-[#CFAF5A] via-[#B38938] to-[#CFAF5A] text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
+                  <div className="hidden md:flex absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 rounded-full bg-linear-to-r from-[#CFAF5A] via-[#B38938] to-[#CFAF5A] text-white items-center justify-center text-3xl font-bold shadow-2xl border-4 border-white">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.3),transparent_50%)] rounded-full"></div>
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.25),transparent_50%)] rounded-full"></div>
                     <span className="relative z-10 drop-shadow-lg">3</span>
