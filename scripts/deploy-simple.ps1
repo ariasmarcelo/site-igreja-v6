@@ -10,8 +10,21 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $projectRoot
 
+# Limpar logs antigos - manter apenas os ultimos 10
+$logDir = Join-Path $projectRoot "logs"
+if (Test-Path $logDir) {
+    $oldLogs = Get-ChildItem "$logDir\deploy-*.log" -ErrorAction SilentlyContinue | 
+                Sort-Object LastWriteTime -Descending | 
+                Select-Object -Skip 10
+    if ($oldLogs) {
+        $oldLogs | Remove-Item -Force
+        Write-Host "[CLEANUP] Removidos $($oldLogs.Count) logs antigos" -ForegroundColor Gray
+    }
+}
+
 Write-Host "`n[DEPLOY] Iniciando deploy automatico..." -ForegroundColor Cyan
 Write-Host "[INFO] Mensagem: $Message" -ForegroundColor Gray
+Write-Host "[INFO] Logs em: $logDir" -ForegroundColor Gray
 
 try {
     Write-Host "`n[1/4] Build..." -ForegroundColor Yellow
