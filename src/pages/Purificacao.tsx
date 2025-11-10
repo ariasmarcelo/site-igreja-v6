@@ -413,7 +413,7 @@ export default function Purificacao() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.25),transparent_50%)]"></div>
                 
                 <div className="text-center relative z-10">
-                  <div className="inline-block mb-3" style={{ animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+                  <div className="inline-block mb-2" style={{ animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
                     <InfinityIcon className="w-24 h-24 mx-auto drop-shadow-2xl filter brightness-125" />
                   </div>
                   <CardTitle className="text-4xl md:text-5xl font-semibold mb-3 drop-shadow-lg" 
@@ -425,7 +425,7 @@ export default function Purificacao() {
                     data-json-key="purificacao.psicodelicos.title">
                     {texts.psicodelicos.title}
                   </CardTitle>
-                  <p className="text-xl font-light italic opacity-95 drop-shadow-md" 
+                  <p className="text-xl font-light italic opacity-95 drop-shadow-md pb-2" 
                     style={{ letterSpacing: '0.05em' }}
                     data-json-key="purificacao.psicodelicos.subtitle">
                     {texts.psicodelicos.subtitle}
