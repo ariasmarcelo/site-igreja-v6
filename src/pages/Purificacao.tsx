@@ -543,17 +543,185 @@ export default function Purificacao() {
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
 
-      {/* CTA Final */}
-      <section className="py-20 bg-linear-to-r from-[#CFAF5A] to-[#B38938] text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6" data-json-key="purificacao.cta.title">{texts.cta.title}</h2>
-            <p className="text-xl mb-8 opacity-90" data-json-key="purificacao.cta.subtitle">{texts.cta.subtitle}</p>
+      {/* Footer com horizonte terrestre */}
+      <section className="relative overflow-hidden bg-slate-900">
+        {/* Horizonte terrestre: céu acima, terra abaixo */}
+        <div className="absolute inset-0 opacity-50">
+          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 400">
+            <defs>
+              {/* Gradiente do céu - AZUL vibrante */}
+              <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#0ea5e9"/>
+                <stop offset="50%" stopColor="#38bdf8"/>
+                <stop offset="100%" stopColor="#7dd3fc"/>
+              </linearGradient>
+              
+              {/* Gradiente da terra - marrom escuro */}
+              <linearGradient id="earthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#78716c"/>
+                <stop offset="100%" stopColor="#44403c"/>
+              </linearGradient>
+            </defs>
+            
+            {/* CÉU AZUL - com curvatura positiva na parte inferior */}
+            <path 
+              d="M0,0 L1200,0 L1200,260 Q600,180 0,260 Z" 
+              fill="url(#skyGradient)"
+            />
+            
+            {/* Efeitos metálicos difusos distribuídos pelo céu */}
+            <defs>
+              <radialGradient id="glow1">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.6"/>
+                <stop offset="100%" stopColor="#fef3c7" stopOpacity="0"/>
+              </radialGradient>
+              <radialGradient id="glow2">
+                <stop offset="0%" stopColor="#fde68a" stopOpacity="0.5"/>
+                <stop offset="100%" stopColor="#fbbf24" stopOpacity="0"/>
+              </radialGradient>
+              <radialGradient id="glow3">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4"/>
+                <stop offset="100%" stopColor="#fef3c7" stopOpacity="0"/>
+              </radialGradient>
+            </defs>
+            
+            {/* Círculos de luz metálica difusa espalhados */}
+            <circle cx="150" cy="30" r="80" fill="url(#glow1)" opacity="0.4"/>
+            <circle cx="280" cy="50" r="60" fill="url(#glow3)" opacity="0.35"/>
+            <circle cx="420" cy="25" r="90" fill="url(#glow2)" opacity="0.45"/>
+            <circle cx="550" cy="45" r="70" fill="url(#glow1)" opacity="0.4"/>
+            <circle cx="680" cy="35" r="85" fill="url(#glow3)" opacity="0.38"/>
+            <circle cx="820" cy="55" r="65" fill="url(#glow2)" opacity="0.42"/>
+            <circle cx="950" cy="40" r="75" fill="url(#glow1)" opacity="0.37"/>
+            <circle cx="1080" cy="30" r="70" fill="url(#glow3)" opacity="0.4"/>
+            
+            {/* Segunda camada de brilhos menores */}
+            <circle cx="200" cy="70" r="50" fill="url(#glow2)" opacity="0.3"/>
+            <circle cx="360" cy="80" r="45" fill="url(#glow1)" opacity="0.28"/>
+            <circle cx="500" cy="90" r="55" fill="url(#glow3)" opacity="0.32"/>
+            <circle cx="640" cy="75" r="48" fill="url(#glow2)" opacity="0.3"/>
+            <circle cx="780" cy="85" r="52" fill="url(#glow1)" opacity="0.29"/>
+            <circle cx="920" cy="95" r="47" fill="url(#glow3)" opacity="0.31"/>
+            <circle cx="1060" cy="80" r="50" fill="url(#glow2)" opacity="0.28"/>
+            
+            {/* Terceira camada - brilhos muito sutis */}
+            <circle cx="100" cy="60" r="35" fill="url(#glow3)" opacity="0.25"/>
+            <circle cx="320" cy="110" r="40" fill="url(#glow1)" opacity="0.22"/>
+            <circle cx="480" cy="65" r="38" fill="url(#glow2)" opacity="0.24"/>
+            <circle cx="720" cy="105" r="42" fill="url(#glow3)" opacity="0.23"/>
+            <circle cx="880" cy="70" r="36" fill="url(#glow1)" opacity="0.25"/>
+            <circle cx="1020" cy="100" r="39" fill="url(#glow2)" opacity="0.22"/>
+            
+            {/* TERRA - com curvatura positiva na parte superior */}
+            <path 
+              d="M0,260 Q600,180 1200,260 L1200,400 L0,400 Z" 
+              fill="url(#earthGradient)"
+            />
+            
+            {/* LINHA DO HORIZONTE - curvatura mais pronunciada */}
+            <path 
+              d="M0,260 Q600,180 1200,260" 
+              stroke="#d6d3d1" 
+              strokeWidth="2" 
+              fill="none" 
+              opacity="0.6"
+            />
+            
+            {/* ÁGUA - camadas animadas verde-água com curvatura acentuada */}
+            <path 
+              className="animate-[wave_3s_ease-in-out_infinite]" 
+              d="M0,340 Q600,280 1200,340 L1200,400 L0,400 Z" 
+              fill="#2dd4bf" 
+              opacity="0.4"
+            />
+            <path 
+              className="animate-[wave_3s_ease-in-out_infinite_0.5s]" 
+              d="M0,360 Q600,300 1200,360 L1200,400 L0,400 Z" 
+              fill="#14b8a6" 
+              opacity="0.35"
+            />
+            <path 
+              className="animate-[wave_3s_ease-in-out_infinite_1s]" 
+              d="M0,380 Q600,320 1200,380 L1200,400 L0,400 Z" 
+              fill="#0d9488" 
+              opacity="0.3"
+            />
+          </svg>
+        </div>
+
+        {/* Sol Dourado - posicionado absolutamente, independente do fundo */}
+        <div className="absolute top-8 left-8 w-32 h-32 z-10">
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="50" cy="50" r="20" fill="#CFAF5A" />
+            {[...Array(12)].map((_, i) => {
+              const angle = (i * 30 * Math.PI) / 180;
+              const x1 = 50 + Math.cos(angle) * 25;
+              const y1 = 50 + Math.sin(angle) * 25;
+              const x2 = 50 + Math.cos(angle) * 40;
+              const y2 = 50 + Math.sin(angle) * 40;
+              return (
+                <line
+                  key={i}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke="#CFAF5A"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              );
+            })}
+          </svg>
+        </div>
+
+        {/* Lua Crescente - posicionada no canto superior direito */}
+        <div className="absolute top-8 right-8 w-32 h-32 z-20">
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <mask id="crescentMaskPurificacao">
+                <circle cx="50" cy="50" r="25" fill="white" />
+                <circle cx="58" cy="50" r="22" fill="black" />
+              </mask>
+            </defs>
+            <circle cx="50" cy="50" r="25" fill="#F3F4F6" mask="url(#crescentMaskPurificacao)" />
+          </svg>
+        </div>
+
+        {/* CTA Content - posicionado no céu */}
+        <div className="container mx-auto px-4 relative z-10 pt-12 pb-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg" data-json-key="purificacao.cta.title">
+              {texts.cta.title}
+            </h2>
+            <p className="text-xl mb-8 text-white drop-shadow-md" data-json-key="purificacao.cta.subtitle">
+              {texts.cta.subtitle}
+            </p>
             <Link to="/contato">
-              <Button className="bg-white text-[#CFAF5A] font-semibold px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-json-key="purificacao.cta.buttonText">
+              <Button className="bg-[#CFAF5A] text-white font-semibold px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-json-key="purificacao.cta.buttonText">
                 {texts.cta.buttonText}
               </Button>
             </Link>
+          </div>
+        </div>
+
+        {/* Footer Content - Copyright */}
+        <div className="relative z-10 pt-8 pb-4 text-white">
+          <div className="container mx-auto px-4">
+            <div className="border-t border-emerald-700/50 mt-32 pt-4 pb-1 text-center text-emerald-100/70 text-sm max-w-4xl mx-auto">
+              <p>© 2025 Igreja de Metatron. Todos os direitos reservados.</p>
+              <p className="mt-2">Marcas registradas protegidas por lei.</p>
+            </div>
           </div>
         </div>
       </section>
