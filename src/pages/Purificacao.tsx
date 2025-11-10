@@ -209,9 +209,9 @@ export default function Purificacao() {
                       onClick={() => togglePhase(2)}
                     >
                       <CardHeader className="bg-linear-to-r from-[#0891b2] via-[#06b6d4] to-[#0284c7] text-white p-6 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.35),transparent_50%)]"></div>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.25),transparent_60%)]"></div>
-                        <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.15)_50%,transparent_70%)]"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_40%,rgba(255,255,255,0.35),transparent_55%)]"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_60%,rgba(255,255,255,0.25),transparent_65%)]"></div>
+                        <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_40%,rgba(255,255,255,0.15)_60%,transparent_80%)]"></div>
                         <div className="flex items-center justify-between relative z-10">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
