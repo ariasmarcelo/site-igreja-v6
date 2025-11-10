@@ -20,6 +20,16 @@ process.on('unhandledRejection', (reason, promise) => {
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`\n📥 ${req.method} ${req.path}`);
+  console.log('   Headers:', req.headers.origin || 'no origin');
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('   Body:', JSON.stringify(req.body).substring(0, 200));
+  }
+  next();
+});
+
 // Middleware de erro para requisições
 app.use((err, req, res, next) => {
   console.error('❌ Error processing request:', err);

@@ -36,16 +36,6 @@ export default function VisualPageEditor({
   // Computed: verificar se há mudanças
   const hasChanges = fields.some(f => f.isModified);
   
-  // Debug: log changes
-  useEffect(() => {
-    console.log('📊 Estado atual:', {
-      totalFields: fields.length,
-      modifiedFields: fields.filter(f => f.isModified).length,
-      hasChanges,
-      modifiedKeys: fields.filter(f => f.isModified).map(f => f.key)
-    });
-  }, [fields, hasChanges]);
-
   useEffect(() => {
     // Recuperar mensagem do sessionStorage (se houver)
     const savedMessage = sessionStorage.getItem('visualEditorMessage');
@@ -1565,15 +1555,10 @@ export default function VisualPageEditor({
     }
     
     isSaving.current = true;
-    // console.log('🔒 Save lock activated');
     
     try {
-      // console.log('=== SAVING EDITS ===');
-      // console.log('Page ID:', pageId);
-      
       // Filtrar apenas campos modificados
       const modifiedFields = fields.filter(f => f.isModified);
-      // console.log('Modified fields:', modifiedFields.length);
       
       // Separar edições de texto e estilos
       const textEdits: Record<string, string> = {};
@@ -1589,8 +1574,9 @@ export default function VisualPageEditor({
         }
       });
       
-      // console.log('📝 Text edits:', Object.keys(textEdits).length);
-      // console.log('💅 Style edits:', Object.keys(styleEdits).length);
+      console.log('📝 Text edits:', Object.keys(textEdits).length);
+      console.log('💅 Style edits:', Object.keys(styleEdits).length);
+      console.log('📤 Enviando para API:', textEdits);
       
       let savedCount = 0;
       
@@ -1598,7 +1584,6 @@ export default function VisualPageEditor({
       if (Object.keys(textEdits).length > 0) {
         try {
           const payload = { pageId, edits: textEdits };
-          // console.log('📤 Sending texts to API:', JSON.stringify(payload, null, 2));
           
           const response = await fetch('http://localhost:3001/api/save-visual-edits', {
             method: 'POST',
@@ -1607,8 +1592,7 @@ export default function VisualPageEditor({
           });
           
           if (response.ok) {
-            const result = await response.json();
-            // console.log('✓ Text save successful:', result);
+            await response.json();
             savedCount += Object.keys(textEdits).length;
           } else {
             throw new Error('API error saving texts');
@@ -1984,7 +1968,11 @@ export default function VisualPageEditor({
         ) : (
           <>
             <button
-              onClick={handleSave}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSave();
+              }}
               disabled={!hasChanges}
               className={`flex items-center justify-center gap-2 px-6 py-3 font-semibold rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 ${
                 hasChanges 
