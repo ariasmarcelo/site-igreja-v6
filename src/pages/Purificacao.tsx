@@ -103,7 +103,7 @@ export default function Purificacao() {
       {/* Fluxo das Três Fases - Design Interativo */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             
             {/* Título da Seção */}
             <div className="text-center mb-12">
@@ -112,9 +112,9 @@ export default function Purificacao() {
             </div>
 
             {/* Linha do Tempo Vertical com Conexões */}
-            <div className="relative md:pr-28">
-              {/* Linha Vertical à Direita */}
-              <div className="absolute right-4 top-0 bottom-0 w-1 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block"></div>
+            <div className="relative md:pr-32">
+              {/* Linha Vertical à Direita - Mais Espessa e Próxima */}
+              <div className="absolute right-24 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
 
               {/* FASE 1 - INICIAL */}
               <div className="mb-8 relative">
