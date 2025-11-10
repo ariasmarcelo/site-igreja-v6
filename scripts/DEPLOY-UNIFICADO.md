@@ -82,10 +82,10 @@ Voce esta livre para trabalhar! O deploy continua em background...
 
 ## 🔧 Parâmetros
 
-| Parâmetro | Tipo | Posição | Padrão | Descrição |
-|-----------|------|---------|--------|-----------|
-| `Message` | string | 0 | `"deploy: atualizacao DD/MM/YYYY HH:mm"` | Mensagem do commit Git |
-| `-Background` | switch | - | `$false` | Executa em background se presente |
+| Parâmetro | Tipo | Posição | Padrão | Alias | Descrição |
+|-----------|------|---------|--------|-------|-----------|
+| `Message` | string | 0 | `"deploy: atualizacao DD/MM/YYYY HH:mm"` | - | Mensagem do commit Git |
+| `-Background` | switch | - | `$false` | `-b` | Executa em background se presente |
 
 ### Exemplos de Uso
 
@@ -96,14 +96,20 @@ Voce esta livre para trabalhar! O deploy continua em background...
 # 2. Síncrono com mensagem personalizada
 .\scripts\deploy.ps1 "feat: adicionar nova página"
 
-# 3. Background com mensagem padrão
+# 3. Background com mensagem padrão (forma longa)
 .\scripts\deploy.ps1 -Background
 
-# 4. Background com mensagem personalizada
+# 4. Background com mensagem padrão (alias curto)
+.\scripts\deploy.ps1 -b
+
+# 5. Background com mensagem personalizada (forma longa)
 .\scripts\deploy.ps1 "fix: corrigir bug" -Background
 
-# 5. Usando named parameter
-.\scripts\deploy.ps1 -Message "docs: atualizar README" -Background
+# 6. Background com mensagem personalizada (alias curto)
+.\scripts\deploy.ps1 "fix: corrigir bug" -b
+
+# 7. Usando named parameter
+.\scripts\deploy.ps1 -Message "docs: atualizar README" -b
 ```
 
 ---

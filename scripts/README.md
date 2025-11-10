@@ -306,8 +306,11 @@ Bloqueia o terminal e mostra progresso em tempo real:
 Libera o terminal imediatamente, deploy continua em segundo plano:
 
 ```bash
-# Diretamente
+# Forma longa
 .\scripts\deploy.ps1 "fix: correcao" -Background
+
+# Alias curto (recomendado)
+.\scripts\deploy.ps1 "fix: correcao" -b
 
 # Via package.json (mesmo problema)
 # pnpm deploy:bg  # ⚠️ Não funciona (conflito pnpm)
@@ -315,10 +318,10 @@ Libera o terminal imediatamente, deploy continua em segundo plano:
 
 #### Parâmetros
 
-| Parâmetro | Tipo | Padrão | Descrição |
-|-----------|------|--------|-----------|
-| `Message` | string | "deploy: atualizacao DD/MM/YYYY HH:mm" | Mensagem do commit |
-| `-Background` | switch | false | Executa em background |
+| Parâmetro | Tipo | Padrão | Alias | Descrição |
+|-----------|------|--------|-------|-----------|
+| `Message` | string | "deploy: atualizacao DD/MM/YYYY HH:mm" | - | Mensagem do commit |
+| `-Background` | switch | false | `-b` | Executa em background |
 
 #### Recursos
 
