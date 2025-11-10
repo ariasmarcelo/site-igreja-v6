@@ -7,9 +7,14 @@
  * Uso: node scripts/deploy-background.js "mensagem do commit"
  */
 
-const { spawn } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// ES modules não têm __dirname, então criamos
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Diretório raiz do projeto
 const projectRoot = path.resolve(__dirname, '..');
@@ -53,7 +58,7 @@ function runCommand(command, args, stepName) {
     
     const proc = spawn(command, args, {
       cwd: projectRoot,
-      shell: true,
+      shell: false,  // Desabilitado para evitar problemas com argumentos
       stdio: ['ignore', 'pipe', 'pipe']
     });
 
