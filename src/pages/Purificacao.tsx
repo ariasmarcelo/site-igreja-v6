@@ -115,8 +115,8 @@ export default function Purificacao() {
             <div className="bg-linear-to-br from-gray-50 via-white to-gray-50 p-8 rounded-2xl shadow-xl border border-gray-200">
               {/* Linha do Tempo Vertical com Conexões */}
               <div className="relative">
-              {/* Linha Vertical Flutuando à Direita (fora do container) */}
-              <div className="absolute -right-14 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
+              {/* Linha Vertical à Direita (dentro do container) */}
+              <div className="absolute right-4 top-0 bottom-0 w-2 bg-linear-to-b from-red-500 via-blue-500 to-amber-500 hidden md:block rounded-full shadow-lg"></div>
 
               {/* FASE 1 - INICIAL */}
               <div className="mb-8 relative">
