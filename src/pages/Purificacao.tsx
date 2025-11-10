@@ -114,7 +114,7 @@ export default function Purificacao() {
                     style={{ 
                       fontFamily: "'Poppins', sans-serif",
                       letterSpacing: '-0.02em',
-                      filter: 'drop-shadow(0 4px 6px rgba(212,175,55,0.6)) drop-shadow(0 8px 12px rgba(212,175,55,0.45)) drop-shadow(0 12px 20px rgba(212,175,55,0.3)) drop-shadow(0 16px 28px rgba(212,175,55,0.2))'
+                      filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.3)) drop-shadow(0 4px 4px rgba(0,0,0,0.2)) drop-shadow(0 8px 8px rgba(0,0,0,0.15))'
                     }}>
                   As Três Fases do Processo
                 </h2>
