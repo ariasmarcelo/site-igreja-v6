@@ -1,5 +1,5 @@
 ﻿Set-Location 'C:\temp\Site_Igreja_Meta\V5_SiteIgreja\workspace\shadcn-ui'
-$logFile = 'C:\temp\Site_Igreja_Meta\V5_SiteIgreja\workspace\shadcn-ui\logs\deploy-20251110-051104.log'
+$logFile = 'C:\temp\Site_Igreja_Meta\V5_SiteIgreja\workspace\shadcn-ui\logs\deploy-20251110-051126.log'
 
 # Funcao para remover codigos ANSI
 function Remove-AnsiCodes {
@@ -25,7 +25,7 @@ function Write-CleanLog {
 # Iniciar log
 "========================================" | Out-File $logFile -Encoding ASCII
 Write-Log "DEPLOY INICIADO"
-Write-Log "Mensagem: test: ordem parametros - background com -b primeiro"
+Write-Log "Mensagem: test: forma antiga ainda funciona"
 "========================================" | Add-Content -Path $logFile -Encoding ASCII
 
 try {
@@ -43,7 +43,7 @@ try {
     
     Write-Log ""
     Write-Log "[3/4] Git commit..."
-    $gitCommitOutput = git commit -m "test: ordem parametros - background com -b primeiro" 2>&1 | Out-String
+    $gitCommitOutput = git commit -m "test: forma antiga ainda funciona" 2>&1 | Out-String
     Write-CleanLog -Content $gitCommitOutput
     Write-Log "[OK] Git commit concluido!"
     
