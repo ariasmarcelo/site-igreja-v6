@@ -35,8 +35,8 @@ export default function Tratamentos() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Brain className="w-16 h-16 mx-auto mb-6 drop-shadow-lg" />
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">{texts?.header?.title || 'Tratamentos'}</h1>
-            <p className="text-xl opacity-90 drop-shadow-md">{texts?.header?.subtitle || ''}</p>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg" data-json-key="tratamentos.header.title">{texts?.header?.title || 'Tratamentos'}</h1>
+            <p className="text-xl opacity-90 drop-shadow-md" data-json-key="tratamentos.header.subtitle">{texts?.header?.subtitle || ''}</p>
           </div>
         </div>
       </section>
@@ -46,8 +46,8 @@ export default function Tratamentos() {
         <div className="container mx-auto px-4">
           <Alert className="max-w-5xl mx-auto border-amber-500 bg-white">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
-            <AlertDescription className="text-amber-900 ml-2">
-              <strong>{texts?.legal?.title || ''}</strong> {texts?.legal?.notice || ''}
+            <AlertDescription className="text-amber-900 ml-2" data-json-key="tratamentos.legal.notice">
+              <strong data-json-key="tratamentos.legal.title">{texts?.legal?.title || ''}</strong> {texts?.legal?.notice || ''}
             </AlertDescription>
           </Alert>
         </div>
@@ -57,8 +57,8 @@ export default function Tratamentos() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <p className="text-xl text-gray-700 leading-relaxed mb-8">{texts?.intro?.p1 || ''}</p>
-            <p className="text-lg text-gray-600 leading-relaxed">{texts?.intro?.p2 || ''}</p>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8" data-json-key="tratamentos.intro.p1">{texts?.intro?.p1 || ''}</p>
+            <p className="text-lg text-gray-600 leading-relaxed" data-json-key="tratamentos.intro.p2">{texts?.intro?.p2 || ''}</p>
           </div>
         </div>
       </section>
@@ -85,7 +85,7 @@ export default function Tratamentos() {
                     <div className="absolute inset-0 bg-[linear-gradient(10deg,transparent_35%,rgba(255,255,255,0.08)_52%,rgba(255,255,255,0.12)_60%,rgba(255,255,255,0.08)_68%,transparent_85%)]"></div>
                     <div className="flex items-center gap-4 mb-4 relative z-10">
                       {icons[index]}
-                      <CardTitle className="text-3xl">
+                      <CardTitle className="text-3xl" data-json-key={`tratamentos.treatments[${index}].title`}>
                         {treatment.title.includes('(supervisão geral integrada)') 
                           ? <>
                               {treatment.title.split('(')[0]}
@@ -95,48 +95,48 @@ export default function Tratamentos() {
                         }
                       </CardTitle>
                     </div>
-                    <CardDescription className="text-white text-lg opacity-90 relative z-10">
+                    <CardDescription className="text-white text-lg opacity-90 relative z-10" data-json-key={`tratamentos.treatments[${index}].description`}>
                       {treatment.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-8 space-y-6 bg-white">
                     <div>
-                      <h4 className="font-bold text-lg mb-2 text-[#222222]">{texts?.labels?.about || 'Sobre'}</h4>
-                      <p className="text-gray-700 leading-relaxed">{treatment.details}</p>
+                      <h4 className="font-bold text-lg mb-2 text-[#222222]" data-json-key="tratamentos.labels.about">{texts?.labels?.about || 'Sobre'}</h4>
+                      <p className="text-gray-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].details`}>{treatment.details}</p>
                     </div>
 
                     {treatment.indications && (
                       <div>
-                        <h4 className="font-bold text-lg mb-2 text-[#222222]">{texts?.labels?.indications || 'Indicações'}</h4>
-                        <p className="text-gray-700 leading-relaxed">{treatment.indications}</p>
+                        <h4 className="font-bold text-lg mb-2 text-[#222222]" data-json-key="tratamentos.labels.indications">{texts?.labels?.indications || 'Indicações'}</h4>
+                        <p className="text-gray-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].indications`}>{treatment.indications}</p>
                       </div>
                     )}
 
                     {treatment.benefits && (
                       <div>
-                        <h4 className="font-bold text-lg mb-2 text-[#222222]">{texts?.labels?.benefits || 'Benefícios'}</h4>
-                        <p className="text-gray-700 leading-relaxed">{treatment.benefits}</p>
+                        <h4 className="font-bold text-lg mb-2 text-[#222222]" data-json-key="tratamentos.labels.benefits">{texts?.labels?.benefits || 'Benefícios'}</h4>
+                        <p className="text-gray-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].benefits`}>{treatment.benefits}</p>
                       </div>
                     )}
 
                     {treatment.contraindications && (
                       <div className="bg-red-50 border-l-4 border-red-500 p-4">
-                        <h4 className="font-bold text-lg mb-2 text-red-800">{texts?.labels?.contraindications || 'Contraindicações'}</h4>
-                        <p className="text-red-700 leading-relaxed">{treatment.contraindications}</p>
+                        <h4 className="font-bold text-lg mb-2 text-red-800" data-json-key="tratamentos.labels.contraindications">{texts?.labels?.contraindications || 'Contraindicações'}</h4>
+                        <p className="text-red-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].contraindications`}>{treatment.contraindications}</p>
                       </div>
                     )}
 
                     {treatment.duration && (
                       <div>
-                        <h4 className="font-bold text-lg mb-2 text-[#222222]">{texts?.labels?.duration || 'Duração'}</h4>
-                        <p className="text-gray-700 leading-relaxed">{treatment.duration}</p>
+                        <h4 className="font-bold text-lg mb-2 text-[#222222]" data-json-key="tratamentos.labels.duration">{texts?.labels?.duration || 'Duração'}</h4>
+                        <p className="text-gray-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].duration`}>{treatment.duration}</p>
                       </div>
                     )}
 
                     {treatment.professional && (
                       <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
-                        <h4 className="font-bold text-lg mb-2 text-blue-800">{texts?.labels?.professional || 'Profissional'}</h4>
-                        <p className="text-blue-700 leading-relaxed">{treatment.professional}</p>
+                        <h4 className="font-bold text-lg mb-2 text-blue-800" data-json-key="tratamentos.labels.professional">{texts?.labels?.professional || 'Profissional'}</h4>
+                        <p className="text-blue-700 leading-relaxed" data-json-key={`tratamentos.treatments[${index}].professional`}>{treatment.professional}</p>
                       </div>
                     )}
                   </CardContent>
@@ -154,10 +154,10 @@ export default function Tratamentos() {
       <section className="py-20 bg-linear-to-r from-[#4A90A9] to-[#5EA98D] text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">{texts?.cta?.title || ''}</h2>
-            <p className="text-xl mb-8 opacity-90">{texts?.cta?.subtitle || ''}</p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6" data-json-key="tratamentos.cta.title">{texts?.cta?.title || ''}</h2>
+            <p className="text-xl mb-8 opacity-90" data-json-key="tratamentos.cta.subtitle">{texts?.cta?.subtitle || ''}</p>
             <Link to="/contato">
-              <Button className="bg-white text-[#4A90A9] font-semibold px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <Button className="bg-white text-[#4A90A9] font-semibold px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-json-key="tratamentos.cta.buttonText">
                 {texts?.cta?.buttonText || 'Entre em Contato'}
               </Button>
             </Link>

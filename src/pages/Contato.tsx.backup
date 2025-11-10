@@ -17,7 +17,7 @@ export default function Contato() {
   return (
     <div className="min-h-screen bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]" style={{ opacity: stylesLoaded ? 1 : 0, transition: 'opacity 0.2s ease-in' }}>
       {/* Header */}
-      <section className="py-20 bg-linear-to-r from-[#60a5fa] via-[#2563eb] to-[#60a5fa] text-white relative overflow-hidden">
+      <section className="py-16 bg-linear-to-r from-[#60a5fa] via-[#2563eb] to-[#60a5fa] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.25),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.2),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.15)_45%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.15)_55%,transparent_70%)]"></div>
@@ -25,7 +25,7 @@ export default function Contato() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="relative inline-block mb-6">
-              <Mail className="w-[89px] h-[89px] mx-auto drop-shadow-lg text-[#CFAF5A]" style={{
+              <Mail className="w-16 h-16 mx-auto drop-shadow-lg text-[#CFAF5A]" style={{
                 filter: 'drop-shadow(0 0 10px rgba(207, 175, 90, 0.5))'
               }} />
             </div>
@@ -36,7 +36,7 @@ export default function Contato() {
       </section>
 
       {/* Informações de Contato */}
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             
@@ -139,7 +139,7 @@ export default function Contato() {
       </section>
 
       {/* Perguntas Frequentes */}
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12 text-[#222222]" data-json-key="contato.faq.title">

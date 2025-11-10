@@ -27,14 +27,14 @@ export default function Tratamentos() {
   return (
     <div className="min-h-screen bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]" style={{ opacity: stylesLoaded ? 1 : 0, transition: 'opacity 0.2s ease-in' }}>
       {/* Header */}
-      <section className="py-20 bg-linear-to-r from-[#1e40af] via-[#1e40af] to-[#2563eb] text-white relative overflow-hidden">
+      <section className="py-16 bg-linear-to-r from-[#1e40af] via-[#1e40af] to-[#2563eb] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.3),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.25),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(100deg,transparent_20%,rgba(255,255,255,0.18)_38%,rgba(255,255,255,0.25)_50%,rgba(255,255,255,0.18)_62%,transparent_80%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(10deg,transparent_25%,rgba(255,255,255,0.12)_42%,rgba(255,255,255,0.18)_50%,rgba(255,255,255,0.12)_58%,transparent_75%)]"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <Brain className="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
+            <Brain className="w-16 h-16 mx-auto mb-6 drop-shadow-lg" />
             <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">{texts?.header?.title || 'Tratamentos'}</h1>
             <p className="text-xl opacity-90 drop-shadow-md">{texts?.header?.subtitle || ''}</p>
           </div>
@@ -68,7 +68,7 @@ export default function Tratamentos() {
         {treatments.map((treatment, index) => (
           <section 
             key={index} 
-            className={`py-6 ${index % 2 === 0 ? 'bg-white' : 'bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]'}`}
+            className={`py-12 ${index % 2 === 0 ? 'bg-white' : 'bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]'}`}
           >
             <div className="container mx-auto px-4">
               <div className="max-w-6xl mx-auto">
