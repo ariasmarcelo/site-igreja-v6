@@ -112,31 +112,32 @@ export default function Purificacao() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto">
             
-            {/* Container Visual para as Três Fases */}
-            <div className="bg-white/5 backdrop-blur-xl p-8 pr-16 rounded-3xl shadow-2xl border border-white/10 relative">
+            {/* Container Visual para as Três Fases - Elevado */}
+            <div className="bg-linear-to-br from-white/90 via-amber-50/85 to-white/90 backdrop-blur-2xl p-8 pr-16 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] border-2 border-white/30 relative transform hover:scale-[1.01] transition-transform duration-500"
+                 style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(251,191,36,0.15), inset 0 1px 0 rgba(255,255,255,0.8)' }}>
               
               {/* Título da Seção - Elevado e Luminoso */}
               <div className="text-center mb-10 relative">
-                {/* Glow de fundo */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-96 h-32 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent blur-2xl"></div>
+                {/* Glow de fundo sutil */}
+                <div className="absolute inset-0 flex items-center justify-center -z-10">
+                  <div className="w-[500px] h-40 bg-linear-to-r from-transparent via-amber-400/10 to-transparent blur-3xl"></div>
                 </div>
                 
-                <h2 className="text-4xl md:text-5xl font-light bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent relative z-10" 
+                <h2 className="text-4xl md:text-5xl font-light bg-linear-to-r from-amber-700 via-amber-500 to-amber-700 bg-clip-text text-transparent relative z-10" 
                     style={{ 
                       fontFamily: "'Poppins', sans-serif",
                       letterSpacing: '0.08em',
-                      textShadow: '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(251,191,36,0.4), 0 0 90px rgba(251,191,36,0.3)',
-                      filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))'
+                      textShadow: '0 2px 4px rgba(180,83,9,0.2)',
+                      filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.15)) drop-shadow(0 4px 6px rgba(251,191,36,0.2))'
                     }}>
                   AS TRÊS FASES DO PROCESSO
                 </h2>
                 
-                {/* Linha decorativa luminosa */}
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400/50"></div>
-                  <div className="w-2 h-2 rounded-full bg-amber-400/70 shadow-lg shadow-amber-400/50"></div>
-                  <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400/50"></div>
+                {/* Linha decorativa elegante */}
+                <div className="flex items-center justify-center gap-3 mt-5">
+                  <div className="h-px w-20 bg-linear-to-r from-transparent via-amber-400 to-amber-500"></div>
+                  <div className="w-2 h-2 rounded-full bg-amber-500 shadow-md shadow-amber-500/40"></div>
+                  <div className="h-px w-20 bg-linear-to-l from-transparent via-amber-400 to-amber-500"></div>
                 </div>
               </div>
               
