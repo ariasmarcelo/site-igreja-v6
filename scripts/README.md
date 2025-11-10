@@ -36,8 +36,8 @@ pnpm clean-backups
 | **fix-all-keys.cjs** | `pnpm fix-keys` | Correção de data-json-key | Mensal |
 | **init-assign-ids.js** | Automático (`pnpm dev`) | Verificação ao iniciar dev | Automático |
 | **clean-all-backups.cjs** | `pnpm clean-backups` | Limpa backups antigos | Mensal |
-| **deploy.ps1** | `pnpm deploy` | Deploy síncrono | Por deploy |
-| **deploy-background.ps1** | `pnpm deploy:bg` | Deploy em background | Por deploy |
+| **deploy.ps1** | `pnpm deploy` ou `.\scripts\deploy.ps1` | Deploy síncrono (padrão) | Por deploy |
+| **deploy.ps1 -Background** | `pnpm deploy:bg` ou `.\scripts\deploy.ps1 -Background` | Deploy em background | Por deploy |
 
 **Scripts Auxiliares:**
 - `update-testemunhos.js` - Atualização de testemunhos
@@ -281,6 +281,72 @@ node scripts/assign-ids-final.js --page=PageName
 ### Problema: Muitos backups ocupando espa�o
 ```bash
 node scripts/clean-all-backups.cjs
+```
+
+---
+
+## 🚀 Deploy para GitHub Pages
+
+### deploy.ps1 (Script Unificado)
+
+Script único que suporta execução **síncrona** (padrão) ou **em background**.
+
+#### Modo Síncrono (Padrão)
+Bloqueia o terminal e mostra progresso em tempo real:
+
+```bash
+# Diretamente
+.\scripts\deploy.ps1 "feat: nova funcionalidade"
+
+# Via package.json (conflito com pnpm - use direto)
+# pnpm deploy "mensagem"  # ⚠️ Não funciona (conflito pnpm)
+```
+
+#### Modo Background
+Libera o terminal imediatamente, deploy continua em segundo plano:
+
+```bash
+# Diretamente
+.\scripts\deploy.ps1 "fix: correcao" -Background
+
+# Via package.json (mesmo problema)
+# pnpm deploy:bg  # ⚠️ Não funciona (conflito pnpm)
+```
+
+#### Parâmetros
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|-----------|------|--------|-----------|
+| `Message` | string | "deploy: atualizacao DD/MM/YYYY HH:mm" | Mensagem do commit |
+| `-Background` | switch | false | Executa em background |
+
+#### Recursos
+
+- ✅ Logs limpos sem códigos ANSI
+- ✅ Encoding ASCII para compatibilidade
+- ✅ Logs com timestamp: `deploy-YYYYMMDD-HHMMSS.log`
+- ✅ Mantém apenas últimos 10 logs
+- ✅ Feedback colorido no terminal (modo síncrono)
+- ✅ Comandos úteis após execução (modo background)
+
+#### Processo de Deploy
+
+1. **Build**: `pnpm build` → Gera dist/
+2. **Git Add**: `git add .` → Adiciona alterações
+3. **Git Commit**: `git commit -m "mensagem"` → Cria commit
+4. **Git Push**: `git push` → Envia para GitHub
+
+#### Monitorar Deploy Background
+
+```bash
+# Ver progresso em tempo real
+Get-Content logs\deploy-YYYYMMDD-HHMMSS.log -Tail 20 -Wait
+
+# Ver log completo
+Get-Content logs\deploy-YYYYMMDD-HHMMSS.log
+
+# Listar todos os logs
+Get-ChildItem logs\deploy-*.log
 ```
 
 ---
