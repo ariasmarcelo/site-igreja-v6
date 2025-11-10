@@ -51,10 +51,16 @@ function sanitizeText(text) {
 // Função para atualizar JSON por chave (dot notation ou array notation)
 function updateJsonByKey(obj, key, newValue) {
   try {
+    console.log(`  🔍 DEBUG updateJsonByKey:`);
+    console.log(`     key: "${key}"`);
+    console.log(`     newValue: "${newValue?.substring ? newValue.substring(0, 50) : newValue}"`);
+    console.log(`     obj keys: ${Object.keys(obj).join(', ')}`);
+    
     // Converter chave para array de partes
     // Exemplos: "hero.title" → ["hero", "title"]
     //          "features[0].title" → ["features", "0", "title"]
     const parts = key.replace(/\[(\d+)\]/g, '.$1').split('.');
+    console.log(`     parts: [${parts.join(', ')}]`);
     
     let current = obj;
     
@@ -287,6 +293,11 @@ router.post('/save-visual-edits', express.json(), async (req, res) => {
       success: true, 
       message: `✓ ${updatedCount} textos atualizados!`,
       updatedCount,
+      debug: {
+        totalEdits: Object.keys(edits).length,
+        editsReceived: Object.keys(edits),
+        pageId: pageId
+      },
       totalEdits: Object.keys(edits).length
     });
 

@@ -8,7 +8,7 @@ import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
 
 export default function Index() {
-  const stylesLoaded = usePageStyles('index'); // Carregar estilos CSS customizados
+  const stylesLoaded = usePageStyles('index');
   const texts = useLocaleTexts('index', defaultTexts);
   
   const benefitsIcons = [
