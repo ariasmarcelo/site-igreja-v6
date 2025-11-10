@@ -35,6 +35,16 @@ export default function VisualPageEditor({
   
   // Computed: verificar se há mudanças
   const hasChanges = fields.some(f => f.isModified);
+  
+  // Debug: log changes
+  useEffect(() => {
+    console.log('📊 Estado atual:', {
+      totalFields: fields.length,
+      modifiedFields: fields.filter(f => f.isModified).length,
+      hasChanges,
+      modifiedKeys: fields.filter(f => f.isModified).map(f => f.key)
+    });
+  }, [fields, hasChanges]);
 
   useEffect(() => {
     // Recuperar mensagem do sessionStorage (se houver)
