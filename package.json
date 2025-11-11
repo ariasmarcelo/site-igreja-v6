@@ -16,6 +16,8 @@
     "backend-server": "node scripts/start-backend.js",
     "server": "npm run backend-server",
     "preserver": "node scripts/fix-ids.js --check",
+    "start": "powershell -File start-dev-servers.ps1",
+    "restart": "powershell -File restart-servers.ps1",
     "check": "powershell -File check-servers.ps1",
     "check-servers": "powershell -File check-servers.ps1",
     "fix-ids": "node scripts/fix-ids.js",
