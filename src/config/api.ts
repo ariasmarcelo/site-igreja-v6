@@ -5,9 +5,9 @@ const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
 // URL da API baseada no ambiente
-// Dev: Vercel Dev (porta 3000) | Prod: Vercel
+// Dev: Vercel Dev serve tudo na mesma porta (8080) | Prod: Vercel
 export const API_BASE_URL = isDevelopment
-  ? 'http://localhost:3000'
+  ? 'http://localhost:8080'
   : import.meta.env.VITE_API_URL || '';
 
 // Endpoints da API

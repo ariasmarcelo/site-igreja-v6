@@ -1,10 +1,8 @@
 {
   "name": "shadcnui",
   "type": "module",
-  "packageManager": "pnpm@8.10.0",
   "scripts": {
-    "dev": "vite --port 8080 --host",
-    "dev:vercel": "vercel dev --listen 3000",
+    "dev": "vite",
     "start": "powershell -File start-dev.ps1",
     "stop": "powershell -File stop-dev.ps1",
     "build": "vite build",
