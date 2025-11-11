@@ -21,6 +21,9 @@ O que tentamos expressar e esclarecer no conteúdo do site é que compreendemos 
 > **Sempre que possível, sugira melhorias para os scripts de automação existentes.**
 > **Sempre que iniciar uma sessão, releia todos os backps dos arquivos do projeto por completo. Isto serve para que suas novas ações possam compreender melhor o histórico e a direção em que tudo evoluiu.**
 > **Escreva sempre backups de todos os arquivos locais modificados, especialmente quando forem de conteúdo proprietário deste pacote. Mantenha cinco versões anteriores em histórico. Caso algo dê errado, possamos restaurar uma versão anterior do arquivo.**
+> **Nunca remova ou modifique as seções PÉTREAS deste documento. Sempre pergunte ao usuário se pode quebrar alguma delas, em algum contexto atual ou futuro.**
+> **Ao escrever código, sempre siga as boas práticas de desenvolvimento, incluindo: código limpo, modularidade, comentários claros e consistentes, tratamento de erros adequado e completo e testes quando aplicável.**
+> **Quando for atualizar um documento deste projeto, seja qual for, releia integralmente o documento a ser modificado e o reescreva todo do zero para evitar incerências e duplicidades. Sempre mantenha o melhor estilo de escrita.**
 ## FIM Instruções Gerais ##
 # FIM DA SEÇÂO PÉTREA #
 
