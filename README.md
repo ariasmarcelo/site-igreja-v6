@@ -116,54 +116,45 @@ VITE_API_URL=http://localhost:3001
 
 
 
-## 🛠️ Desenvolvimento
+## 🛠️ Desenvolvimento Local
 
-```bash- **Lucide React** - Ícones- **Lucide React** - Ícones
+### Servidor Único com Vercel Dev
 
-### Iniciar Servidores
+O projeto usa **Vercel Dev** que serve frontend E APIs em **uma única porta (8080)**, simulando o ambiente de produção localmente.
 
-# Clone o repositório
+### Iniciar Ambiente
 
 ```bash
+# Método 1: Script automatizado (recomendado)
+pnpm start
 
-# Frontend (porta 8080)git clone https://github.com/ariasmarcelo/site-igreja-v6.git- **React Router 7** - Navegação- **React Router 7** - Navegação
-
-pnpm dev
-
-cd site-igreja-v6/workspace/shadcn-ui
-
-# Backend (porta 3001 - opcional)
-
-pnpm server- **Tiptap** - Editor de texto rico- **Tiptap** - Editor de texto rico
-
+# Método 2: Direto
+vercel dev
 ```
 
-# Instale dependências com pnpm
+**URLs disponíveis:**
+- 🌐 Frontend: http://localhost:8080/
+- 🔌 APIs: http://localhost:8080/api/*
+- 🛠️ Admin Console: http://localhost:8080/436F6E736F6C45
 
-**Admin Console:** http://localhost:8080/436F6E736F6C45  
+### Parar Ambiente
 
-⚠️ **Requer ambos servidores rodando!**pnpm install- **Supabase** - Backend (PostgreSQL)- **Supabase** - Backend (PostgreSQL)
+```bash
+# Parar servidor
+pnpm stop
 
-
+# Reiniciar servidor
+pnpm restart
+```
 
 ### Verificar Status
 
+```powershell
+# Windows PowerShell
+netstat -ano | findstr :8080
 
-
-```powershell# Configure variáveis de ambiente
-
-# Script automatizado
-
-pnpm checkcp .env.example .env.local
-
-
-
-# Manual# Edite .env.local com suas credenciais do Supabase## 📦 Instalação## 📦 Instalação
-
-netstat -ano | findstr :8080  # Frontend
-
-netstat -ano | findstr :3001  # Backend```
-
+# Linux/Mac
+lsof -i :8080
 ```
 
 

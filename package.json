@@ -5,6 +5,7 @@
     "dev": "vite",
     "start": "powershell -File start-dev.ps1",
     "stop": "powershell -File stop-dev.ps1",
+    "restart": "powershell -Command \"& .\\stop-dev.ps1; & .\\start-dev.ps1\"",
     "build": "vite build",
     "vercel-build": "vite build",
     "lint": "eslint --quiet ./src",

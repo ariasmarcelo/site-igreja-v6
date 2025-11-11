@@ -41,15 +41,58 @@ O que tentamos expressar e esclarecer no conteúdo do site é que compreendemos 
 # FIM DA SEÇÂO PÉTREA #
 
 # DADOS BÁSICOS GERAIS #
-> **Última atualização:** 10 de novembro de 2025  
+> **Última atualização:** 11 de novembro de 2025  
 > **Versão do projeto:** site-igreja-v6  
-> **Repositório:** ariasmarcelo/site-igreja-v6  > **Última atualização:** 10 de novembro de 2025  
-> **Status:** ✅ Funcional | Documentação consolidada
-> **Versão:** site-igreja-v6  
-> **Repositório:** ariasmarcelo/site-igreja-v6  > **Última atualização:** 10 de novembro de 2025  > **Última atualização:** 10 de novembro de 2025  
-# FIM DADOS BÁSICOS GERAIS # (complete este bloco com informações relevantes)
+> **Repositório:** ariasmarcelo/site-igreja-v6  
+> **Status:** ✅ Funcional - Migração Vercel completa
+> **Produção:** https://shadcn-ui-seven-olive.vercel.app
+> **Stack:** Vite 7.2 + React 19 + TypeScript 5.7 + Tailwind CSS 4 + Supabase PostgreSQL + Vercel Serverless
+# FIM DADOS BÁSICOS GERAIS #
 
-## Protocolo de Reset da versão atual ##
+# STATUS INTERNO #
+
+## ✅ Migração Vercel Completa - 11/11/2025
+
+### Decisão Arquitetural
+- ❌ Removido: GitHub Pages (não suporta serverless functions)
+- ❌ Removido: Express server (duplicação funcional)
+- ✅ Adotado: **Vercel 100%** (dev + prod)
+
+### Ambiente de Desenvolvimento
+**UM ÚNICO SERVIDOR HTTP na porta 8080**
+
+- Comando: `pnpm start` (executa start-dev.ps1)
+- Servidor: Vercel Dev
+- Frontend: http://localhost:8080/
+- APIs: http://localhost:8080/api/*
+- Admin Console: http://localhost:8080/436F6E736F6C45
+
+**Paridade Dev/Prod = 100%**
+- Mesmas serverless functions em dev e prod
+- Mesmo comportamento de roteamento
+- Mesmas variáveis de ambiente (.env.local)
+
+### Scripts Disponíveis
+```bash
+pnpm start     # Inicia Vercel Dev (porta 8080)
+pnpm stop      # Para Vercel Dev
+pnpm restart   # Reinicia Vercel Dev
+pnpm deploy    # Deploy para Vercel produção
+```
+
+### Configuração Limpa
+- `vercel.json`: Minimalista (apenas functions config)
+- `package.json`: Script "dev" = "vite" (evita recursão no Vercel Dev)
+- `.vercel/`: Linkado ao projeto correto (shadcn-ui)
+- Yarn instalado globalmente (requerido pelo Vercel CLI)
+
+### Commits Importantes
+- `79bef96`: Configuração limpa Vercel Dev
+- `baa2240`: Remoção Express server
+- `ea4efe7`: Migração 100% Vercel
+- `pre-vercel-migration` (tag): Backup antes da migração
+
+# FIM STATUS INTERNO #
 (prepare: scripts inteligentes para parar os servidores e os documente.)
 
 ## ⚠️ FLUXO DE DADOS CRÍTICO
