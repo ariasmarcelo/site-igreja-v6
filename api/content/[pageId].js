@@ -27,7 +27,12 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { pageId } = req.query;
+    // Em Vercel, rotas dinâmicas [pageId] vêm em req.query.pageId
+    const pageId = req.query.pageId || req.url?.split('/').pop();
+    
+    if (!pageId) {
+      return res.status(400).json({ success: false, message: 'pageId é obrigatório' });
+    }
     
     const { data, error } = await supabase
       .from('page_contents')
