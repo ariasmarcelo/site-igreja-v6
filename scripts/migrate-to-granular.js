@@ -104,8 +104,8 @@ async function migrateData() {
   console.log('🔄 Iniciando migração de dados...\n');
 
   try {
-    // 1. Buscar dados das tabelas antigas
-    console.log('📥 Buscando dados das tabelas antigas...');
+    // 1. Buscar dados de page_contents
+    console.log('📥 Buscando dados de page_contents...');
     const { data: oldContents, error: contentsError } = await supabase
       .from('page_contents')
       .select('*');
@@ -113,14 +113,7 @@ async function migrateData() {
     if (contentsError) throw contentsError;
     console.log(`✅ ${oldContents.length} páginas encontradas\n`);
 
-    const { data: oldStyles, error: stylesError } = await supabase
-      .from('page_styles')
-      .select('*');
-
-    if (stylesError) throw stylesError;
-
     let totalTextEntries = 0;
-    let totalStyleEntries = 0;
 
     // 2. Processar cada página
     for (const page of oldContents) {
@@ -151,44 +144,14 @@ async function migrateData() {
       }
     }
 
-    // 3. Processar estilos
-    for (const page of oldStyles) {
-      console.log(`\n🎨 Processando estilos: ${page.page_id}`);
-      
-      const styleEntries = parseCssToProperties(page.css);
-      console.log(`   🎨 ${styleEntries.length} entradas de estilo encontradas`);
-      
-      // Inserir style entries em batch
-      const styleInserts = styleEntries.map(entry => ({
-        page_id: page.page_id,
-        json_key: entry.key,
-        css_properties: entry.properties
-      }));
-
-      if (styleInserts.length > 0) {
-        const { error: insertError } = await supabase
-          .from('style_entries')
-          .insert(styleInserts);
-
-        if (insertError) {
-          console.error(`   ❌ Erro ao inserir estilos: ${insertError.message}`);
-        } else {
-          console.log(`   ✅ ${styleInserts.length} estilos inseridos`);
-          totalStyleEntries += styleInserts.length;
-        }
-      }
-    }
-
     console.log('\n\n✅ Migração concluída!');
     console.log(`   📝 Total de text_entries: ${totalTextEntries}`);
-    console.log(`   🎨 Total de style_entries: ${totalStyleEntries}`);
 
     // Salvar resumo da migração
     const summary = {
       timestamp: new Date().toISOString(),
       totalPages: oldContents.length,
       totalTextEntries,
-      totalStyleEntries,
       pages: oldContents.map(p => p.page_id)
     };
 

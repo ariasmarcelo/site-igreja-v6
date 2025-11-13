@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-11-12T19:59:04.653Z",
+  "timestamp": "2025-11-13T20:29:52.637Z",
   "totalPages": 8,
-  "totalTextEntries": 455,
-  "totalStyleEntries": 15,
+  "totalTextEntries": 0,
+  "totalStyleEntries": 0,
   "pages": [
     "notfound",
-    "quemsomos",
     "artigos",
     "contato",
     "purificacao",
+    "quemsomos",
     "testemunhos",
     "index",
     "tratamentos"

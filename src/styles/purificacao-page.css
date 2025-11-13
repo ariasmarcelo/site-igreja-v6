@@ -1,0 +1,67 @@
+/* Purificacao Page Specific Styles */
+
+/* SVG Icon shadow */
+.purificacao-icon {
+  filter: drop-shadow(0 4px 8px rgba(139, 90, 0, 0.7));
+}
+
+/* Quote box background pattern - Fase Inicial */
+.quote-pattern-inicial::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(180, 83, 9, 0.5) 0px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+/* Quote box background pattern - Fase Intermediária */
+.quote-pattern-intermediaria::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(14, 116, 144, 0.5) 0px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+/* Quote box background pattern - Fase Final */
+.quote-pattern-final::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(139, 69, 19, 0.4) 0px,
+    transparent 1px,
+    transparent 12px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    rgba(139, 69, 19, 0.4) 0px,
+    transparent 1px,
+    transparent 12px
+  );
+}
+
+/* Quote text styles */
+.quote-text {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Quote title */
+.quote-title {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

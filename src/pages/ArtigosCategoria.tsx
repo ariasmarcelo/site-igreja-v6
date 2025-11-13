@@ -1,14 +1,17 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import fallbackTexts from '@/locales/pt-BR/Artigos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 
-type ArtigosTexts = typeof fallbackTexts;
+interface ArtigosTexts {
+  articles: { [key: string]: Array<Record<string, string>> };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 
 export default function ArtigosCategoria() {
   const { categoria } = useParams<{ categoria: string }>();
-  const { texts, loading: textsLoading } = useLocaleTexts<ArtigosTexts>('artigos', fallbackTexts);
+  const { texts, loading: textsLoading } = useLocaleTexts<ArtigosTexts>('artigos');
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

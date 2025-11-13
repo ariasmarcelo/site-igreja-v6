@@ -1,0 +1,7 @@
+/* Index Page Specific Styles */
+
+/* Hero background pattern */
+.hero-pattern {
+  background-image: radial-gradient(circle at 2px 2px, #78716c 1px, transparent 0);
+  background-size: 40px 40px;
+}

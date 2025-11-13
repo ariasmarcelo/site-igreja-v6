@@ -15,30 +15,20 @@ import Purificacao from './Purificacao';
 import Artigos from './Artigos';
 import Testemunhos from './Testemunhos';
 import Tratamentos from './Tratamentos';
-import indexTexts from '@/locales/pt-BR/Index.json';
-import quemSomosTexts from '@/locales/pt-BR/QuemSomos.json';
-import contatoTexts from '@/locales/pt-BR/Contato.json';
-import purificacaoTexts from '@/locales/pt-BR/Purificacao.json';
-import artigosTexts from '@/locales/pt-BR/Artigos.json';
-import testemunhosTexts from '@/locales/pt-BR/Testemunhos.json';
-import tratamentosTexts from '@/locales/pt-BR/Tratamentos.json';
 
 export default function AdminConsole() {
   const pages = [
-    { id: 'index', name: 'Homepage', file: 'Index.json', content: indexTexts, component: Index },
-    { id: 'quemsomos', name: 'Quem Somos', file: 'QuemSomos.json', content: quemSomosTexts, component: QuemSomos },
-    { id: 'contato', name: 'Contato', file: 'Contato.json', content: contatoTexts, component: Contato },
-    { id: 'purificacao', name: 'Purificação', file: 'Purificacao.json', content: purificacaoTexts, component: Purificacao },
-    { id: 'artigos', name: 'Artigos', file: 'Artigos.json', content: artigosTexts, component: Artigos },
-    { id: 'testemunhos', name: 'Testemunhos', file: 'Testemunhos.json', content: testemunhosTexts, component: Testemunhos },
-    { id: 'tratamentos', name: 'Tratamentos', file: 'Tratamentos.json', content: tratamentosTexts, component: Tratamentos },
+    { id: 'index', name: 'Homepage', component: Index },
+    { id: 'quemsomos', name: 'Quem Somos', component: QuemSomos },
+    { id: 'contato', name: 'Contato', component: Contato },
+    { id: 'purificacao', name: 'Purificação', component: Purificacao },
+    { id: 'artigos', name: 'Artigos', component: Artigos },
+    { id: 'testemunhos', name: 'Testemunhos', component: Testemunhos },
+    { id: 'tratamentos', name: 'Tratamentos', component: Tratamentos },
   ];
 
-  const initialContent: Record<string, string> = {};
-  pages.forEach(page => {
-    initialContent[page.id] = JSON.stringify(page.content, null, 2);
-  });
-
+  const [pageContents, setPageContents] = useState<Record<string, unknown>>({});
+  const [loadingContents, setLoadingContents] = useState(true);
   const [editorMode, setEditorMode] = useState<'visual' | 'json'>(() => {
     return (localStorage.getItem('adminConsole_editorMode') as 'visual' | 'json') || 'visual';
   });
@@ -51,10 +41,40 @@ export default function AdminConsole() {
   const [jsonTab, setJsonTab] = useState(() => {
     return localStorage.getItem('adminConsole_jsonTab') || 'index';
   });
-  const [editedContent, setEditedContent] = useState<Record<string, string>>(initialContent);
+  const [editedContent, setEditedContent] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+
+  // Carregar conteúdos via API
+  useEffect(() => {
+    const loadAllContents = async () => {
+      const contents: Record<string, unknown> = {};
+      const editedContents: Record<string, string> = {};
+      
+      for (const page of pages) {
+        try {
+          const response = await fetch(API_ENDPOINTS.getContent(page.id));
+          if (response.ok) {
+            const data = await response.json();
+            contents[page.id] = data.content || {};
+            editedContents[page.id] = JSON.stringify(data.content || {}, null, 2);
+          }
+        } catch (error) {
+          console.error(`Failed to load ${page.id}:`, error);
+          contents[page.id] = {};
+          editedContents[page.id] = '{}';
+        }
+      }
+      
+      setPageContents(contents);
+      setEditedContent(editedContents);
+      setLoadingContents(false);
+    };
+    
+    loadAllContents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Salvar todos os estados de abas no localStorage
   useEffect(() => {
@@ -115,9 +135,20 @@ export default function AdminConsole() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = page.file;
+    a.download = `${page.id}.json`;
     a.click();
   };
+
+  if (loadingContents) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Carregando conteúdos da API...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">

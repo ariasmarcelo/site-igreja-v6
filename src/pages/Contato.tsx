@@ -1,15 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, Clock, MessageCircle, ShieldCheck, Mic, PhoneCall, MessageSquare, MessagesSquare, MailOpen } from 'lucide-react';
-import fallbackTexts from '@/locales/pt-BR/Contato.json';
+import { Mail, Clock, MessageCircle, ShieldCheck, Phone } from 'lucide-react';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
 
-type ContatoTexts = typeof fallbackTexts;
+interface ContatoTexts {
+  header: { title: string; subtitle: string };
+  whatsapp: { title: string; description: string; button: string };
+  [key: string]: any;
+}
 
 export default function Contato() {
   usePageStyles('contato');
-  const { texts } = useLocaleTexts<ContatoTexts>('contato', fallbackTexts);
+  const { texts } = useLocaleTexts<ContatoTexts>('contato');
   const handleWhatsAppClick = () => {
     const phoneNumber = '5511949555555';
     const message = encodeURIComponent('Olá! Quero saber mais sobre **O Trabalho de Resgate!**');
@@ -19,148 +22,192 @@ export default function Contato() {
   if (!texts) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#FAF9F7] to-[#F5F3F0]">
-      {/* Header */}
-      <section className="py-16 bg-linear-to-r from-[#60a5fa] via-[#2563eb] to-[#60a5fa] text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(255,255,255,0.25),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_60%,rgba(255,255,255,0.2),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.15)_45%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.15)_55%,transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.1)_48%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.1)_52%,transparent_60%)]"></div>
+    <div className="min-h-screen bg-linear-to-b from-teal-50 via-emerald-50 to-cyan-50">
+      
+      {/* Hero Section */}
+      <section className="relative py-20 overflow-hidden bg-linear-to-r from-teal-600 via-emerald-600 to-teal-600">
+        {/* Background Effects */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-emerald-300 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-300 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="relative inline-block mb-6">
-              <Mail className="w-16 h-16 mx-auto drop-shadow-lg text-[#CFAF5A]" style={{
-                filter: 'drop-shadow(0 0 10px rgba(207, 175, 90, 0.5))'
-              }} />
+            {/* Mail Icon */}
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border-2 border-white/40 mb-8">
+              <Mail className="w-12 h-12 text-white" />
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg" data-json-key="contato.header.title">{texts.header.title}</h1>
-            <p className="text-xl opacity-90 drop-shadow-md" data-json-key="contato.header.subtitle">{texts.header.subtitle}</p>
+
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg" data-json-key="contato.header.title">
+              {texts.header.title}
+            </h1>
+            <p className="text-xl text-white/90 drop-shadow-md" data-json-key="contato.header.subtitle">
+              {texts.header.subtitle}
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Informações de Contato */}
-      <section className="py-16 bg-white">
+      {/* Main Content */}
+      <section className="py-8 relative">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto space-y-8">
             
-            {/* Nota sobre Avaliação Inicial */}
-            <Card className="mb-8 shadow-lg border-2 border-amber-200 bg-linear-to-br from-amber-50/50 to-yellow-50/30">
-              <CardContent className="p-6 sm:p-8">
-                <h2 className="text-2xl font-bold text-amber-900 mb-6 text-center" data-json-key="contato.initialAssessment.title">
+            {/* Sobre a Avaliação Inicial */}
+            <div className="bg-linear-to-br from-white via-amber-50/30 to-yellow-50/20 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-amber-200/60 shadow-xl">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-linear-to-br from-amber-400/30 to-yellow-400/30 border border-amber-300/50 mb-4">
+                  <Clock className="w-7 h-7 text-amber-700" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-amber-900 mb-3" data-json-key="contato.initialAssessment.title">
                   {texts.initialAssessment.title}
                 </h2>
+              </div>
                 
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* O Que Esperar */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-amber-800 mb-3 flex items-center gap-2" data-json-key="contato.initialAssessment.whatToExpect.title">
-                      <Clock className="w-[23px] h-[23px]" />
-                      {texts.initialAssessment.whatToExpect.title}
-                    </h3>
-                    <ul className="space-y-2">
-                      {texts.initialAssessment.whatToExpect.items.map((item: string, idx: number) => (
-                        <li key={idx} className="flex items-start gap-2 text-gray-700">
-                          <span className="text-amber-600 mt-1">•</span>
-                          <span className="text-sm" data-json-key={`contato.initialAssessment.whatToExpect.items[${idx}]`}>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* O Que Esperar */}
+                <div className="bg-white/60 rounded-2xl p-5 border border-amber-200/40">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-3 flex items-center gap-3" data-json-key="contato.initialAssessment.whatToExpect.title">
+                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                    {texts.initialAssessment.whatToExpect.title}
+                  </h3>
+                  <ul className="space-y-3">
+                    {texts.initialAssessment.whatToExpect.items.map((item: string, idx: number) => (
+                      <li key={idx} className="flex items-start gap-3 text-gray-700">
+                        <span className="text-amber-600 mt-1 font-bold">✦</span>
+                        <span data-json-key={`contato.initialAssessment.whatToExpect.items[${idx}]`}>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                  {/* Nosso Compromisso */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-amber-800 mb-3 flex items-center gap-2" data-json-key="contato.initialAssessment.commitment.title">
-                      <ShieldCheck className="w-6 h-6" />
-                      {texts.initialAssessment.commitment.title}
-                    </h3>
-                    <p className="text-gray-700 text-sm leading-relaxed" data-json-key="contato.initialAssessment.commitment.description">
+                {/* Nosso Compromisso */}
+                <div className="bg-white/60 rounded-2xl p-5 border border-amber-200/40">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-3 flex items-center gap-3" data-json-key="contato.initialAssessment.commitment.title">
+                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                    {texts.initialAssessment.commitment.title}
+                  </h3>
+                  <div className="flex items-start gap-3">
+                    <ShieldCheck className="w-7 h-7 text-amber-600 shrink-0 mt-1" />
+                    <p className="text-gray-700 leading-relaxed text-sm" data-json-key="contato.initialAssessment.commitment.description">
                       {texts.initialAssessment.commitment.description}
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Contato Direto */}
-              <Card className="shadow-xl border-2 border-[#25D366]">
-                <CardHeader className="bg-linear-to-r from-[#25D366] to-[#128C7E] text-white p-6">
-                  <CardTitle className="flex items-center gap-3 text-[25px] leading-none">
-                    <MessageCircle className="w-[30px] h-[30px] stroke-2 m-1.5" />
-                    <span data-json-key="contato.contactCard.title">{texts.contactCard.title}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <MessageCircle className="w-5 h-5 text-[#25D366] shrink-0" />
-                      <span data-json-key="contato.contactCard.whatsapp.label">{texts.contactCard.whatsapp.label}</span>
-                      <span data-json-key="contato.contactCard.whatsapp.number">{texts.contactCard.whatsapp.number}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-[#4A90A9] shrink-0" />
-                      <span data-json-key="contato.contactCard.email.address">{texts.contactCard.email.address}</span>
-                    </div>
+            {/* FAÇA CONTATO - DESTAQUE */}
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-linear-to-r from-green-300/20 via-green-400/30 to-green-300/20 rounded-3xl blur-2xl"></div>
+              
+              <div className="relative bg-linear-to-br from-white via-green-50/50 to-emerald-50/30 rounded-3xl p-8 md:p-12 border-2 border-green-300/60 shadow-2xl">
+                <div className="text-center mb-10">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-linear-to-br from-green-400 to-emerald-500 mb-6 shadow-lg shadow-green-400/50">
+                    <MessageCircle className="w-10 h-10 text-white" />
                   </div>
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-green-700 via-emerald-600 to-green-700 bg-clip-text text-transparent" data-json-key="contato.contactCard.title">
+                    {texts.contactCard.title}
+                  </h2>
+                  <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                    Entre em contato agora mesmo e dê o primeiro passo
+                  </p>
+                </div>
 
-                  <div className="pt-4">
+                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                  {/* WhatsApp Contact */}
+                  <div className="bg-white/80 rounded-2xl p-6 border border-green-200/60 shadow-lg">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center">
+                        <MessageCircle className="w-6 h-6 text-[#25D366]" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600" data-json-key="contato.contactCard.whatsapp.label">
+                          {texts.contactCard.whatsapp.label}
+                        </p>
+                        <p className="text-lg font-semibold text-gray-900" data-json-key="contato.contactCard.whatsapp.number">
+                          {texts.contactCard.whatsapp.number}
+                        </p>
+                      </div>
+                    </div>
+
                     <Button
                       onClick={handleWhatsAppClick}
-                      className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                      className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
                     >
                       <MessageCircle className="w-6 h-6" />
-                      <span data-json-key="contato.contactCard.whatsappButton.text">{texts.contactCard.whatsappButton.text}</span>
+                      <span data-json-key="contato.contactCard.whatsappButton.text">
+                        {texts.contactCard.whatsappButton.text}
+                      </span>
                     </Button>
+
+                    <p className="text-sm text-center text-gray-600 mt-4" data-json-key="contato.contactCard.whatsappButton.description">
+                      {texts.contactCard.whatsappButton.description}
+                    </p>
                   </div>
 
-                  <p className="text-center pt-3" data-json-key="contato.contactCard.whatsappButton.description">{texts.contactCard.whatsappButton.description}</p>
-                </CardContent>
-              </Card>
+                  {/* Email & Hours */}
+                  <div className="space-y-4">
+                    {/* Email */}
+                    <div className="bg-white/80 rounded-2xl p-6 border border-violet-200/60 shadow-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-violet-100 flex items-center justify-center">
+                          <Mail className="w-6 h-6 text-violet-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Email</p>
+                          <p className="text-base font-semibold text-gray-900" data-json-key="contato.contactCard.email.address">
+                            {texts.contactCard.email.address}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-              {/* Horários */}
-              <Card className="shadow-xl border-2 border-[#C0C4C7]">
-                <CardHeader className="bg-linear-to-r from-[#C0C4C7] to-[#9EA2A5] text-black p-6 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.3),transparent_70%)]"></div>
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.25),transparent_70%)]"></div>
-                  <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.2)_45%,rgba(255,255,255,0.25)_50%,rgba(255,255,255,0.2)_55%,transparent_70%)]"></div>
-                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.15)_48%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.15)_52%,transparent_60%)]"></div>
-                  <CardTitle className="flex items-center gap-3 text-[25px] leading-none relative z-10">
-                    <Clock className="w-8 h-8 stroke-2 m-0.5" />
-                    <span data-json-key="contato.businessHours.title">{texts.businessHours.title}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-2 text-[16px] text-gray-700">
-                    <p data-json-key="contato.businessHours.hours.weekdays">{texts.businessHours.hours.weekdays}</p>
-                    <p data-json-key="contato.businessHours.hours.saturday">{texts.businessHours.hours.saturday}</p>
+                    {/* Horários */}
+                    <div className="bg-white/80 rounded-2xl p-6 border border-slate-200/60 shadow-lg">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                          <Clock className="w-6 h-6 text-slate-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 mb-2" data-json-key="contato.businessHours.title">
+                            {texts.businessHours.title}
+                          </p>
+                          <p className="text-sm text-gray-700" data-json-key="contato.businessHours.hours.weekdays">
+                            {texts.businessHours.hours.weekdays}
+                          </p>
+                          <p className="text-sm text-gray-700" data-json-key="contato.businessHours.hours.saturday">
+                            {texts.businessHours.hours.saturday}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Perguntas Frequentes */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-json-key="contato.faq.title">
-              {texts.faq.title}
-            </h2>
-            <div className="space-y-6">
-              {texts.faq.items.map((qa: { question: string; answer: string }, idx: number) => (
-                <Card className="shadow-lg" key={idx}>
-                  <CardHeader>
-                    <CardTitle data-json-key={`contato.faq.items[${idx}].question`}>{qa.question}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p data-json-key={`contato.faq.items[${idx}].answer`}>{qa.answer}</p>
-                  </CardContent>
-                </Card>
-              ))}
+            {/* Perguntas Frequentes */}
+            <div className="bg-linear-to-br from-white via-slate-50/30 to-gray-50/20 rounded-3xl p-8 md:p-12 border border-slate-200/60 shadow-xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-slate-900" data-json-key="contato.faq.title">
+                {texts.faq.title}
+              </h2>
+              <div className="space-y-6 max-w-3xl mx-auto">
+                {texts.faq.items.map((qa: { question: string; answer: string }, idx: number) => (
+                  <div key={idx} className="bg-white/70 rounded-2xl p-6 border border-slate-200/40 shadow-md hover:shadow-lg transition-shadow">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-3" data-json-key={`contato.faq.items[${idx}].question`}>
+                      {qa.question}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed" data-json-key={`contato.faq.items[${idx}].answer`}>
+                      {qa.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
+
           </div>
         </div>
       </section>

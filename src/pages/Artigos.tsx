@@ -5,13 +5,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookOpen, Calendar, Clock, Tag, User, Sparkles, Book, Heart, Infinity as InfinityIcon, Lightbulb, Scroll, Microscope, Atom } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import fallbackTexts from '@/locales/pt-BR/Artigos.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import { usePageStyles } from '@/hooks/usePageStyles';
+
 import { supabase } from '@/lib/supabase';
 import PageLoader from '@/components/PageLoader';
 
-type ArtigosTexts = typeof fallbackTexts;
+interface ArtigosTexts {
+  header: { title: string; subtitle: string };
+  tabs: { esoterica: string; cientifica: string; all: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 
 interface BlogPost {
   id: string;
@@ -31,7 +36,7 @@ interface BlogPost {
 
 export default function Artigos() {
   usePageStyles('artigos');
-  const { texts, loading: textsLoading, error: textsError } = useLocaleTexts<ArtigosTexts>('artigos', fallbackTexts);
+  const { texts, loading: textsLoading, error: textsError } = useLocaleTexts<ArtigosTexts>('artigos');
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('esoterica');

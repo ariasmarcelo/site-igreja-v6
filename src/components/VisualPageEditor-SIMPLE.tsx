@@ -230,7 +230,7 @@ export default function VisualPageEditor({
         
         const saveEdit = () => {
           const newText = textarea.value;
-          let saveKey = elementId.replace(/_dup_\d+$/, '');
+          const saveKey = elementId.replace(/_dup_\d+$/, '');
           
           editableElement.textContent = newText;
           localEdits.current.set(saveKey, newText);

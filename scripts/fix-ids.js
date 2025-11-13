@@ -271,6 +271,75 @@ pages.forEach(pageFile => {
   log(`📄 Processando: ${pageFile}`);
   log(`   Total de usos de texts: ${textsMatches.length}`);
   
+  // ========================================================================
+  // DETECÇÃO DE DUPLICAÇÕES
+  // ========================================================================
+  
+  const idUsageMap = new Map(); // key -> [{line, tag, usage}]
+  const duplicates = [];
+  
+  // Primeiro passo: coletar todos os data-json-key existentes
+  const dataJsonKeyRegex = /data-json-key\s*=\s*(?:"([^"]+)"|{`([^`]+)`})/g;
+  let keyMatch;
+  
+  while ((keyMatch = dataJsonKeyRegex.exec(content)) !== null) {
+    const key = keyMatch[1] || keyMatch[2];
+    const position = keyMatch.index;
+    const lineNumber = content.substring(0, position).split('\n').length;
+    
+    // Encontrar contexto (tag name aproximado)
+    const beforeKey = content.substring(Math.max(0, position - 100), position);
+    const tagMatch = beforeKey.match(/<(\w+)[^>]*$/);
+    const tagName = tagMatch ? tagMatch[1] : 'unknown';
+    
+    if (!idUsageMap.has(key)) {
+      idUsageMap.set(key, []);
+    }
+    
+    idUsageMap.get(key).push({
+      line: lineNumber,
+      tag: tagName,
+      position
+    });
+  }
+  
+  // Detectar duplicações
+  for (const [key, usages] of idUsageMap.entries()) {
+    if (usages.length > 1) {
+      duplicates.push({
+        key,
+        count: usages.length,
+        locations: usages
+      });
+    }
+  }
+  
+  // Reportar duplicações
+  if (duplicates.length > 0) {
+    console.log(`\n   🔴 DUPLICAÇÕES DETECTADAS: ${duplicates.length} IDs duplicados\n`);
+    
+    duplicates.forEach(dup => {
+      console.log(`   ⚠️  ID duplicado: "${dup.key}" (${dup.count}x)`);
+      dup.locations.forEach((loc, idx) => {
+        console.log(`      ${idx + 1}. Linha ${loc.line} - <${loc.tag}>`);
+      });
+      console.log('');
+    });
+    
+    // Sugestão de correção
+    if (CHECK_ONLY) {
+      console.log(`   💡 Para corrigir duplicações, edite manualmente as keys para torná-las únicas.`);
+      console.log(`      Exemplo: "${duplicates[0].key}" → "${duplicates[0].key}_1", "${duplicates[0].key}_2", etc.\n`);
+    }
+    
+    pageResult.duplicates = duplicates;
+    totalIssues += duplicates.reduce((sum, d) => sum + d.count - 1, 0);
+  }
+  
+  // ========================================================================
+  // PROCESSAMENTO NORMAL (IDs AUSENTES)
+  // ========================================================================
+  
   // Processar de trás para frente para não bagunçar posições
   const matchesReversed = [...textsMatches].reverse();
   
@@ -367,10 +436,22 @@ results.forEach(result => {
   console.log(`${status} ${result.file}`);
   console.log(`   Total de elementos: ${result.totalUsages}`);
   
-  if (result.issues.length === 0) {
-    console.log(`   ✓ Todos com data-json-key correto`);
-  } else {
-    console.log(`   Problemas encontrados: ${result.issues.length}`);
+  // Mostrar duplicações primeiro
+  if (result.duplicates && result.duplicates.length > 0) {
+    console.log(`   🔴 IDs duplicados: ${result.duplicates.length}`);
+    result.duplicates.slice(0, 2).forEach(dup => {
+      console.log(`      "${dup.key}" usado ${dup.count}x (linhas: ${dup.locations.map(l => l.line).join(', ')})`);
+    });
+    if (result.duplicates.length > 2) {
+      console.log(`      ... e mais ${result.duplicates.length - 2} duplicações`);
+    }
+    console.log('');
+  }
+  
+  if (result.issues.length === 0 && (!result.duplicates || result.duplicates.length === 0)) {
+    console.log(`   ✓ Todos com data-json-key correto e único`);
+  } else if (result.issues.length > 0) {
+    console.log(`   Elementos sem ID: ${result.issues.length}`);
     
     if (CHECK_ONLY) {
       // Mostrar primeiros problemas
@@ -404,17 +485,26 @@ console.log(`   📄 Páginas processadas: ${totalPages}`);
 console.log(`   🔤 Total de elementos: ${totalElements}`);
 console.log(`   ${CHECK_ONLY ? '⚠️' : '✅'} Problemas ${CHECK_ONLY ? 'encontrados' : 'corrigidos'}: ${totalIssues}`);
 
+const totalDuplicates = results.reduce((sum, r) => sum + (r.duplicates?.length || 0), 0);
+if (totalDuplicates > 0) {
+  console.log(`   🔴 IDs duplicados encontrados: ${totalDuplicates}`);
+}
+
 if (CHECK_ONLY) {
-  if (totalIssues === 0) {
+  if (totalIssues === 0 && totalDuplicates === 0) {
     console.log(`\n✅ PERFEITO! Todas as páginas estão corretas!`);
-    console.log(`   Todos os ${totalElements} elementos editáveis têm data-json-key.\n`);
+    console.log(`   Todos os ${totalElements} elementos editáveis têm data-json-key único.\n`);
     process.exit(0);
   } else {
-    console.log(`\n⚠️  Encontrados ${totalIssues} elementos sem data-json-key.`);
-    console.log(`\n💡 Para corrigir automaticamente:\n`);
-    console.log(`   node scripts/ids.js --fix\n`);
-    console.log(`   Ou para preview das mudanças:\n`);
-    console.log(`   node scripts/ids.js --fix --dry-run\n`);
+    if (totalIssues > 0) {
+      console.log(`\n⚠️  Encontrados ${totalIssues} elementos sem data-json-key.`);
+      console.log(`\n💡 Para corrigir automaticamente:\n`);
+      console.log(`   node scripts/fix-ids.js --fix\n`);
+    }
+    if (totalDuplicates > 0) {
+      console.log(`\n🔴 Encontradas ${totalDuplicates} duplicações de IDs.`);
+      console.log(`   Estas precisam ser corrigidas manualmente para garantir unicidade.\n`);
+    }
     process.exit(1);
   }
 } else {

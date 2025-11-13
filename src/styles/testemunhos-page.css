@@ -1,0 +1,21 @@
+/* Testemunhos Page Specific Styles */
+
+/* Animated background orbs with different durations */
+.orb-1 {
+  animation-duration: 4s;
+}
+
+.orb-2 {
+  animation-duration: 6s;
+  animation-delay: 1s;
+}
+
+.orb-3 {
+  animation-duration: 5s;
+  animation-delay: 2s;
+}
+
+.orb-4 {
+  animation-duration: 7s;
+  animation-delay: 1.5s;
+}

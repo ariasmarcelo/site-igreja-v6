@@ -1583,48 +1583,26 @@ export default function VisualPageEditor({
         currentValue: f.currentValue
       })));
       
-      // Separar edições de texto e estilos
+      // Separar edições de texto (estilos agora são CSS estáticos)
       const textEdits: Record<string, { newText: string }> = {};
-      const styleEdits: Record<string, Record<string, string>> = {}; // Objeto com propriedades CSS
       
       modifiedFields.forEach(field => {
+        // Ignorar campos de estilo - CSS agora é estático em arquivos
         if (field.key.endsWith('__styles') || field.key.endsWith('.styles')) {
-          // Estilos CSS - currentValue pode ser objeto ou string JSON
-          let stylesObj: Record<string, string>;
-          
-          if (typeof field.currentValue === 'string') {
-            // Se for string, fazer parse
-            try {
-              stylesObj = JSON.parse(field.currentValue);
-            } catch (e) {
-              console.error(`Erro ao parsear estilos de ${field.key}:`, e);
-              return;
-            }
-          } else {
-            // Se já for objeto, usar direto
-            stylesObj = field.currentValue as Record<string, string>;
-          }
-          
-          styleEdits[field.key.replace(/__styles$/, '').replace(/\.styles$/, '')] = stylesObj;
-          console.log('📝 Adicionado a styleEdits:', {
-            originalKey: field.key,
-            cleanKey: field.key.replace(/__styles$/, '').replace(/\.styles$/, ''),
-            stylesObj
-          });
-        } else {
-          // Textos/conteúdo - formato correto: objeto com newText
-          const textValue = typeof field.currentValue === 'string'
-            ? field.currentValue
-            : String(field.currentValue);
-          textEdits[field.key] = { newText: textValue };
+          console.log('⏭️ Ignorando campo de estilo (CSS estático):', field.key);
+          return;
         }
+        
+        // Apenas textos/conteúdo
+        const textValue = typeof field.currentValue === 'string'
+          ? field.currentValue
+          : String(field.currentValue);
+        textEdits[field.key] = { newText: textValue };
       });
       
       console.log('📝 Text edits:', Object.keys(textEdits).length);
-      console.log('💅 Style edits:', Object.keys(styleEdits).length);
-      console.log('� Modified fields:', modifiedFields.map(f => ({ key: f.key, isStyle: f.key.includes('styles') })));
-      console.log('🎨 Style edits detail:', styleEdits);
-      console.log('�📤 Enviando para API:', textEdits);
+      console.log('📋 Modified fields:', modifiedFields.map(f => f.key));
+      console.log('📤 Enviando para API (somente texto):', textEdits);
       
       // LOG DETALHADO - Mostrar cada edit individualmente
       console.group('🔍 DETALHES DAS EDIÇÕES:');
@@ -1694,69 +1672,7 @@ export default function VisualPageEditor({
         }
       }
       
-      // Salvar ESTILOS via /api/save-styles
-      if (Object.keys(styleEdits).length > 0) {
-        try {
-          console.log('💅 GERANDO CSS de styleEdits:', styleEdits);
-          
-          // Converter styleEdits para CSS string com seletores corretos
-          const cssString = Object.entries(styleEdits)
-            .map(([jsonKey, stylesObj]) => {
-              console.log(`   Processando ${jsonKey}:`, stylesObj);
-              
-              // stylesObj já é um objeto Record<string, string>
-              const cssProps = Object.entries(stylesObj)
-                .map(([prop, value]) => `${prop}: ${value};`)
-                .join(' ');
-              return `[data-json-key="${jsonKey}"] {\n  ${cssProps}\n}`;
-            })
-            .join('\n\n');
-          
-          const payload = { pageId, css: cssString };
-          console.log(`\n📤 ENVIANDO ESTILOS PARA API:`);
-          console.log(`   URL: ${API_ENDPOINTS.saveStyles}`);
-          console.log(`   PageId: ${pageId}`);
-          console.log(`   CSS:\n${cssString}`);
-          console.log(`   Payload:`, payload);
-          
-          const response = await fetch(API_ENDPOINTS.saveStyles, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          
-          console.log('✅ FETCH COMPLETOU! Status:', response.status);
-          
-          if (!response.ok) {
-            throw new Error(`API retornou status ${response.status}`);
-          }
-          
-          const result = await response.json();
-          console.log('✅ ESTILOS SALVOS:', result);
-          savedCount += Object.keys(styleEdits).length;
-        } catch (apiError) {
-          console.error('API error (styles):', apiError);
-          
-          let errorMessage = '✗ Erro ao salvar estilos. ';
-          
-          if (apiError instanceof TypeError && apiError.message.includes('fetch')) {
-            errorMessage += `API não acessível em ${API_ENDPOINTS.saveStyles}. Verifique se o servidor local está rodando (porta 3001).`;
-          } else if (apiError instanceof Error) {
-            errorMessage += apiError.message;
-          } else {
-            errorMessage += 'Erro desconhecido. Verifique o console para detalhes.';
-          }
-          
-          setMessage({ 
-            type: 'error', 
-            text: errorMessage
-          });
-          setTimeout(() => setMessage(null), 12000);
-          return;
-        }
-      }
-      
-      // Sucesso total - VALIDAÇÃO EM MALHA FECHADA (sem reload)
+      // Sucesso - VALIDAÇÃO EM MALHA FECHADA (sem reload)
       // console.log('✅ Salvamento concluído, validando em malha fechada...');
       
       setMessage({ 
@@ -1822,8 +1738,13 @@ export default function VisualPageEditor({
           return current;
         };
         
-        // Atualizar DOM com valores do DB
+        // Atualizar DOM com valores do DB (APENAS TEXTO)
         fields.forEach(field => {
+          // Ignorar campos de estilo - CSS é estático agora
+          if (field.key.includes('__styles') || field.key.includes('.styles')) {
+            return;
+          }
+          
           const element = document.querySelector(`[data-editable="${field.key}"]`) as HTMLElement;
           if (!element) return;
           
@@ -1831,24 +1752,11 @@ export default function VisualPageEditor({
           const dbValue = getNestedValue(contentJson, field.key);
           
           if (dbValue !== undefined && dbValue !== null) {
-            if (!field.key.includes('__styles') && !field.key.includes('.styles')) {
-              // Atualizar texto no DOM
-              const newText = String(dbValue);
-              if (element.textContent !== newText) {
-                // console.log(`🔄 Sincronizando DOM [${field.key}]: "${element.textContent}" → "${newText}"`);
-                element.textContent = newText;
-              }
-            } else {
-              // Atualizar estilos no DOM
-              try {
-                const styles = typeof dbValue === 'string' ? JSON.parse(dbValue) : dbValue;
-                Object.entries(styles).forEach(([prop, styleValue]) => {
-                  element.style.setProperty(prop, styleValue as string);
-                });
-                console.log(`🎨 Sincronizando estilos [${field.key}]`);
-              } catch (e) {
-                console.error('Erro ao aplicar estilos validados:', e);
-              }
+            // Atualizar texto no DOM
+            const newText = String(dbValue);
+            if (element.textContent !== newText) {
+              console.log(`🔄 Sincronizando DOM [${field.key}]`);
+              element.textContent = newText;
             }
           }
         });
@@ -1869,19 +1777,22 @@ export default function VisualPageEditor({
         // PASSO 3: Trigger refresh no hook useLocaleTexts para re-buscar do Supabase
         console.log(`🔄 Triggering refresh for page: ${pageId}`);
         triggerRefresh(pageId);
-        
-        // PASSO 3.5: Trigger refresh dos estilos também
-        console.log(`🎨 Triggering styles refresh for page: ${pageId}`);
-        triggerStylesRefresh(pageId);
+        // Estilos agora são CSS estáticos - não há refresh de estilos
         
         // PASSO 4: Aguardar React re-renderizar com novos dados do Supabase
         setTimeout(() => {
-          setFields(prev => prev.map(f => ({
-            ...f,
-            // Converter currentValue para string se for objeto (estilos)
-            originalValue: typeof f.currentValue === 'string' ? f.currentValue : JSON.stringify(f.currentValue),
-            isModified: false // Resetar flag de modificação
-          })));
+          setFields(prev => prev.map(f => {
+            // Ignorar campos de estilo
+            if (f.key.includes('__styles') || f.key.includes('.styles')) {
+              return f;
+            }
+            
+            return {
+              ...f,
+              originalValue: typeof f.currentValue === 'string' ? f.currentValue : String(f.currentValue),
+              isModified: false
+            };
+          }));
           setMessage(null);
           
           // PASSO 5: Desativar modo de edição e voltar ao estado de visualização

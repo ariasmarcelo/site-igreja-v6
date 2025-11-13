@@ -35,7 +35,7 @@ const iconCategories = {
   'Navegação & Direção': [
     'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'ChevronRight', 'ChevronLeft',
     'ChevronUp', 'ChevronDown', 'ChevronsRight', 'ChevronsLeft', 'Navigation',
-    'Compass', 'MapPin', 'Map', 'Route'
+    'Compass', 'MapPin', 'Map', 'Route', 'ArrowLeftRight', 'ArrowUpDown'
   ],
   'Interface & Ações': [
     'Menu', 'X', 'Plus', 'Minus', 'Check', 'CheckCircle', 'XCircle',

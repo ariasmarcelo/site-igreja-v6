@@ -15,12 +15,10 @@ export const API_BASE_URL = isDevelopment
 export const API_ENDPOINTS = {
   // Conteúdo
   getContent: (pageId: string) => `${API_BASE_URL}/api/content/${pageId}`,
-  getStyles: (pageId: string) => `${API_BASE_URL}/api/styles/${pageId}`,
   
   // Salvamento
   saveJson: `${API_BASE_URL}/api/save-json`,
   saveVisualEdits: `${API_BASE_URL}/api/save-visual-edits`,
-  saveStyles: `${API_BASE_URL}/api/save-styles`,
   
   // Blog
   getBlogPosts: `${API_BASE_URL}/api/blog-posts`,

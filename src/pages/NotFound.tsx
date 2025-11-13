@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button';
-import fallbackTexts from '@/locales/pt-BR/NotFound.json';
 import { useLocaleTexts } from '@/hooks/useLocaleTexts';
 import PageLoader from '@/components/PageLoader';
 
-type NotFoundTexts = typeof fallbackTexts;
+interface NotFoundTexts {
+  error: { code: string; title: string; description: string };
+  buttons: { home: string; back: string };
+}
 
 export default function NotFoundPage() {
-  const { texts, loading, error } = useLocaleTexts<NotFoundTexts>('notfound', fallbackTexts);
+  const { texts, loading, error } = useLocaleTexts<NotFoundTexts>('notfound');
   
   if (!texts) return null;
   
