@@ -170,8 +170,8 @@ const Navigation = memo(() => {
 });
 
 const App = () => {
-  // Use basename apenas em produção
-  const basename = import.meta.env.MODE === 'production' ? '/site-igreja-v6' : '/';
+  // Vercel serve na raiz, não precisa basename
+  const basename = '/';
   
   return (
     <TooltipProvider>
