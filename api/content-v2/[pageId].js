@@ -69,15 +69,45 @@ module.exports = async (req, res) => {
         
         // Navegar/criar estrutura aninhada
         for (let i = 0; i < keys.length - 1; i++) {
-          if (!current[keys[i]]) {
-            current[keys[i]] = {};
+          const key = keys[i];
+          
+          // Detectar índice de array: "items[0]" ou "phases[1]"
+          const arrayMatch = key.match(/^(.+)\[(\d+)\]$/);
+          
+          if (arrayMatch) {
+            const arrayName = arrayMatch[1];
+            const arrayIndex = parseInt(arrayMatch[2]);
+            
+            if (!current[arrayName]) {
+              current[arrayName] = [];
+            }
+            if (!current[arrayName][arrayIndex]) {
+              current[arrayName][arrayIndex] = {};
+            }
+            current = current[arrayName][arrayIndex];
+          } else {
+            if (!current[key]) {
+              current[key] = {};
+            }
+            current = current[key];
           }
-          current = current[keys[i]];
         }
         
         // Atribuir valor final (content é JSONB com locale)
         const lastKey = keys[keys.length - 1];
-        current[lastKey] = entry.content['pt-BR'] || entry.content;
+        const arrayMatch = lastKey.match(/^(.+)\[(\d+)\]$/);
+        
+        if (arrayMatch) {
+          const arrayName = arrayMatch[1];
+          const arrayIndex = parseInt(arrayMatch[2]);
+          
+          if (!current[arrayName]) {
+            current[arrayName] = [];
+          }
+          current[arrayName][arrayIndex] = entry.content['pt-BR'] || entry.content;
+        } else {
+          current[lastKey] = entry.content['pt-BR'] || entry.content;
+        }
       });
 
       // STEP 3: Buscar footer compartilhado (page_contents com page_id NULL)
