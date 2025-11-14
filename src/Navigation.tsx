@@ -1,5 +1,3 @@
-import { Toaster } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useState, useEffect, lazy, Suspense, memo } from 'react';
 import { Menu, X } from 'lucide-react';
@@ -174,11 +172,9 @@ const Navigation = () => {
   const basename = '/';
   
   return (
-    <TooltipProvider>
-      <Toaster />
-      <BrowserRouter basename={basename}>
-        <ScrollManager />
-        <NavigationMenu />
+    <BrowserRouter basename={basename}>
+      <ScrollManager />
+      <NavigationMenu />
 
         {/* Routes */}
         <Routes>
@@ -206,7 +202,6 @@ const Navigation = () => {
         {/* WhatsApp Button */}
         <WhatsAppButton />
       </BrowserRouter>
-    </TooltipProvider>
   );
 };
 
