@@ -1,10 +1,167 @@
-// Vercel Serverless Function - Get Content with Shared Content (NULL page_id)
+// Vercel Serverless Function - Get Content with Cache-First Strategy
 const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs').promises;
+const path = require('path');
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Helper: Carregar conteúdo do cache local (fallback JSONs)
+async function loadFromCache(pageId) {
+  const fallbacksDir = path.join(process.cwd(), 'src', 'locales', 'pt-BR');
+  
+  try {
+    const files = await fs.readdir(fallbacksDir);
+    const pageFiles = files.filter(f => f.startsWith(`${pageId}.`) && f.endsWith('.json'));
+    
+    if (pageFiles.length === 0) {
+      return null; // Cache vazio para esta página
+    }
+    
+    const pageContent = {};
+    
+    for (const file of pageFiles) {
+      const filePath = path.join(fallbacksDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+      const value = JSON.parse(content);
+      
+      // Extrair caminho do nome do arquivo: "Index.hero.title.json" → ["hero", "title"]
+      const jsonKey = file.replace(`${pageId}.`, '').replace('.json', '');
+      const keys = jsonKey.split('.');
+      
+      let current = pageContent;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        const arrayMatch = key.match(/^(.+)\[(\d+)\]$/);
+        
+        if (arrayMatch) {
+          const arrayName = arrayMatch[1];
+          const arrayIndex = parseInt(arrayMatch[2]);
+          if (!current[arrayName]) current[arrayName] = [];
+          if (!current[arrayName][arrayIndex]) current[arrayName][arrayIndex] = {};
+          current = current[arrayName][arrayIndex];
+        } else {
+          if (!current[key]) current[key] = {};
+          current = current[key];
+        }
+      }
+      
+      const lastKey = keys[keys.length - 1];
+      const arrayMatch = lastKey.match(/^(.+)\[(\d+)\]$/);
+      
+      if (arrayMatch) {
+        const arrayName = arrayMatch[1];
+        const arrayIndex = parseInt(arrayMatch[2]);
+        if (!current[arrayName]) current[arrayName] = [];
+        current[arrayName][arrayIndex] = value;
+      } else {
+        current[lastKey] = value;
+      }
+    }
+    
+    return pageContent;
+  } catch (error) {
+    console.warn(`⚠️  Erro ao carregar cache: ${error.message}`);
+    return null;
+  }
+}
+
+// Helper: Buscar do DB e criar cache
+async function loadFromDBAndCache(pageId) {
+  // Buscar do DB
+  const { data: entries, error: entriesError } = await supabase
+    .from('text_entries')
+    .select('json_key, content')
+    .in('page_id', [pageId, '__shared__']);
+
+  if (entriesError) throw entriesError;
+  if (!entries || entries.length === 0) return null;
+
+  // Reconstruir objeto
+  const pageContent = {};
+  
+  entries.forEach(entry => {
+    const jsonKey = entry.json_key;
+    const keys = jsonKey.startsWith(pageId + '.') 
+      ? jsonKey.split('.').slice(1)
+      : jsonKey.split('.');
+    
+    if (keys.length === 0) return;
+    
+    let current = pageContent;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      const arrayMatch = key.match(/^(.+)\[(\d+)\]$/);
+      
+      if (arrayMatch) {
+        const arrayName = arrayMatch[1];
+        const arrayIndex = parseInt(arrayMatch[2]);
+        if (!current[arrayName]) current[arrayName] = [];
+        if (!current[arrayName][arrayIndex]) current[arrayName][arrayIndex] = {};
+        current = current[arrayName][arrayIndex];
+      } else {
+        if (!current[key]) current[key] = {};
+        current = current[key];
+      }
+    }
+    
+    const lastKey = keys[keys.length - 1];
+    const arrayMatch = lastKey.match(/^(.+)\[(\d+)\]$/);
+    
+    if (arrayMatch) {
+      const arrayName = arrayMatch[1];
+      const arrayIndex = parseInt(arrayMatch[2]);
+      if (!current[arrayName]) current[arrayName] = [];
+      current[arrayName][arrayIndex] = entry.content['pt-BR'] || entry.content;
+    } else {
+      current[lastKey] = entry.content['pt-BR'] || entry.content;
+    }
+  });
+
+  // Criar cache em background (não bloquear resposta)
+  createCacheFiles(pageId, pageContent).catch(err => 
+    console.warn(`⚠️  Erro ao criar cache: ${err.message}`)
+  );
+
+  return pageContent;
+}
+
+// Helper: Criar arquivos de cache
+async function createCacheFiles(pageId, content) {
+  const fallbacksDir = path.join(process.cwd(), 'src', 'locales', 'pt-BR');
+  await fs.mkdir(fallbacksDir, { recursive: true });
+
+  const flatten = (obj, prefix = '') => {
+    let result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      const newKey = prefix ? `${prefix}.${key}` : key;
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        Object.assign(result, flatten(value, newKey));
+      } else if (Array.isArray(value)) {
+        value.forEach((item, index) => {
+          if (item && typeof item === 'object') {
+            Object.assign(result, flatten(item, `${newKey}[${index}]`));
+          } else {
+            result[`${newKey}[${index}]`] = item;
+          }
+        });
+      } else {
+        result[newKey] = value;
+      }
+    }
+    return result;
+  };
+
+  const flat = flatten(content);
+  
+  for (const [key, value] of Object.entries(flat)) {
+    const fileName = `${pageId}.${key}.json`;
+    const filePath = path.join(fallbacksDir, fileName);
+    await fs.writeFile(filePath, JSON.stringify(value, null, 2), 'utf-8');
+  }
+}
 
 module.exports = async (req, res) => {
   // CORS headers
@@ -37,94 +194,44 @@ module.exports = async (req, res) => {
     console.log(`📦 Buscando conteúdo para página: ${pageId}`);
 
     try {
-      // STEP 1: Buscar entradas granulares da página (text_entries - onde os dados REALMENTE estão)
-      // Buscar tanto conteúdo da página quanto conteúdo compartilhado (__shared__)
-      const { data: entries, error: entriesError } = await supabase
-        .from('text_entries')
-        .select('json_key, content')
-        .in('page_id', [pageId, '__shared__']);
+      // ESTRATÉGIA CACHE-FIRST:
+      // 1. Tentar carregar do cache local (fallback JSONs)
+      console.log(`🔍 [1/2] Verificando cache local...`);
+      let pageContent = await loadFromCache(pageId);
+      
+      if (pageContent) {
+        console.log(`✅ Cache hit! Retornando do cache local`);
+        return res.status(200).json({ 
+          success: true, 
+          content: pageContent,
+          source: 'cache (local fallback JSONs)'
+        });
+      }
 
-      if (entriesError) throw entriesError;
+      // 2. Cache miss → Buscar do DB e criar cache
+      console.log(`⚠️  Cache miss! Buscando do DB...`);
+      pageContent = await loadFromDBAndCache(pageId);
 
-      if (!entries || entries.length === 0) {
+      if (!pageContent) {
         return res.status(404).json({ 
           success: false, 
           message: `Nenhum conteúdo encontrado para: ${pageId}` 
         });
       }
 
-      // STEP 2: Reconstruir objeto da página a partir das entradas granulares
-      // Conteúdo compartilhado (__shared__) é mesclado com conteúdo da página
-      const pageContent = {};
-      
-      entries.forEach(entry => {
-        const jsonKey = entry.json_key;
-        
-        // Conteúdo compartilhado: "footer.copyright" → "footer.copyright"
-        // Conteúdo da página: "pagina.secao.campo" → "secao.campo"
-        const keys = jsonKey.startsWith(pageId + '.') 
-          ? jsonKey.split('.').slice(1)  // Remove prefixo da página
-          : jsonKey.split('.');           // Mantém keys compartilhadas como estão
-        
-        if (keys.length === 0) return; // Skip se não houver keys
-        
-        let current = pageContent;
-        
-        // Navegar/criar estrutura aninhada
-        for (let i = 0; i < keys.length - 1; i++) {
-          const key = keys[i];
-          
-          // Detectar índice de array: "items[0]" ou "phases[1]"
-          const arrayMatch = key.match(/^(.+)\[(\d+)\]$/);
-          
-          if (arrayMatch) {
-            const arrayName = arrayMatch[1];
-            const arrayIndex = parseInt(arrayMatch[2]);
-            
-            if (!current[arrayName]) {
-              current[arrayName] = [];
-            }
-            if (!current[arrayName][arrayIndex]) {
-              current[arrayName][arrayIndex] = {};
-            }
-            current = current[arrayName][arrayIndex];
-          } else {
-            if (!current[key]) {
-              current[key] = {};
-            }
-            current = current[key];
-          }
-        }
-        
-        // Atribuir valor final (content é JSONB com locale)
-        const lastKey = keys[keys.length - 1];
-        const arrayMatch = lastKey.match(/^(.+)\[(\d+)\]$/);
-        
-        if (arrayMatch) {
-          const arrayName = arrayMatch[1];
-          const arrayIndex = parseInt(arrayMatch[2]);
-          
-          if (!current[arrayName]) {
-            current[arrayName] = [];
-          }
-          current[arrayName][arrayIndex] = entry.content['pt-BR'] || entry.content;
-        } else {
-          current[lastKey] = entry.content['pt-BR'] || entry.content;
-        }
-      });
-
+      console.log(`✅ DB hit! Cache criado em background`);
       return res.status(200).json({ 
         success: true, 
         content: pageContent,
-        source: 'text_entries (granular + shared)'
+        source: 'database (cache created)'
       });
 
     } catch (dbError) {
-      console.error(`❌ Erro ao buscar do DB:`, dbError.message);
+      console.error(`❌ Erro ao buscar conteúdo:`, dbError.message);
       
       return res.status(500).json({ 
         success: false, 
-        message: 'Erro ao buscar conteúdo do banco de dados',
+        message: 'Erro ao buscar conteúdo',
         error: dbError.message
       });
     }
