@@ -1,21 +1,34 @@
 // API para atualizar cache em background
 const { createClient } = require('@supabase/supabase-js');
-const { open } = require('lmdb');
-const path = require('path');
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const IS_SERVERLESS = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+
 function log(msg) {
   console.log(`[${new Date().toISOString()}] [CACHE-UPDATE] ${msg}`);
 }
 
+// LMDB only in local environments
+let lmdb = null;
+if (!IS_SERVERLESS) {
+  try {
+    lmdb = require('lmdb');
+  } catch (e) {
+    log(`⚠️  LMDB not available`);
+  }
+}
+
 // Singleton DB instance
 function getDB() {
+  if (IS_SERVERLESS || !lmdb) return null;
+  
   if (!global.__lmdbCache) {
+    const path = require('path');
     const dbPath = path.join(process.cwd(), '.cache', 'content-lmdb');
-    global.__lmdbCache = open({ 
+    global.__lmdbCache = lmdb.open({ 
       path: dbPath, 
       compression: true,
       noSubdir: false,
@@ -45,21 +58,26 @@ async function updateSinglePageCache(pageId) {
     }
     
     log(`[BACKGROUND-UPDATE] ✅ Fetched ${entries.length} entries from DB (${Date.now() - startTime}ms)`);
-    log(`[BACKGROUND-UPDATE] 💾 Writing to cache...`);
     
     const db = getDB();
-    
-    for (const entry of entries) {
-      const cacheKey = entry.json_key;
-      const cacheEntry = {
-        data: entry.content['pt-BR'],
-        invalidatedAt: null
-      };
-      db.put(cacheKey, cacheEntry);
+    if (db) {
+      log(`[BACKGROUND-UPDATE] 💾 Writing to cache...`);
+      
+      for (const entry of entries) {
+        const cacheKey = entry.json_key;
+        const cacheEntry = {
+          data: entry.content['pt-BR'],
+          invalidatedAt: null
+        };
+        db.put(cacheKey, cacheEntry);
+      }
+      
+      await db.flushed;
+      log(`[BACKGROUND-UPDATE] ✅ Cache updated: ${pageId} (${entries.length} entries, ${Date.now() - startTime}ms)`);
+    } else {
+      log(`[BACKGROUND-UPDATE] ⚠️  Cache not available (serverless mode)`);
     }
     
-    await db.flushed;
-    log(`[BACKGROUND-UPDATE] ✅ Cache updated: ${pageId} (${entries.length} entries, ${Date.now() - startTime}ms)`);
     log(`[BACKGROUND-UPDATE] ━━━ COMPLETE ━━━\n`);
     
     return { success: true, entries: entries.length };

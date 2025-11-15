@@ -18,10 +18,15 @@ Write-Host ""
 Write-Host "[2/2] Iniciando Vercel Dev..." -ForegroundColor Yellow
 Write-Host "  Frontend + APIs Serverless" -ForegroundColor DarkGray
 Write-Host "  Aguardando inicializacao..." -ForegroundColor DarkGray
+Write-Host "  Logs sendo salvos em: logs\vercel-dev.log" -ForegroundColor DarkGray
 Write-Host ""
 
-# Iniciar Vercel Dev (escolhe porta automaticamente)
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$WorkDir'; vercel dev" -WorkingDirectory $WorkDir
+# Criar diretorio de logs se nao existir
+if (!(Test-Path "logs")) { New-Item -ItemType Directory -Path "logs" | Out-Null }
+
+# Iniciar Vercel Dev (escolhe porta automaticamente) e redirecionar para arquivo
+$logFile = Join-Path $WorkDir "logs\vercel-dev.log"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$WorkDir'; vercel dev 2>&1 | Tee-Object -FilePath '$logFile'" -WorkingDirectory $WorkDir
 Start-Sleep -Seconds 12
 
 Write-Host "=== Verificando Status ===" -ForegroundColor Cyan

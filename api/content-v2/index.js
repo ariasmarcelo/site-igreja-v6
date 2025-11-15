@@ -1,26 +1,56 @@
 const { createClient } = require('@supabase/supabase-js');
-const { open } = require('lmdb');
-const path = require('path');
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Detect if running in serverless environment (Vercel)
+const IS_SERVERLESS = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+
 function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
-// Singleton DB instance - LMDB handles multi-process access natively
+// LMDB is only available in local/non-serverless environments
+let lmdb = null;
+if (!IS_SERVERLESS) {
+  try {
+    lmdb = require('lmdb');
+    const path = require('path');
+    
+    // Singleton DB instance - LMDB handles multi-process access natively
+    function getDB() {
+      if (!global.__lmdbCache) {
+        const dbPath = path.join(process.cwd(), '.cache', 'content-lmdb');
+        global.__lmdbCache = lmdb.open({ 
+          path: dbPath, 
+          compression: true,
+          noSubdir: false,
+          maxReaders: 126
+        });
+        log(`[LMDB] ✅ Cache enabled (local environment)`);
+      }
+      return global.__lmdbCache;
+    }
+  } catch (e) {
+    log(`[LMDB] ⚠️  Not available, using direct DB access`);
+  }
+}
+
 function getDB() {
+  if (IS_SERVERLESS || !lmdb) {
+    return null; // No cache in serverless
+  }
   if (!global.__lmdbCache) {
+    const path = require('path');
     const dbPath = path.join(process.cwd(), '.cache', 'content-lmdb');
-    global.__lmdbCache = open({ 
+    global.__lmdbCache = lmdb.open({ 
       path: dbPath, 
       compression: true,
       noSubdir: false,
       maxReaders: 126
     });
-    // log(`[LMDB] ✅ Global cache initialized: ${dbPath}`);
+    log(`[LMDB] ✅ Cache enabled`);
   }
   return global.__lmdbCache;
 }
@@ -31,8 +61,13 @@ function getDB() {
 // Input: ["purificacao.header", "purificacao.intro.title"]
 // Output: { "purificacao.header": "text", "purificacao.intro.title": "text" } OR null for misses
 function loadPathsFromCache(paths) {
+  const db = getDB();
+  if (!db) {
+    // No cache in serverless - return all as misses
+    return { hits: {}, misses: paths };
+  }
+  
   try {
-    const db = getDB();
     const results = {};
     const misses = [];
     
@@ -59,12 +94,13 @@ function loadPathsFromCache(paths) {
 // PRIVATE: Save flat object to cache
 // Input: {"purificacao.header": "text", "purificacao.intro.title": "text", ...}
 async function _saveFlatObjectToCache(entries) {
+  const db = getDB();
+  if (!db) return; // Skip cache in serverless
+  
   const startTime = Date.now();
   
   try {
     // log(`[CACHE-WRITE] 💾 START saving ${Object.keys(entries).length} flat entries to cache`);
-    
-    const db = getDB();
     
     for (const [fullKey, content] of Object.entries(entries)) {
       db.put(fullKey, {
@@ -81,12 +117,13 @@ async function _saveFlatObjectToCache(entries) {
 }
 
 async function loadPageFromCache(pageId) {
+  const db = getDB();
+  if (!db) return null; // No cache in serverless
+  
   const startTime = Date.now();
   
   try {
     // log(`[CACHE-READ] 🔍 START loading from cache: pageId=${pageId}`);
-    
-    const db = getDB();
     const allKeys = Array.from(db.getKeys());
     
     // All entries now have consistent prefixes including __shared__
@@ -123,6 +160,8 @@ async function loadPageFromCache(pageId) {
 // Input: [{ json_key: "purificacao.header", content: { "pt-BR": "text" } }, ...]
 // For __shared__: receives "footer.trademark", saves as "__shared__.footer.trademark"
 async function _saveSupabaseEntriesToCache(entries, pageId) {
+  const db = getDB();
+  if (!db) return; // Skip cache in serverless
   const startTime = Date.now();
   
   try {
