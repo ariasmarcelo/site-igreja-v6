@@ -80,6 +80,8 @@ async function loadPageFromCache(pageId) {
     const db = connection.db;
     
     const allKeys = Array.from(db.getKeys());
+    
+    // All entries now have consistent prefixes including __shared__
     const pagePrefix = `${pageId}.`;
     const pageKeys = allKeys.filter(key => typeof key === 'string' && key.startsWith(pagePrefix));
     
@@ -115,7 +117,8 @@ async function loadPageFromCache(pageId) {
 
 // PRIVATE: Save Supabase entries to cache (converts format)
 // Input: [{ json_key: "purificacao.header", content: { "pt-BR": "text" } }, ...]
-async function _saveSupabaseEntriesToCache(entries) {
+// For __shared__: receives "footer.trademark", saves as "__shared__.footer.trademark"
+async function _saveSupabaseEntriesToCache(entries, pageId) {
   const startTime = Date.now();
   let connection = null;
   
@@ -126,7 +129,12 @@ async function _saveSupabaseEntriesToCache(entries) {
     const db = connection.db;
     
     for (const entry of entries) {
-      const cacheKey = entry.json_key; // Already includes pageId
+      // For __shared__, add pageId prefix (footer.* → __shared__.footer.*)
+      const isShared = pageId === '__shared__';
+      const cacheKey = isShared && !entry.json_key.startsWith('__shared__.')
+        ? `__shared__.${entry.json_key}`
+        : entry.json_key;
+      
       const cacheEntry = {
         data: entry.content['pt-BR'],
         invalidatedAt: null
@@ -140,8 +148,11 @@ async function _saveSupabaseEntriesToCache(entries) {
     log(`[CACHE-WRITE] ✅ Successfully saved ${entries.length} entries to LMDB (${Date.now() - startTime}ms)`);
     
     // Verify save
-    const testKey = entries[0]?.json_key;
-    if (testKey) {
+    if (entries[0]) {
+      const isShared = pageId === '__shared__';
+      const testKey = isShared && !entries[0].json_key.startsWith('__shared__.')
+        ? `__shared__.${entries[0].json_key}`
+        : entries[0].json_key;
       const verify = db.get(testKey);
       log(`[CACHE-WRITE] 🔍 Verification: key=${testKey} exists=${!!verify}`);
     }
@@ -214,7 +225,7 @@ async function loadPageFromDB(pageId) {
     
     // Save to cache
     log(`[DB-READ] 💾 Saving to cache...`);
-    await _saveSupabaseEntriesToCache(entries);
+    await _saveSupabaseEntriesToCache(entries, pageId);
     
     // Build results
     const results = {};
@@ -233,13 +244,12 @@ async function loadPageFromDB(pageId) {
 // ==================== RECONSTRUCTION ====================
 
 // Reconstruct nested object from flat entries
-// Input: { "purificacao.header.title": "text", "purificacao.header.subtitle": "text2" }
-// Output: { header: { title: "text", subtitle: "text2" } }
-// Special case: __shared__ entries don't have pageId prefix (footer.* not __shared__.footer.*)
+// Input: { "__shared__.footer.trademark": "text", "__shared__.footer.copyright": "text2" }
+// Output: { footer: { trademark: "text", copyright: "text2" } }
+// All entries now have consistent pageId prefix
 function reconstructObject(flatEntries, pageId) {
   const result = {};
   const prefix = `${pageId}.`;
-  const isShared = pageId === '__shared__';
   
   // Sort by depth
   const sorted = Object.keys(flatEntries).sort((a, b) => {
@@ -249,15 +259,10 @@ function reconstructObject(flatEntries, pageId) {
   });
   
   for (const fullKey of sorted) {
-    // For __shared__, keys don't have prefix (footer.* not __shared__.footer.*)
-    // For other pages: "purificacao.header.title" → "header.title"
-    let path;
-    if (isShared) {
-      path = fullKey; // Use as-is for shared content
-    } else {
-      if (!fullKey.startsWith(prefix)) continue;
-      path = fullKey.substring(prefix.length);
-    }
+    // All pages: "purificacao.header.title" → "header.title"
+    // Including __shared__: "__shared__.footer.trademark" → "footer.trademark"
+    if (!fullKey.startsWith(prefix)) continue;
+    const path = fullKey.substring(prefix.length);
     const parts = path.split('.');
     let current = result;
     
