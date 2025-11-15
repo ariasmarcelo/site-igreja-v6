@@ -43,49 +43,69 @@ const apiPlugin = () => ({
         });
       }
 
-      // Adapt Vite request to Vercel serverless format
-      const vercelReq = {
-        ...req,
-        query,
-        method: req.method,
-        url: req.url
+      // Parse POST body if present
+      const handleRequest = (body?: any) => {
+        // Adapt Vite request to Vercel serverless format
+        const vercelReq = {
+          ...req,
+          query,
+          body,
+          method: req.method,
+          url: req.url
+        };
+
+        const vercelRes = {
+          statusCode: 200,
+          setHeader: (key: string, value: string) => res.setHeader(key, value),
+          status: (code: number) => {
+            vercelRes.statusCode = code;
+            return vercelRes;
+          },
+          json: (data: any) => {
+            res.statusCode = vercelRes.statusCode;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(data));
+          },
+          end: (data?: string) => {
+            res.statusCode = vercelRes.statusCode;
+            res.end(data);
+          }
+        };
+        
+        // Load and execute the API handler
+        console.log('[API-DEV] ⚡ Executing handler');
+        
+        // Convert Windows path to file:// URL for dynamic import
+        const fileUrl = pathToFileURL(apiPath).href;
+        const timestamp = Date.now();
+        
+        import(`${fileUrl}?t=${timestamp}`).then((module: any) => {
+          const apiHandler = module.default || module;
+          return apiHandler(vercelReq, vercelRes);
+        }).catch((error: any) => {
+          console.error('[API-DEV] ❌ Error:', error.message);
+          console.error(error.stack);
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: error.message, stack: error.stack }));
+        });
       };
 
-      const vercelRes = {
-        statusCode: 200,
-        setHeader: (key: string, value: string) => res.setHeader(key, value),
-        status: (code: number) => {
-          vercelRes.statusCode = code;
-          return vercelRes;
-        },
-        json: (data: any) => {
-          res.statusCode = vercelRes.statusCode;
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(data));
-        },
-        end: (data?: string) => {
-          res.statusCode = vercelRes.statusCode;
-          res.end(data);
-        }
-      };
-      
-      // Load and execute the API handler
-      console.log('[API-DEV] ⚡ Executing handler');
-      
-      // Convert Windows path to file:// URL for dynamic import
-      const fileUrl = pathToFileURL(apiPath).href;
-      const timestamp = Date.now();
-      
-      import(`${fileUrl}?t=${timestamp}`).then((module: any) => {
-        const apiHandler = module.default || module;
-        return apiHandler(vercelReq, vercelRes);
-      }).catch((error: any) => {
-        console.error('[API-DEV] ❌ Error:', error.message);
-        console.error(error.stack);
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ error: error.message, stack: error.stack }));
-      });
+      // Handle POST/PUT body parsing
+      if (req.method === 'POST' || req.method === 'PUT') {
+        let body = '';
+        req.on('data', (chunk: any) => { body += chunk.toString(); });
+        req.on('end', () => {
+          try {
+            const parsedBody = body ? JSON.parse(body) : {};
+            handleRequest(parsedBody);
+          } catch (e) {
+            handleRequest({});
+          }
+        });
+      } else {
+        handleRequest();
+      }
     });
   }
 });

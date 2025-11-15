@@ -2,6 +2,11 @@
 const { open } = require('lmdb');
 const path = require('path');
 
+// Helper para logs com timestamp
+function poolLog(msg) {
+  console.log(`[${new Date().toISOString()}] [POOL] ${msg}`);
+}
+
 class LMDBConnectionPool {
   constructor() {
     if (LMDBConnectionPool.instance) {
@@ -15,8 +20,8 @@ class LMDBConnectionPool {
     this.waitingQueue = [];
     this.initialized = false;
     
-    console.log(`[POOL] 🏊 Initializing LMDB Connection Pool at ${this.dbPath}`);
-    console.log(`[POOL] 📊 Max connections: ${this.maxConnections}`);
+    poolLog(`🏊 Initializing LMDB Connection Pool at ${this.dbPath}`);
+    poolLog(`📊 Max connections: ${this.maxConnections}`);
     
     LMDBConnectionPool.instance = this;
   }
@@ -26,11 +31,11 @@ class LMDBConnectionPool {
    */
   initialize() {
     if (this.initialized) {
-      console.log('[POOL] ⚠️  Already initialized');
+      poolLog('⚠️  Already initialized');
       return;
     }
 
-    console.log('[POOL] 🔧 Creating initial connections...');
+    poolLog('🔧 Creating initial connections...');
     
     // Criar conexão base compartilhada
     this.sharedDB = open({
@@ -42,7 +47,7 @@ class LMDBConnectionPool {
     });
 
     this.initialized = true;
-    console.log('[POOL] ✅ Pool initialized successfully');
+    poolLog('✅ Pool initialized successfully');
   }
 
   /**
@@ -53,7 +58,7 @@ class LMDBConnectionPool {
     const requestId = `REQ_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
     
-    console.log(`[POOL] 🔒 [${requestId}] Requesting connection (active: ${this.activeConnections}/${this.maxConnections})`);
+    poolLog(`🔒 [${requestId}] Requesting connection (active: ${this.activeConnections}/${this.maxConnections})`);
 
     if (!this.initialized) {
       this.initialize();
@@ -63,7 +68,7 @@ class LMDBConnectionPool {
     if (this.pool.length > 0) {
       const connection = this.pool.pop();
       this.activeConnections++;
-      console.log(`[POOL] ✅ [${requestId}] Connection acquired from pool (${Date.now() - startTime}ms, active: ${this.activeConnections})`);
+      poolLog(`✅ [${requestId}] Connection acquired from pool (${Date.now() - startTime}ms, active: ${this.activeConnections})`);
       return {
         db: connection.db,
         releaseToken: requestId
@@ -73,7 +78,7 @@ class LMDBConnectionPool {
     // Se ainda podemos criar mais conexões
     if (this.activeConnections < this.maxConnections) {
       this.activeConnections++;
-      console.log(`[POOL] 🆕 [${requestId}] Using shared connection (${Date.now() - startTime}ms, active: ${this.activeConnections})`);
+      poolLog(`🆕 [${requestId}] Using shared connection (${Date.now() - startTime}ms, active: ${this.activeConnections})`);
       return {
         db: this.sharedDB,
         releaseToken: requestId
@@ -81,7 +86,7 @@ class LMDBConnectionPool {
     }
 
     // Precisa esperar - enfileirar
-    console.log(`[POOL] ⏳ [${requestId}] All connections busy, waiting in queue (position: ${this.waitingQueue.length + 1})`);
+    poolLog(`⏳ [${requestId}] All connections busy, waiting in queue (position: ${this.waitingQueue.length + 1})`);
     
     return new Promise((resolve) => {
       this.waitingQueue.push({
@@ -98,7 +103,7 @@ class LMDBConnectionPool {
    */
   release(releaseToken) {
     const startTime = Date.now();
-    console.log(`[POOL] 🔓 [${releaseToken}] Releasing connection (active: ${this.activeConnections})`);
+    poolLog(`🔓 [${releaseToken}] Releasing connection (active: ${this.activeConnections})`);
 
     this.activeConnections--;
 
@@ -107,7 +112,7 @@ class LMDBConnectionPool {
       const waiting = this.waitingQueue.shift();
       const waitTime = Date.now() - waiting.startTime;
       
-      console.log(`[POOL] 🎯 [${waiting.requestId}] Serving from queue after ${waitTime}ms wait`);
+      poolLog(`🎯 [${waiting.requestId}] Serving from queue after ${waitTime}ms wait`);
       
       this.activeConnections++;
       waiting.resolve({
@@ -116,7 +121,7 @@ class LMDBConnectionPool {
       });
     }
 
-    console.log(`[POOL] ✅ [${releaseToken}] Released (${Date.now() - startTime}ms, active: ${this.activeConnections}, queued: ${this.waitingQueue.length})`);
+    poolLog(`✅ [${releaseToken}] Released (${Date.now() - startTime}ms, active: ${this.activeConnections}, queued: ${this.waitingQueue.length})`);
   }
 
   /**
@@ -136,7 +141,7 @@ class LMDBConnectionPool {
    * Fecha todas as conexões (usar apenas em shutdown)
    */
   async shutdown() {
-    console.log('[POOL] 🛑 Shutting down connection pool...');
+    poolLog('🛑 Shutting down connection pool...');
     
     if (this.sharedDB) {
       await this.sharedDB.close();
@@ -151,7 +156,7 @@ class LMDBConnectionPool {
     this.waitingQueue = [];
     this.initialized = false;
 
-    console.log('[POOL] ✅ Pool shutdown complete');
+    poolLog('✅ Pool shutdown complete');
   }
 }
 
