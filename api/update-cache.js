@@ -26,8 +26,10 @@ function getDB() {
 }
 
 async function updateCacheFromDB(pageId) {
+  const startTime = Date.now();
   try {
-    log(`Updating cache for page: ${pageId}`);
+    log(`\n[BACKGROUND-UPDATE] ━━━ START for ${pageId} ━━━`);
+    log(`[BACKGROUND-UPDATE] 🗄️  Fetching from DB...`);
     
     const { data: entries, error } = await supabase
       .from('text_entries')
@@ -35,9 +37,12 @@ async function updateCacheFromDB(pageId) {
       .eq('page_id', pageId);
     
     if (error) {
-      log(`DB error: ${error.message}`);
+      log(`[BACKGROUND-UPDATE] ❌ DB error: ${error.message} (${Date.now() - startTime}ms)`);
       return { success: false, error: error.message };
     }
+    
+    log(`[BACKGROUND-UPDATE] ✅ Fetched ${entries.length} entries from DB (${Date.now() - startTime}ms)`);
+    log(`[BACKGROUND-UPDATE] 💾 Writing to cache...`);
     
     const db = getDB();
     
@@ -51,11 +56,12 @@ async function updateCacheFromDB(pageId) {
     }
     
     await db.flushed;
-    log(`✅ Cache updated: ${pageId} (${entries.length} entries)`);
+    log(`[BACKGROUND-UPDATE] ✅ Cache updated: ${pageId} (${entries.length} entries, ${Date.now() - startTime}ms)`);
+    log(`[BACKGROUND-UPDATE] ━━━ COMPLETE ━━━\n`);
     
     return { success: true, entries: entries.length };
   } catch (err) {
-    log(`ERROR: ${err.message}`);
+    log(`[BACKGROUND-UPDATE] ❌ ERROR: ${err.message} (${Date.now() - startTime}ms)`);
     return { success: false, error: err.message };
   }
 }
@@ -74,19 +80,26 @@ module.exports = async (req, res) => {
     const { pageId } = req.body;
     
     if (!pageId) {
+      log(`[UPDATE-CACHE-API] ❌ Missing pageId in request`);
       return res.status(400).json({ success: false, message: 'Missing pageId' });
     }
+    
+    log(`[UPDATE-CACHE-API] 🚀 Received request for pageId: ${pageId}`);
+    log(`[UPDATE-CACHE-API] ⚡ Returning immediate OK to client...`);
     
     // Retorna OK imediatamente
     res.status(200).json({ success: true, message: `Cache update started for ${pageId}` });
     
     // Continua trabalhando em background
+    log(`[UPDATE-CACHE-API] 🔄 Starting background update...`);
     updateCacheFromDB(pageId).then(result => {
-      log(`Background update completed: ${JSON.stringify(result)}`);
+      log(`[UPDATE-CACHE-API] 🎉 Background update completed: ${JSON.stringify(result)}`);
+    }).catch(err => {
+      log(`[UPDATE-CACHE-API] ❌ Background update failed: ${err.message}`);
     });
     
   } catch (err) {
-    log(`ERROR: ${err.message}`);
+    log(`[UPDATE-CACHE-API] ❌ ERROR: ${err.message}`);
     return res.status(500).json({ success: false, message: err.message });
   }
 };

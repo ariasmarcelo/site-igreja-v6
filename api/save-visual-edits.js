@@ -47,10 +47,12 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Method not allowed' });
   }
 
+  const startTime = Date.now();
   try {
     const { pageId, edits } = req.body;
     
-    log(`Received request - pageId: ${pageId}, edits count: ${Object.keys(edits || {}).length}`);
+    log(`\n[SAVE-EDITS] ═══ START REQUEST ═══`);
+    log(`[SAVE-EDITS] 📝 Received request - pageId: ${pageId}, edits count: ${Object.keys(edits || {}).length}`);
     
     if (!edits || typeof edits !== 'object') {
       log(`Invalid edits - type: ${typeof edits}`);
@@ -96,9 +98,11 @@ module.exports = async (req, res) => {
     }
     
     // Aplicar updates individuais (upsert granular)
-    log(`Starting database upserts - ${updates.length} entries`);
+    log(`[SAVE-EDITS] 🗄️  Starting database upserts - ${updates.length} entries`);
+    const dbStartTime = Date.now();
+    
     for (const update of updates) {
-      log(`Upserting: page_id=${update.page_id}, json_key=${update.json_key}`);
+      log(`[SAVE-EDITS] 💾 Upserting: page_id=${update.page_id}, json_key=${update.json_key}`);
       
       const { data, error } = await supabase
         .from('text_entries')
@@ -113,20 +117,27 @@ module.exports = async (req, res) => {
         .select();
       
       if (error) {
-        log(`Database error: ${error.message}, code: ${error.code}, details: ${JSON.stringify(error.details)}`);
+        log(`[SAVE-EDITS] ❌ Database error: ${error.message}, code: ${error.code}, details: ${JSON.stringify(error.details)}`);
         throw error;
       }
       
-      log(`Upsert successful for ${update.json_key}: ${data ? 'updated' : 'created'}`);
+      log(`[SAVE-EDITS] ✅ Upsert successful for ${update.json_key}: ${data ? 'updated' : 'created'}`);
     }
     
-    log(`Database save successful: pageId=${pageId}, applied=${appliedCount}/${Object.keys(edits).length}`);
+    log(`[SAVE-EDITS] ✅ Database save complete (${Date.now() - dbStartTime}ms)`);
+    
+    log(`[SAVE-EDITS] ✅ Applied ${appliedCount}/${Object.keys(edits).length} edits for ${pageId}`);
     
     // 🔄 REFRESH CACHE: Limpar e pré-aquecer com dados frescos do banco
     // Operação encapsulada - editor não precisa saber disso
-    log(`🔄 Triggering cache refresh...`);
+    log(`[SAVE-EDITS] 🔄 Triggering full cache refresh...`);
+    const refreshStartTime = Date.now();
     const cacheRefreshResult = await refreshCache();
-    log(`✨ Cache refresh complete: cleared=${cacheRefreshResult.cleared}, cached=${cacheRefreshResult.cached}/${cacheRefreshResult.total}`);
+    log(`[SAVE-EDITS] ✨ Cache refresh complete: cleared=${cacheRefreshResult.cleared}, cached=${cacheRefreshResult.cached}/${cacheRefreshResult.total} (${Date.now() - refreshStartTime}ms)`);
+    
+    const totalTime = Date.now() - startTime;
+    log(`[SAVE-EDITS] 🎉 REQUEST COMPLETE - Total time: ${totalTime}ms`);
+    log(`[SAVE-EDITS] ═══ END REQUEST ═══\n`);
     
     res.status(200).json({ 
       success: true, 
@@ -137,11 +148,16 @@ module.exports = async (req, res) => {
       cacheRefreshed: {
         cleared: cacheRefreshResult.cleared,
         cached: cacheRefreshResult.cached
+      },
+      timing: {
+        total: totalTime,
+        cacheRefresh: Date.now() - refreshStartTime
       }
     });
   } catch (error) {
-    log(`Error saving edits: ${error.message}`);
-    log(`Error stack: ${error.stack}`);
+    log(`[SAVE-EDITS] ❌ ERROR: ${error.message} (${Date.now() - startTime}ms)`);
+    log(`[SAVE-EDITS] Stack: ${error.stack}`);
+    log(`[SAVE-EDITS] ═══ END REQUEST (ERROR) ═══\n`);
     
     // Detailed error response
     res.status(500).json({ 

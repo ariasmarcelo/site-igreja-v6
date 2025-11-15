@@ -58,14 +58,16 @@ function loadPathsFromCache(paths) {
 // Input: "purificacao"
 // Output: { "purificacao.header": "text", "purificacao.intro.title": "text", ... }
 function loadPageFromCache(pageId) {
+  const startTime = Date.now();
   try {
+    log(`[CACHE-READ] 🔍 START loading from cache: pageId=${pageId}`);
     const db = getDB();
     const allKeys = Array.from(db.getKeys());
     const pagePrefix = `${pageId}.`;
     const pageKeys = allKeys.filter(key => typeof key === 'string' && key.startsWith(pagePrefix));
     
     if (pageKeys.length === 0) {
-      log(`[CACHE] No entries for page: ${pageId}`);
+      log(`[CACHE-READ] ❌ MISS - No entries for page: ${pageId} (${Date.now() - startTime}ms)`);
       return null;
     }
     
@@ -78,14 +80,14 @@ function loadPageFromCache(pageId) {
     }
     
     if (Object.keys(results).length === 0) {
-      log(`[CACHE] All entries invalidated for page: ${pageId}`);
+      log(`[CACHE-READ] ❌ MISS - All entries invalidated for page: ${pageId} (${Date.now() - startTime}ms)`);
       return null;
     }
     
-    log(`[CACHE] Found ${Object.keys(results).length} valid entries for page: ${pageId}`);
+    log(`[CACHE-READ] ✅ HIT - Found ${Object.keys(results).length} valid entries for page: ${pageId} (${Date.now() - startTime}ms)`);
     return results;
   } catch (err) {
-    log(`[CACHE] ERROR: ${err.message}`);
+    log(`[CACHE-READ] ❌ ERROR: ${err.message} (${Date.now() - startTime}ms)`);
     return null;
   }
 }
@@ -93,9 +95,10 @@ function loadPageFromCache(pageId) {
 // Save entries to cache (granular)
 // Input: [{ json_key: "purificacao.header", content: { "pt-BR": "text" } }, ...]
 async function saveToCache(entries) {
+  const startTime = Date.now();
   try {
     const db = getDB();
-    log(`[CACHE] Saving ${entries.length} entries to cache...`);
+    log(`[CACHE-WRITE] 💾 START saving ${entries.length} entries to cache...`);
     
     for (const entry of entries) {
       const cacheKey = entry.json_key; // Already includes pageId
@@ -105,22 +108,21 @@ async function saveToCache(entries) {
       };
       
       db.put(cacheKey, cacheEntry);
-      log(`[CACHE] Saved key: ${cacheKey}`);
     }
     
     // Wait for flush to complete before continuing
     await db.flushed;
-    log(`[CACHE] ✅ Successfully saved ${entries.length} entries to LMDB`);
+    log(`[CACHE-WRITE] ✅ Successfully saved ${entries.length} entries to LMDB (${Date.now() - startTime}ms)`);
     
     // Verify save
     const testKey = entries[0]?.json_key;
     if (testKey) {
       const verify = db.get(testKey);
-      log(`[CACHE] Verification: key=${testKey} exists=${!!verify}`);
+      log(`[CACHE-WRITE] 🔍 Verification: key=${testKey} exists=${!!verify}`);
     }
   } catch (err) {
-    log(`[CACHE] ❌ ERROR saving: ${err.message}`);
-    log(`[CACHE] Stack: ${err.stack}`);
+    log(`[CACHE-WRITE] ❌ ERROR saving: ${err.message} (${Date.now() - startTime}ms)`);
+    log(`[CACHE-WRITE] Stack: ${err.stack}`);
   }
 }
 
@@ -165,8 +167,9 @@ async function loadPathsFromDB(paths) {
 // Input: "purificacao"
 // Output: { "purificacao.header": "text", "purificacao.intro.title": "text", ... }
 async function loadPageFromDB(pageId) {
+  const startTime = Date.now();
   try {
-    log(`[DB] Querying all entries for page: ${pageId}`);
+    log(`[DB-READ] 🗄️  START querying all entries for page: ${pageId}`);
     
     const { data: entries, error } = await supabase
       .from('text_entries')
@@ -174,13 +177,14 @@ async function loadPageFromDB(pageId) {
       .eq('page_id', pageId);
     
     if (error) {
-      log(`[DB] ERROR: ${error.message}`);
+      log(`[DB-READ] ❌ ERROR: ${error.message} (${Date.now() - startTime}ms)`);
       return null;
     }
     
-    log(`[DB] Found ${entries.length} entries for page: ${pageId}`);
+    log(`[DB-READ] ✅ Found ${entries.length} entries for page: ${pageId} (${Date.now() - startTime}ms)`);
     
     // Save to cache
+    log(`[DB-READ] 💾 Saving to cache...`);
     await saveToCache(entries);
     
     // Build results
@@ -189,9 +193,10 @@ async function loadPageFromDB(pageId) {
       results[entry.json_key] = entry.content['pt-BR'];
     }
     
+    log(`[DB-READ] 🎯 Complete - returning ${Object.keys(results).length} entries (${Date.now() - startTime}ms)`);
     return results;
   } catch (err) {
-    log(`[DB] ERROR: ${err.message}`);
+    log(`[DB-READ] ❌ ERROR: ${err.message} (${Date.now() - startTime}ms)`);
     return null;
   }
 }
@@ -318,33 +323,38 @@ module.exports = async (req, res) => {
       const allPageIds = ['__shared__', ...pageIds];
       
       for (const pageId of allPageIds) {
+        log(`\n[REQUEST] ━━━ Processing page: ${pageId} ━━━`);
+        
         // Try cache first
         let flatEntries = loadPageFromCache(pageId);
         let source = 'cache';
         
         if (flatEntries) {
           // Cache HIT: return immediately and revalidate in background
-          log(`[CACHE-HIT] ${pageId} - returning cached data and revalidating in background`);
+          log(`[STRATEGY] ✅ Cache HIT for ${pageId} - using stale-while-revalidate`);
           results[pageId] = reconstructObject(flatEntries, pageId);
           sources[pageId] = 'cache';
           
           // Trigger background revalidation (fire-and-forget)
+          log(`[BACKGROUND] 🔄 Triggering revalidation for ${pageId}`);
           fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/update-cache`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pageId })
-          }).catch(err => log(`[BACKGROUND] Revalidation failed for ${pageId}: ${err.message}`));
+          }).catch(err => log(`[BACKGROUND] ❌ Revalidation failed for ${pageId}: ${err.message}`));
           
         } else {
           // Cache MISS: load from DB and save to cache
-          log(`[CACHE-MISS] ${pageId} - loading from DB`);
+          log(`[STRATEGY] ❌ Cache MISS for ${pageId} - loading from DB`);
           flatEntries = await loadPageFromDB(pageId);
           source = 'db';
           
           if (flatEntries && Object.keys(flatEntries).length > 0) {
+            log(`[STRATEGY] ✅ Successfully loaded ${pageId} from DB`);
             results[pageId] = reconstructObject(flatEntries, pageId);
             sources[pageId] = source;
           } else {
+            log(`[STRATEGY] ⚠️  No data found for ${pageId}`);
             results[pageId] = null;
             sources[pageId] = 'not-found';
           }
