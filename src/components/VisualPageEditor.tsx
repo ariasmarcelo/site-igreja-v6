@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import '@/styles/visual-page-editor.css';
 
 interface VisualPageEditorProps {
   pageId: string;
@@ -12,6 +13,17 @@ interface EditField {
   originalValue: string;
   currentValue: string;
   isModified: boolean;
+}
+
+interface HTMLElementWithHandlers extends HTMLElement {
+  _hoverHandlers?: {
+    handleMouseEnter: () => void;
+    handleMouseLeave: () => void;
+  };
+}
+
+interface WindowWithObserver extends Window {
+  __editorObserver?: MutationObserver;
 }
 
 const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEditorProps) => {
@@ -140,7 +152,7 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
     htmlEl.addEventListener('mouseenter', handleMouseEnter);
     htmlEl.addEventListener('mouseleave', handleMouseLeave);
     
-    (htmlEl as any)._hoverHandlers = { handleMouseEnter, handleMouseLeave };
+    (htmlEl as HTMLElementWithHandlers)._hoverHandlers = { handleMouseEnter, handleMouseLeave };
   };
 
   // 🎨 Adicionar seleção visual aos elementos
@@ -186,7 +198,7 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
     });
     
     // Salvar observer para limpar depois
-    (window as any).__editorObserver = observer;
+    (window as unknown as WindowWithObserver).__editorObserver = observer;
     
     console.log('👁️ MutationObserver ativado - detectando novos elementos dinamicamente');
   }, []);
@@ -198,11 +210,11 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
     editables.forEach(el => {
       const htmlEl = el as HTMLElement;
       
-      const handlers = (htmlEl as any)._hoverHandlers;
+      const handlers = (htmlEl as HTMLElementWithHandlers)._hoverHandlers;
       if (handlers) {
         htmlEl.removeEventListener('mouseenter', handlers.handleMouseEnter);
         htmlEl.removeEventListener('mouseleave', handlers.handleMouseLeave);
-        delete (htmlEl as any)._hoverHandlers;
+        delete (htmlEl as HTMLElementWithHandlers)._hoverHandlers;
       }
       
       htmlEl.style.cursor = '';
@@ -214,10 +226,11 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
     });
     
     // 🛑 Desconectar MutationObserver
-    const observer = (window as any).__editorObserver;
+    const windowWithObserver = window as unknown as WindowWithObserver;
+    const observer = windowWithObserver.__editorObserver;
     if (observer) {
       observer.disconnect();
-      delete (window as any).__editorObserver;
+      delete windowWithObserver.__editorObserver;
       console.log('🛑 MutationObserver desconectado');
     }
     
@@ -745,34 +758,7 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
       {/* 🟡 BOTÃO FLUTUANTE AMARELO - EDITAR TEXTOS */}
       <button
         onClick={isEditMode ? disableEditMode : enableEditMode}
-        style={{
-          position: 'fixed',
-          top: '24px',
-          right: '24px',
-          zIndex: 9997,
-          padding: '18px 36px',
-          background: isEditMode 
-            ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-            : 'linear-gradient(135deg, #CFAF5A 0%, #B38938 100%)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '12px',
-          cursor: 'pointer',
-          fontWeight: '700',
-          fontSize: '18px',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-          transition: 'all 0.3s ease',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';
-          e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.4)';
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.3)';
-        }}
+        className={`visual-editor-main-btn ${isEditMode ? 'edit-mode-active' : 'edit-mode-inactive'}`}
       >
         {isEditMode ? '🔒 DESATIVAR EDIÇÃO' : '✏️ EDITAR TEXTOS'}
       </button>
@@ -783,37 +769,7 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
           <button
             onClick={saveChanges}
             disabled={isSaving}
-            style={{
-              position: 'fixed',
-              bottom: '120px',
-              right: '32px',
-              zIndex: 9997,
-              padding: '20px 48px',
-              background: isSaving 
-                ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
-                : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '16px',
-              cursor: isSaving ? 'not-allowed' : 'pointer',
-              fontWeight: '700',
-              fontSize: '20px',
-              boxShadow: '0 8px 32px rgba(16, 185, 129, 0.5)',
-              transition: 'all 0.3s ease',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              opacity: isSaving ? 0.7 : 1,
-            }}
-            onMouseOver={(e) => {
-              if (!isSaving) {
-                e.currentTarget.style.transform = 'translateY(-6px) scale(1.08)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(16, 185, 129, 0.6)';
-              }
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.5)';
-            }}
+            className={`visual-editor-save-btn ${isSaving ? 'saving' : 'active'}`}
           >
             {isSaving ? '⏳ SALVANDO...' : `💾 SALVAR ${modifiedCount} MUDANÇA${modifiedCount !== 1 ? 'S' : ''}`}
           </button>
@@ -822,35 +778,7 @@ const VisualPageEditor = ({ pageId, pageComponent: PageComponent }: VisualPageEd
           <button
             onClick={cancelAllChanges}
             disabled={isSaving}
-            style={{
-              position: 'fixed',
-              bottom: '32px',
-              right: '32px',
-              zIndex: 9997,
-              padding: '18px 42px',
-              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '16px',
-              cursor: isSaving ? 'not-allowed' : 'pointer',
-              fontWeight: '700',
-              fontSize: '18px',
-              boxShadow: '0 8px 32px rgba(239, 68, 68, 0.5)',
-              transition: 'all 0.3s ease',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              opacity: isSaving ? 0.5 : 1,
-            }}
-            onMouseOver={(e) => {
-              if (!isSaving) {
-                e.currentTarget.style.transform = 'translateY(-6px) scale(1.08)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(239, 68, 68, 0.6)';
-              }
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(239, 68, 68, 0.5)';
-            }}
+            className={`visual-editor-cancel-btn ${isSaving ? 'disabled' : 'active'}`}
           >
             🗑️ CANCELAR TUDO
           </button>

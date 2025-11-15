@@ -13,6 +13,7 @@ import Purificacao from './Purificacao';
 import Artigos from './Artigos';
 import Testemunhos from './Testemunhos';
 import Tratamentos from './Tratamentos';
+import '@/styles/admin-console.css';
 
 export default function AdminConsole() {
   const pages = [
@@ -60,36 +61,36 @@ export default function AdminConsole() {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="admin-console-container">
+      <div className="admin-console-wrapper">
         <Card>
-          <CardContent className="p-6">
-            <h1 className="text-2xl font-bold mb-6">Admin Console</h1>
+          <CardContent className="admin-console-card-content">
+            <h1 className="admin-console-title">Admin Console</h1>
 
             {message && (
-              <Alert className="mb-4">
+              <Alert className="admin-console-alert">
                 <AlertDescription>{message.text}</AlertDescription>
               </Alert>
             )}
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
-                <TabsTrigger value="pages" className="min-w-40 px-6 py-2.5">Pages</TabsTrigger>
-                <TabsTrigger value="blog" className="min-w-40 px-6 py-2.5">Blog</TabsTrigger>
+                <TabsTrigger value="pages" className="admin-console-main-tab">Pages</TabsTrigger>
+                <TabsTrigger value="blog" className="admin-console-main-tab">Blog</TabsTrigger>
               </TabsList>
 
               <TabsContent value="pages">
-                <div className="mb-6 p-4 bg-gradient-to-r from-gold-500/10 to-gold-700/10 border-2 border-gold-500 rounded-lg">
-                  <h2 className="text-lg font-bold mb-3 text-gold-700 flex items-center gap-2">
+                <div className="admin-console-page-selector">
+                  <h2 className="admin-console-page-selector-title">
                     📄 Selecione uma Página para Editar
                   </h2>
                   <Tabs value={pageTab} onValueChange={setPageTab}>
-                    <TabsList className="flex-wrap gap-2 bg-white/50 p-2">
+                    <TabsList className="admin-console-page-tabs-list">
                       {pages.map(page => (
                         <TabsTrigger 
                           key={page.id} 
                           value={page.id} 
-                          className="min-w-[160px] px-6 py-3 font-semibold text-base data-[state=active]:bg-gold-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all"
+                          className="admin-console-page-tab"
                         >
                           {page.name}
                         </TabsTrigger>
@@ -97,7 +98,7 @@ export default function AdminConsole() {
                     </TabsList>
 
                     {pages.map(page => (
-                      <TabsContent key={page.id} value={page.id} className="mt-6">
+                      <TabsContent key={page.id} value={page.id} className="admin-console-page-content">
                         <VisualPageEditor
                           pageId={page.id}
                           pageName={page.name}

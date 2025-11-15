@@ -1,0 +1,79 @@
+/* Admin Console Styles */
+
+.admin-console-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 1rem;
+}
+
+.admin-console-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.admin-console-card-content {
+  padding: 1.5rem;
+}
+
+.admin-console-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.admin-console-alert {
+  margin-bottom: 1rem;
+}
+
+/* Main Tabs */
+.admin-console-main-tab {
+  min-width: 10rem;
+  padding: 0.625rem 1.5rem;
+}
+
+/* Page Selection Area */
+.admin-console-page-selector {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.1), rgba(184, 134, 11, 0.1));
+  border: 2px solid #d4af37;
+  border-radius: 0.5rem;
+}
+
+.admin-console-page-selector-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #b8860b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Page Tabs List */
+.admin-console-page-tabs-list {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem;
+}
+
+/* Individual Page Tab */
+.admin-console-page-tab {
+  min-width: 160px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.admin-console-page-tab[data-state='active'] {
+  background-color: #d4af37;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Page Tab Content */
+.admin-console-page-content {
+  margin-top: 1.5rem;
+}
