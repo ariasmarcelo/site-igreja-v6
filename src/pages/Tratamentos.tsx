@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { usePageContent } from '@/hooks/useContent';
 import { SharedFooter } from '@/components/SharedFooter';
 import { usePageStyles } from '@/hooks/usePageStyles';
-import '@/styles/tratamentos-page.css';
+import '@/styles/layouts/pages/tratamentos.css';
 
 
 interface TratamentosTexts {

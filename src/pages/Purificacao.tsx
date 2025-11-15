@@ -7,7 +7,7 @@ import { usePageContent } from '@/hooks/useContent';
 
 const TestimonialsCarousel = lazy(() => import('@/components/TestimonialsCarousel'));
 import { SharedFooter } from '@/components/SharedFooter';
-import '@/styles/purificacao-page.css';
+import '@/styles/layouts/pages/purificacao.css';
 
 export default function Purificacao() {
   console.log(`[${new Date().toISOString()}] [PURIFICACAO] Component rendering started`);

@@ -6,7 +6,7 @@ import { Sparkles, Microscope, Heart, HandHelping, ShieldCheck, BookOpen, FileTe
 import { usePageContent } from '@/hooks/useContent';
 import { usePageStyles } from '@/hooks/usePageStyles';
 import { SharedFooter } from '@/components/SharedFooter';
-import '@/styles/quemsomos-page.css';
+import '@/styles/layouts/pages/quemsomos.css';
 
 interface QuemSomosTexts {
   header: { title: string; subtitle: string };

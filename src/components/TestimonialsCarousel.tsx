@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Quote, Star } from 'lucide-react';
 import { usePageContent } from '@/hooks/useContent';
-import '@/styles/testimonials-carousel.css';
+import '@/styles/components/testimonials-carousel.css';
 
 interface TestemunhosTexts {
   header?: { title: string };
