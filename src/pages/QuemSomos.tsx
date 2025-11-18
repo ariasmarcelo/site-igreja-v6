@@ -135,7 +135,7 @@ export default function QuemSomos() {
                       <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-amber-700/40 rounded-br-lg"></div>
                       
                   {/* Texto do pergaminho */}
-                  <p className="relative text-base md:text-lg text-amber-900/90 leading-relaxed text-justify font-serif drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]" 
+                  <p className="relative text-base md:text-lg text-amber-900/90 leading-relaxed text-center font-serif drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]" 
                      data-json-key="quemsomos.valores.intro">
                     {(texts as any).valores.intro}
                   </p>                      {/* Sombra interna para profundidade */}

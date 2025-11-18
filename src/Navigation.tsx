@@ -108,8 +108,8 @@ const NavigationMenu = memo(() => {
               })}
             </svg>
             <div>
-              <div className="text-base md:text-xl font-bold text-[#CFAF5A]">Igreja de Metatron</div>
-              <div className="text-sm md:text-xs text-gray-600">O Trabalho de Resgate</div>
+              <div className="text-xl md:text-xl font-bold text-[#CFAF5A]">Igreja de Metatron</div>
+              <div className="text-base md:text-xs text-gray-600">O Trabalho de Resgate</div>
             </div>
           </Link>
 
