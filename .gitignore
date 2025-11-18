@@ -39,7 +39,27 @@ components.json
 tailwindcss-*
 
 # Backups (local only, don't commit)
-backups/supabase/*
-!backups/supabase/.gitkeep
+backups/
+*.sql
+
+# Database scripts and analysis (development only)
+analyze-database.cjs
+check-atual.cjs
+concat-valores-api.cjs
+concatenate-valores.cjs
+database-analysis-report.json
+generate-backup.cjs
+inspect-data-structure.cjs
+inspect-full.cjs
+response-structure.json
+compare-valores.sql
+
+# Test files (development only)
+test-*.cjs
+test-*.js
+verify-updates.cjs
+
+# Database migration docs (keep in repo but mark as docs)
+# DATABASE_CHANGES_PILARES.md - keep this
 
 .vercel
