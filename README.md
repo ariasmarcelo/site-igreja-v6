@@ -22,7 +22,6 @@ Site institucional desenvolvido com React 19, TypeScript 5.7, Tailwind CSS 4 e S
 ### Backend
 - **Vercel Serverless Functions** - APIs em Node.js
 - **Supabase PostgreSQL** - Database cloud (única fonte da verdade)
-- **Sistema de Fallback Granular** - Auto-sincronização DB → JSONs locais
 
 ### Ferramentas
 - **pnpm** - Package manager rápido
@@ -285,7 +284,6 @@ vercel --prod
 ## 📚 Documentação
 
 - **[COPILOT-INSTRUCTIONS.md](./COPILOT-INSTRUCTIONS.md)** - Instruções completas do projeto (LEIA PRIMEIRO!)
-- **[docs/GRANULAR-FALLBACK-SYSTEM-V2.md](./docs/GRANULAR-FALLBACK-SYSTEM-V2.md)** - Sistema de fallback detalhado
 - **[DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md)** - Deploy do backend na Vercel
 - **[SUPABASE-SETUP.md](./SUPABASE-SETUP.md)** - Configuração do Supabase
 - **[DATA_JSON_KEY_NAMING_CONVENTION.md](./DATA_JSON_KEY_NAMING_CONVENTION.md)** - Convenções

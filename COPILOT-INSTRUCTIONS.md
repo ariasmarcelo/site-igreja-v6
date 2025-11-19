@@ -130,12 +130,8 @@ import '@/styles/components/nome-componente.css'
 
 ### Arquitetura do Sistema ###
 
-**Sistema de Fallback Granular:**  
-Três camadas de dados (Supabase → JSONs locais → defaults hardcoded).  
-📄 **Documentação completa:** `docs/GRANULAR-FALLBACK-SYSTEM-V2.md`
-
 **Fluxo de Dados:**  
-Página carrega → `usePageContent` busca `GET /api/content/:pageId` → Supabase retorna dados → Renderiza → Sincronização automática em background salva JSONs granulares em `src/locales/pt-BR/`
+Página carrega → `usePageContent` busca `GET /api/content/:pageId` → Supabase retorna dados → Renderiza. Fallbacks hardcoded no código via operador `||` quando necessário.
 
 **Editor Visual:**  
 Ativado via Admin Console. Detecta `data-json-key` atributo. Edições salvam via `PUT /api/content/:pageId`.
@@ -166,5 +162,5 @@ docs/                   # Documentação técnica
 
 ---
 
-**Última Atualização:** 14/11/2025  
-**Status:** Sistema de fallback granular implementado, ITCSS CSS arquitetura ativa
+**Última Atualização:** 18/11/2025  
+**Status:** Sistema simplificado (Supabase direto), ITCSS CSS arquitetura ativa, menu centralizado
