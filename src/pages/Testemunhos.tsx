@@ -31,7 +31,7 @@ interface TestemunhosTexts {
 }
 
 const Testemunhos = () => {
-  const { data: texts, loading, error } = usePageContent<TestemunhosTexts>('testemunhos');
+  const { data: texts, loading, error } = usePageContent<any>('testemunhos');
 
   if (loading) {
     return (
@@ -57,7 +57,7 @@ const Testemunhos = () => {
   
   if (!texts) return null;
 
-  const testimonials = texts.testimonials || [];
+  const testimonials = texts.__shared__?.testimonials || [];
 
   return (
     <>
@@ -85,13 +85,13 @@ const Testemunhos = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]">
-              {texts.header?.title}
+            <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" data-json-key="__shared__.testimonialsPage.header.title">
+              {texts.__shared__?.testimonialsPage?.header?.title}
             </h1>
 
             {/* Subtitle */}
-            <p className="text-xl text-white/95 opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
-              {texts.header?.subtitle}
+            <p className="text-xl text-white/95 opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]" data-json-key="__shared__.testimonialsPage.header.subtitle">
+              {texts.__shared__?.testimonialsPage?.header?.subtitle}
             </p>
           </div>
         </div>
@@ -101,8 +101,8 @@ const Testemunhos = () => {
         
         {/* Intro Card */}
         <div className="max-w-3xl mx-auto bg-linear-to-br from-white/80 via-rose-50/80 to-pink-50/70 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-rose-200/60 shadow-xl shadow-rose-200/30">
-          <p className="text-lg text-rose-950/85 leading-relaxed">
-            {texts.intro?.description}
+          <p className="text-lg text-rose-950/85 leading-relaxed" data-json-key="__shared__.testimonialsPage.intro.description">
+            {texts.__shared__?.testimonialsPage?.intro?.description}
           </p>
         </div>
       </div>
@@ -129,16 +129,16 @@ const Testemunhos = () => {
                       {/* Name & Date */}
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-3 flex-wrap">
-                          <h3 className="text-xl font-semibold text-rose-900">
+                          <h3 className="text-xl font-semibold text-rose-900" data-json-key={`__shared__.testimonials[${index}].name`}>
                             {testimonial.name}
                           </h3>
-                          <span className="text-sm text-rose-700/70">{testimonial.date}</span>
+                          <span className="text-sm text-rose-700/70" data-json-key={`__shared__.testimonials[${index}].date`}>{testimonial.date}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <p className="text-rose-950/80 leading-relaxed">
+                    <p className="text-rose-950/80 leading-relaxed" data-json-key={`__shared__.testimonials[${index}].content`}>
                       {testimonial.content}
                     </p>
 
@@ -160,11 +160,11 @@ const Testemunhos = () => {
               <div className="flex items-start gap-4">
                 <Heart className="w-6 h-6 text-rose-500 shrink-0 mt-1 fill-rose-400/50" />
                 <div>
-                  <h3 className="text-xl font-semibold text-rose-900 mb-3">
-                    {texts.disclaimer?.title}
+                  <h3 className="text-xl font-semibold text-rose-900 mb-3" data-json-key="__shared__.testimonialsPage.disclaimer.title">
+                    {texts.__shared__?.testimonialsPage?.disclaimer?.title}
                   </h3>
-                  <p className="text-rose-950/80 leading-relaxed">
-                    {texts.disclaimer?.content}
+                  <p className="text-rose-950/80 leading-relaxed" data-json-key="__shared__.testimonialsPage.disclaimer.content">
+                    {texts.__shared__?.testimonialsPage?.disclaimer?.content}
                   </p>
                 </div>
               </div>
@@ -217,15 +217,15 @@ const Testemunhos = () => {
         {/* CTA Content - posicionado no céu */}
         <div className="container mx-auto px-4 relative z-50 pt-6 pb-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white text-shadow-strong" data-json-key="testemunhos.cta.title">
-              {texts.cta?.title}
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white text-shadow-strong" data-json-key="__shared__.testimonialsPage.cta.title">
+              {texts.__shared__?.testimonialsPage?.cta?.title}
             </h2>
-            <p className="text-lg mb-5 text-white text-shadow-medium" data-json-key="testemunhos.cta.subtitle">
-              {texts.cta?.subtitle}
+            <p className="text-lg mb-5 text-white text-shadow-medium" data-json-key="__shared__.testimonialsPage.cta.subtitle">
+              {texts.__shared__?.testimonialsPage?.cta?.subtitle}
             </p>
             <Link to="/contato">
-              <Button className="bg-[#CFAF5A] text-white font-semibold px-6 py-4 text-base rounded-lg shadow-[0_6px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.6)] transition-all duration-300 hover:scale-105" data-json-key="testemunhos.cta.buttonText">
-                {texts.cta?.buttonText}
+              <Button className="bg-[#CFAF5A] text-white font-semibold px-6 py-4 text-base rounded-lg shadow-[0_6px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.6)] transition-all duration-300 hover:scale-105" data-json-key="__shared__.testimonialsPage.cta.buttonText">
+                {texts.__shared__?.testimonialsPage?.cta?.buttonText}
               </Button>
             </Link>
           </div>

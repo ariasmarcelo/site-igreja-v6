@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { Heart, Sun, Users, Brain, Ghost, Database, Compass, ArrowLeftRight, ArrowUpDown, Sparkles } from 'lucide-react';
+import { Heart, Sun, Users, Brain, Ghost, Search, Compass, ArrowLeftRight, ArrowUpDown, Sparkles, Activity } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 import { usePageContent } from '@/hooks/useContent';
 import { usePageStyles } from '@/hooks/usePageStyles';
@@ -89,14 +89,147 @@ export default function Index() {
       <section className="py-12 bg-linear-to-b from-white via-stone-50 to-white border-b-2 border-stone-200">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
+            {/* Físico/Espiritual - Cards */}
+            <div className="mb-12">
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold mb-4 text-stone-800" data-json-key="index.fisicoEspiritual.title">
+                  {texts.fisicoEspiritual.title}
+                </h2>
+                <p className="text-xl text-stone-600" data-json-key="index.fisicoEspiritual.subtitle">
+                  {texts.fisicoEspiritual.subtitle}
+                </p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                {/* Físico */}
+                <Card className="border-2 border-teal-200 hover:shadow-xl transition-shadow">
+                  <CardContent className="p-8">
+                    <div className="text-center mb-6">
+                      <div className="inline-block p-4 bg-teal-100 rounded-xl mb-4">
+                        <Brain className="w-12 h-12 text-teal-600" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-teal-700 mb-2" data-json-key="index.fisicoEspiritual.fisico.title">
+                        {texts.fisicoEspiritual.fisico.title}
+                      </h3>
+                      <p className="text-teal-600 font-semibold" data-json-key="index.fisicoEspiritual.fisico.subtitle">
+                        {texts.fisicoEspiritual.fisico.subtitle}
+                      </p>
+                    </div>
+                    <p className="text-stone-600 mb-4" data-json-key="index.fisicoEspiritual.fisico.description">
+                      {texts.fisicoEspiritual.fisico.description}
+                    </p>
+                    <ul className="space-y-2 mb-4">
+                      {texts.fisicoEspiritual.fisico.items.map((item: string, i: number) => (
+                        <li key={i} className="flex gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 shrink-0"></div>
+                          <span className="text-sm text-stone-600" data-json-key={`index.fisicoEspiritual.fisico.items[${i}]`}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500">
+                      <p className="text-sm font-semibold text-teal-900 mb-2" data-json-key="index.fisicoEspiritual.fisico.abordagem.title">
+                        {texts.fisicoEspiritual.fisico.abordagem.title}
+                      </p>
+                      <p className="text-sm text-teal-800" data-json-key="index.fisicoEspiritual.fisico.abordagem.description">
+                        {texts.fisicoEspiritual.fisico.abordagem.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Espiritual */}
+                <Card className="border-2 border-amber-200 hover:shadow-xl transition-shadow">
+                  <CardContent className="p-8">
+                    <div className="text-center mb-6">
+                      <div className="inline-block p-4 bg-amber-100 rounded-xl mb-4">
+                        <Ghost className="w-12 h-12 text-[#CFAF5A]" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-amber-700 mb-2" data-json-key="index.fisicoEspiritual.espiritual.title">
+                        {texts.fisicoEspiritual.espiritual.title}
+                      </h3>
+                      <p className="text-amber-600 font-semibold" data-json-key="index.fisicoEspiritual.espiritual.subtitle">
+                        {texts.fisicoEspiritual.espiritual.subtitle}
+                      </p>
+                    </div>
+                    <p className="text-stone-600 mb-4" data-json-key="index.fisicoEspiritual.espiritual.description">
+                      {texts.fisicoEspiritual.espiritual.description}
+                    </p>
+                    <ul className="space-y-2 mb-4">
+                      {texts.fisicoEspiritual.espiritual.items.map((item: string, i: number) => (
+                        <li key={i} className="flex gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0"></div>
+                          <span className="text-sm text-stone-600" data-json-key={`index.fisicoEspiritual.espiritual.items[${i}]`}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
+                      <p className="text-sm font-semibold text-amber-900 mb-2" data-json-key="index.fisicoEspiritual.espiritual.abordagem.title">
+                        {texts.fisicoEspiritual.espiritual.abordagem.title}
+                      </p>
+                      <p className="text-sm text-amber-800" data-json-key="index.fisicoEspiritual.espiritual.abordagem.description">
+                        {texts.fisicoEspiritual.espiritual.abordagem.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Integrada */}
+              <Card className="border-2 border-stone-300 shadow-xl">
+                <CardContent className="p-10">
+                  <div className="text-center mb-8">
+                    <div className="flex justify-center gap-2 mb-6 items-center">
+                      <div className="p-3 bg-teal-100 rounded-xl">
+                        <Brain className="w-10 h-10 text-teal-600" />
+                      </div>
+                      <div className="flex items-center justify-center">
+                        <ArrowLeftRight className="w-6 h-6 text-stone-600" />
+                      </div>
+                      <div className="p-3 bg-amber-100 rounded-xl">
+                        <Sun className="w-10 h-10 text-[#CFAF5A]" />
+                      </div>
+                    </div>
+                    <h3 className="text-3xl font-bold text-stone-800 mb-4" data-json-key="index.fisicoEspiritual.integrada.title">
+                      {texts.fisicoEspiritual.integrada.title}
+                    </h3>
+                  </div>
+                  <p className="text-center text-lg text-stone-600 mb-8" data-json-key="index.fisicoEspiritual.integrada.description">
+                    {texts.fisicoEspiritual.integrada.description}
+                  </p>
+                  <div className="bg-stone-50 p-6 rounded-xl border-2 border-stone-200">
+                    <p className="font-semibold text-stone-800 mb-4 text-center" data-json-key="index.fisicoEspiritual.integrada.oferecemos.title">
+                      {texts.fisicoEspiritual.integrada.oferecemos.title}
+                    </p>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {texts.fisicoEspiritual.integrada.oferecemos.items.map((item: string, i: number) => {
+                        const icons = [Search, Users, Sparkles, Activity];
+                        const colors = ['text-teal-600', 'text-rose-600', 'text-amber-600', 'text-blue-600'];
+                        const Icon = icons[i] || Search;
+                        const color = colors[i] || 'text-stone-600';
+                        return (
+                          <div key={i} className="flex gap-3 p-3 bg-white rounded-lg">
+                            <Icon className={`w-5 h-5 ${color} shrink-0 mt-0.5`} />
+                            <span className="text-sm text-stone-600" data-json-key={`index.fisicoEspiritual.integrada.oferecemos.items[${i}]`}>{item}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <p className="text-center font-bold text-stone-800 mt-8" data-json-key="index.fisicoEspiritual.integrada.conclusao">
+                    {texts.fisicoEspiritual.integrada.conclusao}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Bloco violeta metálico envolvendo as seções */}
-            <div className="bg-linear-to-br from-violet-50/30 via-purple-50/20 to-violet-50/30 border-2 border-violet-200/40 rounded-3xl p-6 shadow-lg">
+            <div className="bg-linear-to-br from-violet-50/30 via-purple-50/20 to-violet-50/30 border-2 border-violet-200/40 rounded-3xl p-3 sm:p-6 shadow-lg">
               <div className="space-y-0">
             
                 {/* Igreja de Metatron + Purificação - CAIXA UNIFICADA */}
                 <Card className="border-2 border-amber-200/50 shadow-2xl overflow-hidden bg-linear-to-br from-white via-amber-50/20 to-white">
-              <CardContent className="p-10 lg:p-12">
-                <div className="grid lg:grid-cols-2 gap-10 items-start">
+              <CardContent className="p-4 sm:p-8 lg:p-12">
+                <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-amber-100 rounded-xl shadow-md">
@@ -123,18 +256,18 @@ export default function Index() {
                   </div>
 
                   <div className="bg-white rounded-2xl border-2 border-amber-200/70 shadow-xl">
-                    <div className="bg-linear-to-br from-[#CFAF5A] to-[#B38938] p-6 text-white rounded-t-xl">
-                      <h3 className="text-2xl font-bold" data-json-key="index.purification.title">{texts.purification.title}</h3>
+                    <div className="bg-linear-to-br from-[#CFAF5A] to-[#B38938] p-4 sm:p-6 text-white rounded-t-xl">
+                      <h3 className="text-xl sm:text-2xl font-bold" data-json-key="index.purification.title">{texts.purification.title}</h3>
                     </div>
-                    <div className="p-8 bg-linear-to-b from-white to-amber-50/30">
-                      <div className="space-y-5">
+                    <div className="px-4 py-4 sm:px-8 sm:py-5 bg-linear-to-b from-white to-amber-50/30">
+                      <div className="space-y-2.5">
                         {texts.purification.phases.map((phase: any, i: number) => (
-                          <div key={i} className="flex gap-4">
-                            <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#CFAF5A] to-[#B38938] text-white flex items-center justify-center font-bold shrink-0 shadow-md">{i + 1}</div>
-                            <div>
-                              <h4 className="font-semibold text-stone-800 mb-1" data-json-key={`index.purification.phases[${i}].title`}>{phase.title}</h4>
-                              <p className="text-sm text-stone-600" data-json-key={`index.purification.phases[${i}].description`}>{phase.description}</p>
+                          <div key={i} className="space-y-1">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#CFAF5A] to-[#B38938] text-white flex items-center justify-center font-bold shrink-0 shadow-md text-base">{i + 1}</div>
+                              <h4 className="font-semibold text-stone-800 text-lg" data-json-key={`index.purification.phases[${i}].title`}>{phase.title}</h4>
                             </div>
+                            <p className="text-base text-stone-600 leading-relaxed pl-11" data-json-key={`index.purification.phases[${i}].description`}>{phase.description}</p>
                           </div>
                         ))}
                       </div>
@@ -153,22 +286,22 @@ export default function Index() {
 
             {/* Instituto Metatron + Tratamentos - CAIXA UNIFICADA */}
             <Card className="border-2 border-teal-200/50 shadow-2xl overflow-hidden bg-linear-to-br from-white via-teal-50/20 to-white">
-              <CardContent className="p-10 lg:p-12">
-                <div className="grid lg:grid-cols-2 gap-10 items-start">
+              <CardContent className="p-4 sm:p-8 lg:p-12">
+                <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                   <div className="bg-white rounded-2xl border-2 border-teal-200/70 shadow-xl lg:order-1">
-                    <div className="bg-linear-to-br from-[#0d9488] to-[#14b8a6] p-6 text-white rounded-t-xl">
-                      <h3 className="text-2xl font-bold" data-json-key="index.treatments.title">{texts.treatments?.title || texts.instituto.title}</h3>
+                    <div className="bg-linear-to-br from-[#0d9488] to-[#14b8a6] p-4 sm:p-6 text-white rounded-t-xl">
+                      <h3 className="text-xl sm:text-2xl font-bold" data-json-key="index.treatments.title">{texts.treatments?.title || texts.instituto.title}</h3>
                     </div>
-                    <div className="p-8 bg-linear-to-b from-white to-teal-50/30">
-                      <div className="space-y-4">
+                    <div className="px-4 py-4 sm:px-8 sm:py-5 bg-linear-to-b from-white to-teal-50/30">
+                      <div className="space-y-2.5">
                         {(texts.treatments?.description || texts.instituto.treatments.slice(0, 3)).map((p: string, i: number) => (
-                          <p key={i} className="text-sm text-stone-600 leading-relaxed" data-json-key={`index.treatments.description[${i}]`}>{p}</p>
+                          <p key={i} className="text-base font-semibold text-stone-800 leading-relaxed" data-json-key={`index.treatments.description[${i}]`}>{p}</p>
                         ))}
-                        <div className="pt-3 space-y-2 border-t border-teal-100">
-                          {texts.instituto.treatments.slice(0, 6).map((t: string, i: number) => (
-                            <div key={i} className="flex items-center gap-2 text-sm text-stone-700">
-                              <div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
-                              <span data-json-key={`index.treatments.items[${i}]`}>{t}</span>
+                        <div className="pt-2 space-y-1.5 border-t border-teal-100">
+                          {texts.instituto.treatments.slice(0, 7).map((t: string, i: number) => (
+                            <div key={i} className="flex items-center gap-4 text-base text-stone-700 pl-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0"></div>
+                              <span data-json-key={`index.instituto.treatments[${i}]`}>{t}</span>
                             </div>
                           ))}
                         </div>
@@ -196,15 +329,17 @@ export default function Index() {
 
                     <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r shadow-sm">
                       <p className="text-sm text-amber-900" data-json-key="index.instituto.legalNotice">
-                        <strong>Aviso Legal:</strong> {texts.instituto.legalNotice}
+                        {texts.instituto.legalNotice}
                       </p>
                     </div>
 
-                    <Link to="/tratamentos">
-                      <Button className="bg-linear-to-r from-[#0d9488] to-[#14b8a6] text-white px-8 py-5 text-base rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105" data-json-key="index.instituto.ctaButton">
-                        {texts.instituto.ctaButton}
-                      </Button>
-                    </Link>
+                    <div className="flex justify-center">
+                      <Link to="/tratamentos">
+                        <Button className="bg-linear-to-r from-[#0d9488] to-[#14b8a6] text-white px-8 py-5 text-base rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105" data-json-key="index.instituto.ctaButton">
+                          {texts.instituto.ctaButton}
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -252,136 +387,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Físico/Espiritual */}
-      <section className="py-20 bg-linear-to-b from-stone-100 via-white to-stone-50 border-b-2 border-stone-200">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-stone-800" data-json-key="index.fisicoEspiritual.title">
-                {texts.fisicoEspiritual.title}
-              </h2>
-              <p className="text-xl text-stone-600" data-json-key="index.fisicoEspiritual.subtitle">
-                {texts.fisicoEspiritual.subtitle}
-              </p>
-            </div>
 
-            <div className="grid lg:grid-cols-2 gap-8 mb-12">
-              {/* Físico */}
-              <Card className="border-2 border-teal-200 hover:shadow-xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="text-center mb-6">
-                    <div className="inline-block p-4 bg-teal-100 rounded-xl mb-4">
-                      <Brain className="w-12 h-12 text-teal-600" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-teal-700 mb-2" data-json-key="index.fisicoEspiritual.fisico.title">
-                      {texts.fisicoEspiritual.fisico.title}
-                    </h3>
-                    <p className="text-teal-600 font-semibold" data-json-key="index.fisicoEspiritual.fisico.subtitle">
-                      {texts.fisicoEspiritual.fisico.subtitle}
-                    </p>
-                  </div>
-                  <p className="text-stone-600 mb-4" data-json-key="index.fisicoEspiritual.fisico.description">
-                    {texts.fisicoEspiritual.fisico.description}
-                  </p>
-                  <ul className="space-y-2 mb-4">
-                    {texts.fisicoEspiritual.fisico.items.map((item: string, i: number) => (
-                      <li key={i} className="flex gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 shrink-0"></div>
-                        <span className="text-sm text-stone-600">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500">
-                    <p className="text-sm font-semibold text-teal-900 mb-2" data-json-key="index.fisicoEspiritual.fisico.abordagem.title">
-                      {texts.fisicoEspiritual.fisico.abordagem.title}
-                    </p>
-                    <p className="text-sm text-teal-800" data-json-key="index.fisicoEspiritual.fisico.abordagem.description">
-                      {texts.fisicoEspiritual.fisico.abordagem.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Espiritual */}
-              <Card className="border-2 border-amber-200 hover:shadow-xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="text-center mb-6">
-                    <div className="inline-block p-4 bg-amber-100 rounded-xl mb-4">
-                      <Ghost className="w-12 h-12 text-[#CFAF5A]" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-amber-700 mb-2" data-json-key="index.fisicoEspiritual.espiritual.title">
-                      {texts.fisicoEspiritual.espiritual.title}
-                    </h3>
-                    <p className="text-amber-600 font-semibold" data-json-key="index.fisicoEspiritual.espiritual.subtitle">
-                      {texts.fisicoEspiritual.espiritual.subtitle}
-                    </p>
-                  </div>
-                  <p className="text-stone-600 mb-4" data-json-key="index.fisicoEspiritual.espiritual.description">
-                    {texts.fisicoEspiritual.espiritual.description}
-                  </p>
-                  <ul className="space-y-2 mb-4">
-                    {texts.fisicoEspiritual.espiritual.items.map((item: string, i: number) => (
-                      <li key={i} className="flex gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0"></div>
-                        <span className="text-sm text-stone-600">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
-                    <p className="text-sm font-semibold text-amber-900 mb-2" data-json-key="index.fisicoEspiritual.espiritual.abordagem.title">
-                      {texts.fisicoEspiritual.espiritual.abordagem.title}
-                    </p>
-                    <p className="text-sm text-amber-800" data-json-key="index.fisicoEspiritual.espiritual.abordagem.description">
-                      {texts.fisicoEspiritual.espiritual.abordagem.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Integrada */}
-            <Card className="border-2 border-stone-300 shadow-xl">
-              <CardContent className="p-10">
-                <div className="text-center mb-8">
-                  <div className="flex justify-center gap-2 mb-6 items-center">
-                    <div className="p-3 bg-teal-100 rounded-xl">
-                      <Brain className="w-10 h-10 text-teal-600" />
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <ArrowLeftRight className="w-6 h-6 text-stone-600" />
-                    </div>
-                    <div className="p-3 bg-amber-100 rounded-xl">
-                      <Sun className="w-10 h-10 text-[#CFAF5A]" />
-                    </div>
-                  </div>
-                  <h3 className="text-3xl font-bold text-stone-800 mb-4" data-json-key="index.fisicoEspiritual.integrada.title">
-                    {texts.fisicoEspiritual.integrada.title}
-                  </h3>
-                </div>
-                <p className="text-center text-lg text-stone-600 mb-8" data-json-key="index.fisicoEspiritual.integrada.description">
-                  {texts.fisicoEspiritual.integrada.description}
-                </p>
-                <div className="bg-stone-50 p-6 rounded-xl border-2 border-stone-200">
-                  <p className="font-semibold text-stone-800 mb-4 text-center" data-json-key="index.fisicoEspiritual.integrada.oferecemos.title">
-                    {texts.fisicoEspiritual.integrada.oferecemos.title}
-                  </p>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {texts.fisicoEspiritual.integrada.oferecemos.items.map((item: string, i: number) => (
-                      <div key={i} className="flex gap-3 p-3 bg-white rounded-lg">
-                        <Database className="w-5 h-5 text-stone-600 shrink-0 mt-0.5" />
-                        <span className="text-sm text-stone-600">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-center font-bold text-stone-800 mt-8" data-json-key="index.fisicoEspiritual.integrada.conclusao">
-                  {texts.fisicoEspiritual.integrada.conclusao}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Testimonials */}
       <Suspense fallback={

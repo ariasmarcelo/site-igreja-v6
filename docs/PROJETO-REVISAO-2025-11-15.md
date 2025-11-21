@@ -25,7 +25,6 @@
 
 3. **Sistema de Fallback Granular Funcional**
    - ✅ Auto-sincronização DB → JSONs locais
-   - ✅ Cache LMDB implementado
    - ✅ Nomenclatura consistente de arquivos JSON
    - ✅ Documentação completa em `docs/GRANULAR-FALLBACK-SYSTEM-V2.md`
 
@@ -33,7 +32,7 @@
    - ✅ Error handling completo
    - ✅ CORS configurado corretamente
    - ✅ Logs informativos sem poluição
-   - ✅ Invalidação de cache eficiente
+   - ✅ Conexão direta com Supabase (sem cache intermediário)
 
 5. **Componentes React Limpos**
    - ✅ TypeScript bem tipado

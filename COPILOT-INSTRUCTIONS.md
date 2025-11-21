@@ -30,12 +30,12 @@ Desenvolver site institucional para a Igreja de Metatron com sistema de edição
 ## 3. Gestão de Conteúdo do Site ##
 
 **Proibições absolutas:**
-- Modificar textos do site sem consulta ao usuário
+- Modificar ou remover textos do site sem consulta ao usuário (dados do Banco de Dados são hipersensíveis)
 - Apenas sugerir melhorias, nunca aplicar
 
 **Obrigações:**
 - Visualizar site e ler todo conteúdo para compreensão profunda
-- Sugerir melhorias textuais quando apropriado
+- Sugerir melhorias ou correções de textos quando apropriado
 
 ## 4. Padrões de Código ##
 

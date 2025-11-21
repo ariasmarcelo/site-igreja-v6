@@ -59,7 +59,7 @@
 }
 
 .papiro-box {
-  background: linear-gradient(135deg, #FAF9F7 0%, #F5F3F0 50%, #FAF9F7 100%);
+  background: linear-gradient(135deg, #A89A88 0%, #947F6A 50%, #A89A88 100%) !important;
 }
 
 /* Card hover effect para Pilares */
@@ -142,3 +142,84 @@
   );
   /* Sem máscara - raios cobrem 100% da seção */
 }
+
+/* Seção papiro - Princípios Herméticos com raios */
+.papiro-rays-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 30;
+  background: conic-gradient(
+    from 0deg at 50% 130px,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.6) 12deg,
+    rgba(255, 255, 255, 0.8) 15deg,
+    rgba(255, 255, 255, 0.6) 18deg,
+    transparent 30deg,
+    transparent 30deg,
+    rgba(255, 255, 255, 0.6) 42deg,
+    rgba(255, 255, 255, 0.8) 45deg,
+    rgba(255, 255, 255, 0.6) 48deg,
+    transparent 60deg,
+    transparent 60deg,
+    rgba(255, 255, 255, 0.6) 72deg,
+    rgba(255, 255, 255, 0.8) 75deg,
+    rgba(255, 255, 255, 0.6) 78deg,
+    transparent 90deg,
+    transparent 90deg,
+    rgba(255, 255, 255, 0.6) 102deg,
+    rgba(255, 255, 255, 0.8) 105deg,
+    rgba(255, 255, 255, 0.6) 108deg,
+    transparent 120deg,
+    transparent 120deg,
+    rgba(255, 255, 255, 0.6) 132deg,
+    rgba(255, 255, 255, 0.8) 135deg,
+    rgba(255, 255, 255, 0.6) 138deg,
+    transparent 150deg,
+    transparent 150deg,
+    rgba(255, 255, 255, 0.6) 162deg,
+    rgba(255, 255, 255, 0.8) 165deg,
+    rgba(255, 255, 255, 0.6) 168deg,
+    transparent 180deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.6) 192deg,
+    rgba(255, 255, 255, 0.8) 195deg,
+    rgba(255, 255, 255, 0.6) 198deg,
+    transparent 210deg,
+    transparent 210deg,
+    rgba(255, 255, 255, 0.6) 222deg,
+    rgba(255, 255, 255, 0.8) 225deg,
+    rgba(255, 255, 255, 0.6) 228deg,
+    transparent 240deg,
+    transparent 240deg,
+    rgba(255, 255, 255, 0.6) 252deg,
+    rgba(255, 255, 255, 0.8) 255deg,
+    rgba(255, 255, 255, 0.6) 258deg,
+    transparent 270deg,
+    transparent 270deg,
+    rgba(255, 255, 255, 0.6) 282deg,
+    rgba(255, 255, 255, 0.8) 285deg,
+    rgba(255, 255, 255, 0.6) 288deg,
+    transparent 300deg,
+    transparent 300deg,
+    rgba(255, 255, 255, 0.6) 312deg,
+    rgba(255, 255, 255, 0.8) 315deg,
+    rgba(255, 255, 255, 0.6) 318deg,
+    transparent 330deg,
+    transparent 330deg,
+    rgba(255, 255, 255, 0.6) 342deg,
+    rgba(255, 255, 255, 0.8) 345deg,
+    rgba(255, 255, 255, 0.6) 348deg,
+    transparent 360deg
+  );
+}
+
+.papiro-cuboctahedron-container {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+

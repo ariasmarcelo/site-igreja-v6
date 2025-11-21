@@ -70,8 +70,8 @@ function reconstructObjectFromEntries(entries, pageId) {
       // Para a página solicitada, remover o prefixo do pageId
       keys = entry.cleanKey.split('.');
     } else if (entry.page_id === '__shared__') {
-      // Para __shared__, usar apenas a cleanKey (sem o prefixo __shared__)
-      keys = entry.cleanKey.split('.');
+      // Para __shared__, manter o prefixo __shared__ na estrutura
+      keys = ['__shared__', ...entry.cleanKey.split('.')];
     } else {
       // Para outras páginas, manter a estrutura completa
       keys = entry.fullKey.split('.');
@@ -315,8 +315,59 @@ module.exports = (req, res) => {
       });
   }
   
+  // DELETE /api/content/:pageId
+  if (req.method === 'DELETE') {
+    const { ids } = req.body;
+    
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'ids array is required (Surrogate IDs)'
+      });
+    }
+    
+    log(`DELETE pageId=${pageId}, ids=${ids.length}`);
+    
+    const deletePromises = ids.map(id => {
+      log(`Deleting: id=${id}`);
+      return supabase
+        .from('text_entries')
+        .delete()
+        .eq('id', id)
+        .eq('page_id', pageId); // Validação extra de segurança
+    });
+    
+    return Promise.all(deletePromises)
+      .then((results) => {
+        const deletedCount = results.filter(r => !r.error).length;
+        const errors = results.filter(r => r.error);
+        
+        if (errors.length > 0) {
+          log(`WARNING: ${errors.length} deletions failed`);
+          errors.forEach(err => log(`Delete error: ${err.error.message}`));
+        }
+        
+        log(`SUCCESS: Deleted ${deletedCount}/${ids.length} entries (${Date.now() - requestStart}ms)`);
+        
+        return res.status(200).json({
+          success: true,
+          message: 'Conteúdo deletado com sucesso',
+          deletedCount,
+          failedCount: errors.length,
+          duration: `${Date.now() - requestStart}ms`
+        });
+      })
+      .catch((err) => {
+        log(`ERROR: ${err.message}`);
+        return res.status(500).json({
+          success: false,
+          message: err.message
+        });
+      });
+  }
+  
   return res.status(405).json({ 
     success: false, 
-    message: 'Method not allowed. Use GET or PUT.' 
+    message: 'Method not allowed. Use GET, PUT, or DELETE.' 
   });
 };

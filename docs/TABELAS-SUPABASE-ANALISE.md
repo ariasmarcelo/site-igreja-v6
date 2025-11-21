@@ -48,18 +48,11 @@
 .from('text_entries')  // ✅ Esta tabela existe e tem dados
 ```
 
-### Cache está VAZIO:
-- LMDB não tem nenhuma entrada
-- Quando cache falha, API vai ao DB
-- API consulta `text_entries` (correto)
-- **MAS** algo está retornando dados errados
-
 ## Inconsistências
 
 1. **`check-supabase-data.js`** lê de `page_contents` (antiga)
 2. **`save-visual-edits.js`** escreve em `text_entries` (nova)
 3. **`content-v2/index.js`** lê de `text_entries` (correto)
-4. **Cache LMDB** está completamente vazio
 
 ## Qual é a Tabela REAL?
 
@@ -81,14 +74,11 @@
 ## Próximos Passos (NÃO EXECUTAR AINDA)
 
 1. **Atualizar `check-supabase-data.js`** para ler de `text_entries`
-2. **Investigar por que cache está vazio** (warmup não está funcionando)
-3. **Testar `cache-refresh.js`** localmente
-4. **Verificar por que página Contato mostra conteúdo de Tratamentos**
-5. Considerar **deprecar** `page_contents` completamente
+2. **Verificar por que página Contato mostra conteúdo de Tratamentos**
+3. Considerar **deprecar** `page_contents` completamente
 
 ## Observação Crítica
 
 O problema da página Contato mostrando "Tratamentos Associados" NÃO é erro de tabela - a tabela está correta (`text_entries`). O problema é:
-- Cache vazio
 - Alguma falha na reconstrução do objeto
 - Possível bug na função `reconstructObject()`

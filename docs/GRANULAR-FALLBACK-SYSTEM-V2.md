@@ -544,10 +544,11 @@ Footer.trademark.json     → "Todos os direitos reservados"
 - Se JSONs não existirem, usa props defaults dos componentes
 - Degradação graciosa em três níveis
 
-### 2. **Cache Automático**
+### 2. **Fallback Automático**
 - Zero configuração
 - Sincronização transparente após toda leitura
 - Sempre atualizado com DB
+- JSONs locais como backup em caso de falha do Supabase
 
 ### 3. **Performance**
 - Sincronização não bloqueia renderização (background)
@@ -663,7 +664,6 @@ workspace/shadcn-ui/
 ## Próximos Passos Sugeridos
 
 - [ ] Implementar carregamento de fallback quando DB não responder (switch automático)
-- [ ] Adicionar cache HTTP (headers Cache-Control) nas APIs
 - [ ] Implementar versionamento de JSONs (histórico com timestamps)
 - [ ] Dashboard admin para visualizar stats de sync (created/updated/skipped)
 - [ ] Alertas se sync falhar consistentemente (possível problema de disco/permissões)

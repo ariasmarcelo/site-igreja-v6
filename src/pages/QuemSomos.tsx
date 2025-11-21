@@ -265,33 +265,35 @@ export default function QuemSomos() {
 
         {/* Princípios Herméticos - Estilo Papiro */}
         {texts.hermeticos?.items && Array.isArray(texts.hermeticos.items) && texts.hermeticos.items.length > 0 && (
-        <section className="relative papiro-box p-12 rounded-lg border-4 border-amber-900/20 shadow-2xl bg-linear-to-br from-[#FAF9F7] via-[#F5F3F0] to-[#FAF9F7]">
+        <section className="relative papiro-box p-12 rounded-lg border-4 border-amber-900/20 shadow-2xl">
                 
                 {/* Textura de papiro */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none papiro-texture"></div>
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none papiro-texture z-0"></div>
                 
                 {/* Bordas decorativas do papiro */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-amber-800/30 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-amber-800/30 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-transparent via-amber-800/30 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-1 h-full bg-linear-to-b from-transparent via-amber-800/30 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-amber-800/30 to-transparent z-5"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-amber-800/30 to-transparent z-5"></div>
+                <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-transparent via-amber-800/30 to-transparent z-5"></div>
+                <div className="absolute top-0 right-0 w-1 h-full bg-linear-to-b from-transparent via-amber-800/30 to-transparent z-5"></div>
                 
                 {/* Ornamentos nos cantos */}
-                <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-amber-800/40 rounded-tl-lg"></div>
-                <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-amber-800/40 rounded-tr-lg"></div>
-                <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-amber-800/40 rounded-bl-lg"></div>
-                <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-amber-800/40 rounded-br-lg"></div>
+                <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-amber-800/40 rounded-tl-lg z-5"></div>
+                <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-amber-800/40 rounded-tr-lg z-5"></div>
+                <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-amber-800/40 rounded-bl-lg z-5"></div>
+                <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-amber-800/40 rounded-br-lg z-5"></div>
                 
-                {/* Conteúdo interno */}
-                <div className="relative z-10">
-                  {/* Cuboctahedron e ícones acima do título */}
-                  <div className="flex justify-center mb-6 relative">
-                    {/* Fundo com brilho irradiante em 12 direções */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[6000px] h-[6000px] cuboctahedron-radial-glow pointer-events-none" />
-                    <Cuboctahedron size={200} className="text-indigo-600 relative z-10" strokeWidth={9} />
-                  </div>
-                  
-                  <div className="flex items-center justify-center gap-4 mb-8">
+                {/* Raios de luz - acima de tudo */}
+                <div className="papiro-rays-container" />
+                
+                {/* Cuboctahedron - acima dos raios */}
+                <div className="papiro-cuboctahedron-container">
+                  <Cuboctahedron size={200} className="text-indigo-600" strokeWidth={6} />
+                </div>
+                
+            {/* Conteúdo interno */}
+            <div className="relative z-10">
+              {/* Espaço para o cuboctahedron */}
+              <div className="h-[200px] mb-6"></div>                  <div className="flex items-center justify-center gap-4 mb-8 relative z-50">
                     <div className="relative w-[66px] h-[66px] rounded-full bg-linear-to-br from-gray-200 via-gray-50 to-gray-300 shadow-[0_8px_16px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(0,0,0,0.2)] flex items-center justify-center border border-gray-400/30">
                       <Pentagram size={66} className="text-blue-600 shield-blue-icon drop-shadow-md" strokeWidth={2.5} />
                     </div>
@@ -305,7 +307,7 @@ export default function QuemSomos() {
                   
                   {/* Parágrafo introdutório */}
                   {texts.hermeticos?.subtitle && (
-                  <div className="mb-12 max-w-4xl mx-auto">
+                  <div className="mb-12 max-w-4xl mx-auto relative z-40">
                     <p className="text-lg text-amber-900 leading-relaxed text-center font-serif italic" data-json-key="quemsomos.hermeticos.subtitle">
                       {texts.hermeticos.subtitle}
                     </p>

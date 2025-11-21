@@ -153,30 +153,23 @@ usePageContent() hook
     ↓
 GET /api/content-v2/[pageId]
     ↓
-API busca Supabase + cache LMDB
+API busca Supabase
     ↓
 Frontend renderiza com dados do DB
 ```
 
-**Cache LMDB:**
-- Cache em memória ultra-rápido (Lightning Memory-Mapped Database)
-- Localização: `.cache/content-lmdb/`
-- TTL: 5 minutos
-- Reduz carga no Supabase em 90%+
-
 **Benefícios:**
-- ✅ Performance: cache local com validação automática
 - ✅ Confiabilidade: dados sempre sincronizados com DB
-- ✅ Escalabilidade: menos queries no Supabase
-- ✅ Zero-config: cache gerenciado automaticamente
+- ✅ Simplicidade: fluxo direto sem camadas intermediárias
+- ✅ Consistência: dados sempre atualizados do Supabase
 
 ### APIs Serverless
 
 **Localização:** `/api` folder
 
 | API | Método | Propósito |
-|-----|--------|-----------|
-| `/api/content-v2` | GET | Buscar conteúdo de páginas + cache LMDB |
+|-----|--------|-----------||
+| `/api/content-v2` | GET | Buscar conteúdo de páginas do Supabase |
 | `/api/save-visual-edits` | POST | Salvar edições do editor visual no Supabase |
 
 ### Estrutura de Pastas
@@ -202,7 +195,7 @@ src/
 
 api/
 ├── content-v2/
-│   └── index.js         # GET conteúdo + cache LMDB
+│   └── index.js         # GET conteúdo do Supabase
 └── save-visual-edits.js # POST edições
 
 scripts/
@@ -276,7 +269,6 @@ vercel --prod
 | Página em branco | Verificar `basename` no Router = `/site-igreja-v6` |
 | Conteúdo não carrega | Verificar `.env.local` com credenciais Supabase |
 | Servidor não inicia | Verificar porta 3000 livre: `netstat -ano \| findstr :3000` |
-| Cache LMDB corrompido | Remover pasta `.cache/content-lmdb/` |
 | Rota 404 ao acessar diretamente | Verificar `vercel.json` rewrites e `public/404.html` desabilitado |
 
 ---
@@ -293,7 +285,6 @@ vercel --prod
 ## 🌟 Recursos
 
 - ✅ **Editor visual de conteúdo** - Edite textos diretamente no site
-- ✅ **Cache LMDB** - Performance ultra-rápida com cache local
 - ✅ **Conteúdo compartilhado** - Footer e elementos comuns (sistema `__shared__`)
 - ✅ **Blog integrado** - Sistema completo de artigos com TipTap
 - ✅ **Responsivo** - Design mobile-first
@@ -351,13 +342,13 @@ Este projeto é proprietário. Todos os direitos reservados.
 
 ---
 
-**Última atualização:** 14 de novembro de 2025
+**Última atualização:** 20 de novembro de 2025
 
 ### Histórico de Mudanças
 
-**v6.2 (14/11/2025):**
-- ✅ Sistema de cache LMDB implementado (performance +90%)
-- ✅ Fix crash LMDB com async/await pattern
+**v6.3 (20/11/2025):**
+- ✅ Removido cache LMDB (incompatível com ambientes efêmeros serverless)
+- ✅ Simplificação: fluxo direto Supabase → Frontend
 - ✅ Rota `/quemsomos` padronizada (sem hífen)
 - ✅ Desabilitado `public/404.html` que interferia com SPA routing
 - ✅ Removido sistema de fallback granular (simplificação)
