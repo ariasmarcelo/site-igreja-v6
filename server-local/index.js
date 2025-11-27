@@ -7,6 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import fs from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -168,10 +169,24 @@ app.get('/api/content-v2/:pageId', async (req, res) => {
       .from('text_entries')
       .select('json_key, content')
       .eq('page_id', pageId);
-    
+
     if (entriesError) throw entriesError;
-    
+
+    // Se não encontrou entries, tentar fallback local (dev)
     if (!entries || entries.length === 0) {
+      try {
+        const fallbackPath = join(__dirname, '..', 'temp-index.json');
+        const raw = await fs.readFile(fallbackPath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.content) {
+          console.log(`ℹ️  No DB entries for ${pageId}, using local fallback ${fallbackPath}`);
+          const mergedContent = { ...parsed.content };
+          // Attempt to attach shared footer if exists in parsed content
+          return res.json({ success: true, content: mergedContent, source: 'fallback-json' });
+        }
+      } catch (fsErr) {
+        console.warn('⚠️  Fallback JSON not found or invalid:', fsErr.message);
+      }
       return res.status(404).json({ 
         success: false, 
         message: `Nenhum conteúdo encontrado para: ${pageId}` 

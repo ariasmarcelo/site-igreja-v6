@@ -7,6 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import fs from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -124,14 +125,30 @@ app.get('/api/content/:pageId', async (req, res) => {
       .from('text_entries')
       .select('json_key, content')
       .eq('page_id', pageId);
-    
+
     if (error) throw error;
-    
+
+    // Se não houve entries no banco, tentar fallback local (dev)
+    if (!data || data.length === 0) {
+      try {
+        const fallbackPath = join(__dirname, '..', 'temp-index.json');
+        const raw = await fs.readFile(fallbackPath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.content) {
+          console.log(`ℹ️  No DB entries for ${pageId}, using local fallback ${fallbackPath}`);
+          // Se o JSON tiver uma estrutura de página única, retorná-la
+          return res.json({ content: parsed.content, source: 'fallback-json' });
+        }
+      } catch (fsErr) {
+        console.warn('⚠️  Fallback JSON not found or invalid:', fsErr.message);
+      }
+    }
+
     // Reconstruir objeto aninhado
     const content = reconstructObject(data, pageId);
-    
+
     console.log(`✅ ${data.length} entries carregadas`);
-    
+
     res.json({ content });
   } catch (error) {
     console.error('❌ Error fetching content:', error);
