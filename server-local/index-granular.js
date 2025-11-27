@@ -136,8 +136,8 @@ app.get('/api/content/:pageId', async (req, res) => {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.content) {
           console.log(`ℹ️  No DB entries for ${pageId}, using local fallback ${fallbackPath}`);
-          // Se o JSON tiver uma estrutura de página única, retorná-la
-          return res.json({ content: parsed.content, source: 'fallback-json' });
+          // Se o JSON tiver uma estrutura de página única, retorná-la com formato consistente
+          return res.json({ success: true, content: parsed.content, source: 'fallback-json' });
         }
       } catch (fsErr) {
         console.warn('⚠️  Fallback JSON not found or invalid:', fsErr.message);
@@ -149,7 +149,7 @@ app.get('/api/content/:pageId', async (req, res) => {
 
     console.log(`✅ ${data.length} entries carregadas`);
 
-    res.json({ content });
+    res.json({ success: true, content });
   } catch (error) {
     console.error('❌ Error fetching content:', error);
     res.status(500).json({ 
